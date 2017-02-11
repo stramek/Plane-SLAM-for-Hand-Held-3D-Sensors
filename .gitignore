@@ -28,5 +28,6 @@
 *.out
 *.app
 
-# Build folder
+# Build files
 build/*
+*.user

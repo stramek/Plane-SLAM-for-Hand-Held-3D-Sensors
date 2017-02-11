@@ -67,13 +67,6 @@ void openDevice() {
     }
 }
 
-libfreenect2::SyncMultiFrameListener getAndConfigureListener() {
-    libfreenect2::SyncMultiFrameListener listener(libfreenect2::Frame::Color | libfreenect2::Frame::Depth | libfreenect2::Frame::Ir);
-    
-    dev->setColorFrameListener(&listener);
-    dev->setIrAndDepthFrameListener(&listener);
-    return listener;
-}
 
 int main() {
     quitIfDeviceNotConnected();
@@ -82,7 +75,10 @@ int main() {
     
     signal(SIGINT, sigint_handler);
     
-    libfreenect2::SyncMultiFrameListener listener = getAndConfigureListener();
+    libfreenect2::SyncMultiFrameListener listener(libfreenect2::Frame::Color | libfreenect2::Frame::Depth | libfreenect2::Frame::Ir);
+
+    dev->setColorFrameListener(&listener);
+    dev->setIrAndDepthFrameListener(&listener);
     libfreenect2::FrameMap frames;
     dev->start();
     
