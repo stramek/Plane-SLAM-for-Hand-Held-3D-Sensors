@@ -26,11 +26,15 @@ double Plane::getB() {
     return B;
 }
 
+double Plane::getC() {
+    return C;
+}
+
 double Plane::getD() {
     return D;
 }
 
 double Plane::getDistanceFromPoint(cv::Point3d point) {
-    return abs(A * point.x + B * point.y + point.z + D)
-            / sqrt(pow(A, 2) + pow(B, 2) + 1);
+    return abs(A * point.x + B * point.y + C * point.z + D)
+            / sqrt(pow(A, 2) + pow(B, 2) + pow(C, 2));
 }

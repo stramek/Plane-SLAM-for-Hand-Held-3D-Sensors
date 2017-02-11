@@ -23,10 +23,11 @@ public:
     Plane(std::array<cv::Point3d, 3>);
     double getA();
     double getB();
+    double getC();
     double getD();
     double getDistanceFromPoint(cv::Point3d point);
 private:
-    double A, B, D;
+    double A, B, D, C;
 };
 
 #endif /* Plane_h */
