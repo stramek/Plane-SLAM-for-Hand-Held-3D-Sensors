@@ -31,5 +31,6 @@ double Plane::getD() {
 }
 
 double Plane::getDistanceFromPoint(cv::Point3d point) {
-    return -1.0;
+    return abs(A * point.x + B * point.y + point.z + D)
+            / sqrt(pow(A, 2) + pow(B, 2) + 1);
 }
