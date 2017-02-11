@@ -88,6 +88,7 @@ int main() {
     Mat rgbmat, depthmat, depthmatUndistorted, irmat, rgbd, rgbd2;
     
     while(!protonect_shutdown) {
+        
         listener.waitForNewFrame(frames);
         libfreenect2::Frame *rgb = frames[libfreenect2::Frame::Color];
         libfreenect2::Frame *ir = frames[libfreenect2::Frame::Ir];
