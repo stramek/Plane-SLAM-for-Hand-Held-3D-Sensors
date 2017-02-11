@@ -10,11 +10,11 @@
 
 Plane::Plane() {}
 
-Plane::Plane(cv::Point3d point1, cv::Point3d point2, cv::Point3d point3) {
+Plane::Plane(Eigen::Vector3d  point1, Eigen::Vector3d  point2, Eigen::Vector3d  point3) {
     
 }
 
-Plane::Plane(std::array<cv::Point3d, 3>) {
+Plane::Plane(std::array<Eigen::Vector3d , 3>) {
     
 }
 
@@ -34,7 +34,18 @@ double Plane::getD() {
     return D;
 }
 
-double Plane::getDistanceFromPoint(cv::Point3d point) {
-    return abs(A * point.x + B * point.y + C * point.z + D)
+double Plane::getDistanceFromPoint(Eigen::Vector3d  point) {
+    return abs(A * point(0) + B * point(1) + C * point(2) + D)
             / sqrt(pow(A, 2) + pow(B, 2) + pow(C, 2));
+}
+
+void Plane::computePlaneEquation(Eigen::Vector3d  point1, Eigen::Vector3d  point2, Eigen::Vector3d  point3)
+{
+    Eigen::Vector3d v = point1 - point2;
+    Eigen::Vector3d w = point1 - point3;
+    Eigen::Vector3d planeParameters = v.cross(w);
+    A = planeParameters(0);
+    B = planeParameters(1);
+    C = planeParameters(2);
+    D = A * point1(0) + B * point(1) + C * point1(2);
 }
