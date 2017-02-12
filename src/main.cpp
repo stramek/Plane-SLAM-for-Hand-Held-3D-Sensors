@@ -67,6 +67,33 @@ void openDevice() {
     }
 }
 
+void rxCppTestCode() {
+    cout<<"before RX";
+     
+    std::array< int, 8 > a={{1, 2, 3, 4, 5, 6, 7, 8}};
+    auto values = rxcpp::observable<>::iterate(a, rxcpp::observe_on_event_loop());
+    values
+    .filter([](int value){
+    return value % 2;
+    })
+    .map([](int v) {
+    return v + 5;
+    })
+    .map([](int v) -> int {
+    return v + 10;
+    })
+    .as_dynamic()
+    .subscribe([](int v) {
+        printf("\nOnNext: %d", v);
+    },
+    []() {
+        printf("\nOnCompleted");
+    });
+    cout<<"\nafter RX";
+    usleep(3000 * 1000);
+    cout<<"\nafter sleep\n";
+}
+
 int main() {
     quitIfDeviceNotConnected();
     setDepthProcessor();
