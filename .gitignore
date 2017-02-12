@@ -31,3 +31,6 @@
 # Build files
 build/*
 *.user
+src/main.cpp.autosave
+
+*.autosave

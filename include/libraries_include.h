@@ -28,5 +28,6 @@
 #include <libfreenect2/registration.h>
 #include <libfreenect2/packet_pipeline.h>
 #include <libfreenect2/logger.h>
+#include <Eigen/Dense>
 
 #endif /* libraries_include_h */
