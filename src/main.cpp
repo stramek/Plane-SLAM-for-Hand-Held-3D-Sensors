@@ -78,16 +78,16 @@ int main() {
 
     dev->setColorFrameListener(&listener);
     dev->setIrAndDepthFrameListener(&listener);
-    libfreenect2::FrameMap frames;
     dev->start();
-
+    
+    libfreenect2::FrameMap frames;
     libfreenect2::Registration* registration = new libfreenect2::Registration(dev->getIrCameraParams(), dev->getColorCameraParams());
     libfreenect2::Frame undistorted(512, 424, 4), registered(512, 424, 4), depth2rgb(1920, 1080 + 2, 4);
 
     Mat rgbmat, depthmat, depthmatUndistorted, irmat, rgbd, rgbd2;
-
-    while(!protonect_shutdown)
-    {
+    
+    while(!protonect_shutdown) {
+        
         listener.waitForNewFrame(frames);
         libfreenect2::Frame *rgb = frames[libfreenect2::Frame::Color];
         libfreenect2::Frame *ir = frames[libfreenect2::Frame::Ir];
