@@ -35,7 +35,7 @@ double Plane::getD() {
 }
 
 double Plane::getDistanceFromPoint(Eigen::Vector3d  point) {
-    return abs(A * point(0) + B * point(1) + C * point(2) + D)
+    return std::abs(A * point(0) + B * point(1) + C * point(2) + D)
             / sqrt(pow(A, 2) + pow(B, 2) + pow(C, 2));
 }
 
@@ -47,5 +47,5 @@ void Plane::computePlaneEquation(Eigen::Vector3d  point1, Eigen::Vector3d  point
     A = planeParameters(0);
     B = planeParameters(1);
     C = planeParameters(2);
-    D = A * point1(0) + B * point(1) + C * point1(2);
+    D = A * point1(0) + B * point1(1) + C * point1(2);
 }
