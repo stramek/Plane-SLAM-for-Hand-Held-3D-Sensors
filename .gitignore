@@ -28,9 +28,7 @@
 *.out
 *.app
 
-# Build files
+# Build/user files
 build/*
 *.user
-src/main.cpp.autosave
-
 *.autosave
