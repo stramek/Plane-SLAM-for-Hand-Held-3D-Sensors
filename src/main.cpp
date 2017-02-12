@@ -61,19 +61,70 @@ void setDepthProcessor() {
 void openDevice() {
     string serial = freenect2.getDefaultDeviceSerialNumber();
     dev = pipeline ? freenect2.openDevice(serial, pipeline) : freenect2.openDevice(serial);
-    
+
     if(dev == 0) {
         throw std::runtime_error("Failure opening device!");
     }
 }
 
+libfreenect2::SyncMultiFrameListener getAndConfigureListener() {
+    libfreenect2::SyncMultiFrameListener listener(libfreenect2::Frame::Color | libfreenect2::Frame::Depth | libfreenect2::Frame::Ir);
 
-int main()
-{
-  Vector3d v(1,2,3);
-  Vector3d w(0,1,2);
-  cout << "Dot product: " << v.dot(w) << endl;
-  double dp = v.adjoint()*w; // automatic conversion of the inner product to a scalar
-  cout << "Dot product via a matrix product: " << dp << endl;
-  cout << "Cross product:\n" << v.cross(w) << endl;
+    dev->setColorFrameListener(&listener);
+    dev->setIrAndDepthFrameListener(&listener);
+    return listener;
+}
+
+int main() {
+    quitIfDeviceNotConnected();
+    setDepthProcessor();
+    openDevice();
+
+    signal(SIGINT, sigint_handler);
+
+    libfreenect2::SyncMultiFrameListener listener = getAndConfigureListener();
+    libfreenect2::FrameMap frames;
+    dev->start();
+
+    libfreenect2::Registration* registration = new libfreenect2::Registration(dev->getIrCameraParams(), dev->getColorCameraParams());
+    libfreenect2::Frame undistorted(512, 424, 4), registered(512, 424, 4), depth2rgb(1920, 1080 + 2, 4);
+
+    Mat rgbmat, depthmat, depthmatUndistorted, irmat, rgbd, rgbd2;
+
+    while(!protonect_shutdown)
+    {
+        listener.waitForNewFrame(frames);
+        libfreenect2::Frame *rgb = frames[libfreenect2::Frame::Color];
+        libfreenect2::Frame *ir = frames[libfreenect2::Frame::Ir];
+        libfreenect2::Frame *depth = frames[libfreenect2::Frame::Depth];
+
+        cv::Mat(rgb->height, rgb->width, CV_8UC4, rgb->data).copyTo(rgbmat);
+        cv::Mat(ir->height, ir->width, CV_32FC1, ir->data).copyTo(irmat);
+        cv::Mat(depth->height, depth->width, CV_32FC1, depth->data).copyTo(depthmat);
+
+        cv::imshow("rgb", rgbmat);
+        cv::imshow("ir", irmat / 4500.0f);
+        cv::imshow("depth", depthmat / 4500.0f);
+
+        registration->apply(rgb, depth, &undistorted, &registered, true, &depth2rgb);
+
+        cv::Mat(undistorted.height, undistorted.width, CV_32FC1, undistorted.data).copyTo(depthmatUndistorted);
+        cv::Mat(registered.height, registered.width, CV_8UC4, registered.data).copyTo(rgbd);
+        cv::Mat(depth2rgb.height, depth2rgb.width, CV_32FC1, depth2rgb.data).copyTo(rgbd2);
+
+        cv::imshow("undistorted", depthmatUndistorted / 4500.0f);
+        cv::imshow("registered", rgbd);
+        cv::imshow("depth2RGB", rgbd2 / 4500.0f);
+
+        int key = cv::waitKey(1);
+        protonect_shutdown = protonect_shutdown || (key > 0 && ((key & 0xFF) == 27)); // shutdown on escape
+
+        listener.release(frames);
+    }
+
+    dev->stop();
+    dev->close();
+
+    delete registration;
+    return 0;
 }
