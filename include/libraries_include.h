@@ -20,6 +20,7 @@
 #include <time.h>
 #include <signal.h>
 #include <cstdlib>
+#include <unistd.h>
 
 #include <opencv2/opencv.hpp>
 
@@ -29,5 +30,6 @@
 #include <libfreenect2/packet_pipeline.h>
 #include <libfreenect2/logger.h>
 #include <Eigen/Dense>
+#include <rxcpp/rx.hpp>
 
 #endif /* libraries_include_h */
