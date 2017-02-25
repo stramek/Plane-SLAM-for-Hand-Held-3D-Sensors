@@ -32,3 +32,5 @@
 build/*
 *.user
 *.autosave
+*.idea
+cmake-build-debug/
