@@ -8,7 +8,19 @@
 
 #include "../../include/dataset/main.h"
 
-int main() {
-    cout << "Hello! XD" << endl;
-    return 0;
+int visualizerTest(int argc, char** argv){
+    QApplication application(argc,argv);
+    setlocale(LC_NUMERIC,"C");
+    glutInit(&argc, argv);
+
+    QGLVisualizer visu;
+
+    visu.setWindowTitle("Simulator viewer");
+    visu.show();
+
+    return application.exec();
+}
+
+int main(int argc, char** argv) {
+    visualizerTest(argc, argv);
 }

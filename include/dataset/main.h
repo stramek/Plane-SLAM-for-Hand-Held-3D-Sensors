@@ -14,6 +14,10 @@
 #endif
 
 #include <iostream>
+#include <QGLViewer/qglviewer.h>
+#include <qapplication.h>
+#include <GL/glut.h>
+#include "Qvisualizer.h"
 using namespace std;
 
 #endif
