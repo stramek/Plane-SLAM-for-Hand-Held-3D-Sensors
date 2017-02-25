@@ -6,7 +6,7 @@
 //  Copyright © 2016 Marcin Stramowski. All rights reserved.
 //
 
-#include "../include/main.h"
+#include "../../include/kinect/main.h"
 
 enum Processor { cl, gl, cpu };
 
