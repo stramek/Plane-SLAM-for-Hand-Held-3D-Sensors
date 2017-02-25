@@ -6,7 +6,7 @@
 //
 //
 
-#include "../include/Plane.h"
+#include "../../include/kinect/Plane.h"
 
 Plane::Plane() {}
 
