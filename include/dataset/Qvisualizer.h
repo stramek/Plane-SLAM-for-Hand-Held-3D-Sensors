@@ -13,44 +13,30 @@
 #include <thread>
 #include <mutex>
 #include <opencv2/opencv.hpp>
-
-/// 3 element vector class
-typedef Eigen::Translation<double,3> Vec3;
-
-/// Matrix representation of SO(3) group of rotations
-typedef Eigen::Matrix<double,3,3> Mat33;
-
-/// Quaternion representation of SO(3) group of rotations
-typedef Eigen::Quaternion<double> Quaternion;
+#include <GL/glut.h>
 
 /// Homogeneous representation of SE(3) rigid body transformations
 typedef Eigen::Transform<double, 3, Eigen::Affine> Mat34;
 
-/// Image
-typedef cv::Mat Image;
-
 /// Map implementation
-class QGLVisualizer: public QGLViewer{
+class QGLVisualizer : public QGLViewer {
 public:
-
-    /// Pointer
-    typedef std::unique_ptr<QGLVisualizer> Ptr;
 
     /// Construction
     QGLVisualizer(void);
-
-
+    
     /// Updates cloud
     void updateCloud(cv::Mat RGB, cv::Mat D);
 
-    void getPoint(unsigned int u, unsigned int v, float depth, Eigen::Vector3d& point3D);
-    void depth2cloud(cv::Mat& depthImage, cv::Mat RGB);
+    void getPoint(unsigned int u, unsigned int v, float depth, Eigen::Vector3d &point3D);
+
+    void depth2cloud(cv::Mat &depthImage, cv::Mat RGB);
 
     /// Destruction
     ~QGLVisualizer(void);
 
 private:
-    Eigen::Matrix<double,3,3> PHCPModel;
+    Eigen::Matrix<double, 3, 3> PHCPModel;
 
     /// draw objects
     void draw();
@@ -74,7 +60,7 @@ private:
 
     std::mutex mtxCamera;
 
-    struct Point3D{
+    struct Point3D {
         float x;
         float y;
         float z;
