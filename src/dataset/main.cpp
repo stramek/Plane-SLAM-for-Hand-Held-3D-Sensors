@@ -7,6 +7,7 @@
 //
 
 #include "../../include/dataset/main.h"
+#include "include/models/Plane.h"
 
 void startSlides() {
     ImageLoader imageLoader(50);
@@ -25,8 +26,7 @@ void startSlides() {
 }
 
 int main(int argc, char** argv) {
-
-    startSlides();
+    //startSlides();
 
     /*QApplication application(argc,argv);
     glutInit(&argc, argv);

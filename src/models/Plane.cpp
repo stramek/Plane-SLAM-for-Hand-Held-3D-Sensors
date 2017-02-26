@@ -6,16 +6,16 @@
 //
 //
 
-#include "../../include/kinect/Plane.h"
+#include "../../include/models/Plane.h"
 
 Plane::Plane() {}
 
 Plane::Plane(Eigen::Vector3d  point1, Eigen::Vector3d  point2, Eigen::Vector3d  point3) {
-    
+
 }
 
 Plane::Plane(std::array<Eigen::Vector3d , 3>) {
-    
+
 }
 
 double Plane::getA() {
@@ -36,7 +36,7 @@ double Plane::getD() {
 
 double Plane::getDistanceFromPoint(Eigen::Vector3d  point) {
     return std::abs(A * point(0) + B * point(1) + C * point(2) + D)
-            / sqrt(pow(A, 2) + pow(B, 2) + pow(C, 2));
+           / sqrt(pow(A, 2) + pow(B, 2) + pow(C, 2));
 }
 
 void Plane::computePlaneEquation(Eigen::Vector3d  point1, Eigen::Vector3d  point2, Eigen::Vector3d  point3)
