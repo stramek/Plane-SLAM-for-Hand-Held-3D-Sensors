@@ -22,5 +22,6 @@ int visualizerTest(int argc, char** argv){
 }
 
 int main(int argc, char** argv) {
-    visualizerTest(argc, argv);
+    cout << PHCP_MODEL;
+    //visualizerTest(argc, argv);
 }

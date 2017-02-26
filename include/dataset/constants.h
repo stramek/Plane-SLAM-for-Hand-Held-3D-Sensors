@@ -7,13 +7,19 @@
 
 #include <Eigen/Dense>
 
+using namespace Eigen;
+
 const double FOCAL_LENGTH_X = 525;
 const double FOCAL_LENGTH_Y = 525;
 const double OPTICAL_CENTER_X = 319.5;
 const double OPTICAL_CENTER_Y = 239.5;
 
-const Eigen::Matrix<double, 3, 3> = {
-
-};
+const Matrix<double, 3, 3> PHCP_MODEL = [] {
+    Matrix<double, 3, 3> matrix;
+    matrix << 1 / FOCAL_LENGTH_X, 0, -OPTICAL_CENTER_X / FOCAL_LENGTH_X,
+            0, 1 / FOCAL_LENGTH_Y, -OPTICAL_CENTER_Y / FOCAL_LENGTH_Y,
+            0, 0, 1;
+    return matrix;
+}();
 
 #endif //PROJEKTMAGISTERSKI_CONSTANTS_H

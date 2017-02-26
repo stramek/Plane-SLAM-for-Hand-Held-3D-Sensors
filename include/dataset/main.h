@@ -18,6 +18,7 @@
 #include <qapplication.h>
 #include <GL/glut.h>
 #include "Qvisualizer.h"
+#include "constants.h"
 using namespace std;
 
 #endif
