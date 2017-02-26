@@ -19,6 +19,7 @@
 #include <GL/glut.h>
 #include "Qvisualizer.h"
 #include "constants.h"
+#include "PCA.h"
 using namespace std;
 
 #endif
