@@ -15,8 +15,8 @@ void QGLVisualizer::draw() {
                         objectPose(2, 1), 0, objectPose(0, 2), objectPose(1, 2), objectPose(2, 2), 0, objectPose(0, 3),
                         objectPose(1, 3), objectPose(2, 3), 1};
     glPushMatrix();
-    glMultMatrixd(GLmat);
-    glutSolidTeapot(0.1);
+//    glMultMatrixd(GLmat);
+    glutSolidTeapot(0.5);
     glPopMatrix();
 
     glPushMatrix();
@@ -57,11 +57,14 @@ void QGLVisualizer::updateCloud(cv::Mat RGB, cv::Mat D) {
     depth2cloud(D, RGB);
 }
 
-void QGLVisualizer::getPoint(unsigned int u, unsigned int v, float depth,
-                             Eigen::Vector3d &point3D) {
+void QGLVisualizer::getPoint(unsigned int u, unsigned int v, float depth, Eigen::Vector3d &point3D) {
     Eigen::Vector3d point(u, v, 1);
     point3D = depth * PHCPModel * point;
 }
+
+//void QGLVisualizer::setPGCPModel(std::vector<Point3D> PHCPModel) {
+//
+//}
 
 /// Convert disparity image to point cloud
 void QGLVisualizer::depth2cloud(cv::Mat &depthImage, cv::Mat RGB) {

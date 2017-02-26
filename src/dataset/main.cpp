@@ -10,7 +10,7 @@
 
 int visualizerTest(int argc, char** argv){
     QApplication application(argc,argv);
-    setlocale(LC_NUMERIC,"C");
+    //setlocale(LC_NUMERIC,"C");
     glutInit(&argc, argv);
 
     QGLVisualizer visu;

@@ -22,15 +22,26 @@ typedef Eigen::Transform<double, 3, Eigen::Affine> Mat34;
 class QGLVisualizer : public QGLViewer {
 public:
 
+    struct Point3D {
+        float x;
+        float y;
+        float z;
+        unsigned char red;
+        unsigned char green;
+        unsigned char blue;
+    };
+
     /// Construction
     QGLVisualizer(void);
-    
+
     /// Updates cloud
     void updateCloud(cv::Mat RGB, cv::Mat D);
 
     void getPoint(unsigned int u, unsigned int v, float depth, Eigen::Vector3d &point3D);
 
     void depth2cloud(cv::Mat &depthImage, cv::Mat RGB);
+
+    void setPGCPModel(std::vector<Point3D> PHCPModel);
 
     /// Destruction
     ~QGLVisualizer(void);
@@ -47,9 +58,6 @@ private:
     /// initialize visualizer
     void init();
 
-    /// generate help string
-    std::string help() const;
-
     bool shadowFlag = false;
 
     /// object pose
@@ -59,15 +67,6 @@ private:
     Mat34 cameraPose;
 
     std::mutex mtxCamera;
-
-    struct Point3D {
-        float x;
-        float y;
-        float z;
-        unsigned char red;
-        unsigned char green;
-        unsigned char blue;
-    };
 
     std::vector<Point3D> PointCloud;
 };
