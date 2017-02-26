@@ -18,6 +18,13 @@ Plane::Plane(std::array<Eigen::Vector3d, 3>) {
 
 }
 
+Plane::Plane(float a, float b, float c, float d) {
+    A = a;
+    B = b;
+    C = c;
+    D = d;
+}
+
 Plane::Plane(Eigen::Vector3f normalVec, Eigen::Vector3f point) {
     A = normalVec(0);
     B = normalVec(1);

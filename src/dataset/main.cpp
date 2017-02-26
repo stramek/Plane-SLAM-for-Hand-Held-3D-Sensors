@@ -29,7 +29,7 @@ int main(int argc, char** argv) {
     pointsVector.push_back(vec2);
     pointsVector.push_back(vec3);
     cout << pointsVector.at(0);
-    Plane plane(vec1, vec2);
+    Plane plane(1.0, 2.0, 3.0, 4.0);
     //Plane planeTest(vec1, vec2);//PCA::getPlane(pointsVector);
     //cout<<planeTest.getA() << endl << planeTest.getB() << endl << planeTest.getC() << endl << planeTest.getD() << endl;
     //cout << PHCP_MODEL;

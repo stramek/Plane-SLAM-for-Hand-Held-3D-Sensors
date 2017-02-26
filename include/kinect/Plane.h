@@ -23,6 +23,7 @@ public:
     Plane(Eigen::Vector3d point1, Eigen::Vector3d  point2, Eigen::Vector3d  point3);
     Plane(std::array<Eigen::Vector3d , 3>);
     Plane(Eigen::Vector3f normalVec, Eigen::Vector3f point);
+    Plane(float a, float b, float c, float d);
     double getA();
     double getB();
     double getC();
