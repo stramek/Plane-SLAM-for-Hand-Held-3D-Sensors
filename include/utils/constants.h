@@ -1,0 +1,10 @@
+//
+// Created by stramek on 26.02.17.
+//
+
+#ifndef PROJEKTMAGISTERSKI_CONSTANTS_H
+#define PROJEKTMAGISTERSKI_CONSTANTS_H
+
+const static float PCA_MAX_ACCEPTED_DISTANCE = 2.0f;
+
+#endif //PROJEKTMAGISTERSKI_CONSTANTS_H

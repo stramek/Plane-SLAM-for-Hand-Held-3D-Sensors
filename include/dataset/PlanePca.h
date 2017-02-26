@@ -9,6 +9,7 @@
 #include <Eigen/Dense>
 #include <vector>
 #include "../models/Plane.h"
+#include "../utils/constants.h"
 
 using namespace Eigen;
 using namespace std;
@@ -22,7 +23,6 @@ private:
 
     static Plane computePlane(const vector<Vector3f> &pointsVector);
 
-    const static float PCA_MAX_ACCEPTED_DISTANCE = 2.0;
 public:
     static Plane getPlane(const vector<Vector3f> &pointsVector);
 };
