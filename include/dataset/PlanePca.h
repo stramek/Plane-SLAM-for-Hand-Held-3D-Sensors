@@ -8,17 +8,17 @@
 #include <iostream>
 #include <Eigen/Dense>
 #include <vector>
-#include "../kinect/Plane.h"
+#include "../models/Plane.h"
 
 using namespace Eigen;
 using namespace std;
 
 
-class PCA {
+class PlanePca {
 private:
     static void vecContainerToMatrix(vector<Vector3f> pointsVector, MatrixXf &matrix);
 
-    static MatrixXf computeCovMatrix(MatrixXf matrix);
+    static MatrixXf computeCovMatrix(const MatrixXf &matrix);
 
     static Plane computePlane(vector<Vector3f> pointsVector);
 

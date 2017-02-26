@@ -7,7 +7,7 @@
 //
 
 #include "../../include/dataset/main.h"
-#include "include/models/Plane.h"
+#include "include/dataset/PlanePca.h"
 
 void startSlides() {
     ImageLoader imageLoader(50);
@@ -36,5 +36,12 @@ int main(int argc, char** argv) {
     visu.show();
 
     return application.exec();*/
+    Vector3f vec1(0, 0, 1), vec2(1, 1, 0), vec3(1, 0, 0.5);
+    vector<Vector3f> pointsVector;
+    pointsVector.push_back(vec1);
+    pointsVector.push_back(vec2);
+    pointsVector.push_back(vec3);
+    Plane plane = PlanePca::getPlane(pointsVector);
+    cout<<plane.getA() << " " << plane.getB() << " " << plane.getC() << " " << plane.getD() << endl;
     return -1;
 }

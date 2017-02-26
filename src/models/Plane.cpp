@@ -6,7 +6,7 @@
 //
 //
 
-#include "../../include/kinect/Plane.h"
+#include "../../include/models/Plane.h"
 
 Plane::Plane() {}
 
@@ -16,13 +16,6 @@ Plane::Plane(Eigen::Vector3d point1, Eigen::Vector3d point2, Eigen::Vector3d poi
 
 Plane::Plane(std::array<Eigen::Vector3d, 3>) {
 
-}
-
-Plane::Plane(float a, float b, float c, float d) {
-    A = a;
-    B = b;
-    C = c;
-    D = d;
 }
 
 Plane::Plane(Eigen::Vector3f normalVec, Eigen::Vector3f point) {
