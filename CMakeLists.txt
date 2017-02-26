@@ -33,6 +33,32 @@ include_directories(${QGLVIEWER_INCLUDE_DIR})
 include_directories(${QT_INCLUDES})
 link_directories(${QGLVIEWER_LIBRARY})
 
+################ MODELS ################
+
+file(GLOB MODEL_SOURCES
+   "${CMAKE_SOURCE_DIR}/src/models/*.cpp"
+)
+file(GLOB MODEL_HEADERS
+   "${CMAKE_SOURCE_DIR}/include/models/*.h"
+)
+ADD_LIBRARY(Models STATIC ${MODEL_SOURCES} ${MODEL_HEADERS})
+INSTALL(FILES ${DEFS_HEADERS} DESTINATION include/models/)
+
+#########################################
+
+################ UTILS ################
+
+file(GLOB UTILS_SOURCES
+   "${CMAKE_SOURCE_DIR}/src/utils/*.cpp"
+)
+file(GLOB UTILS_HEADERS
+   "${CMAKE_SOURCE_DIR}/include/utils/*.h"
+)
+ADD_LIBRARY(Utils STATIC ${UTILS_SOURCES} ${UTILS_HEADERS})
+INSTALL(FILES ${DEFS_HEADERS} DESTINATION include/utils/)
+
+#########################################
+
 ################ Kinect ################
 
 file(GLOB MAIN_SOURCES
@@ -43,7 +69,7 @@ file(GLOB MAIN_HEADERS
 )
 
 ADD_EXECUTABLE(Kinect ${MAIN_SOURCES} ${MAIN_HEADERS})
-TARGET_LINK_LIBRARIES(Kinect ${OpenCV_LIBRARIES} ${freenect2_LIBRARIES}
+TARGET_LINK_LIBRARIES(Kinect Models Utils ${OpenCV_LIBRARIES} ${freenect2_LIBRARIES}
     ${QGLVIEWER_LIBRARY} ${QT_LIBRARIES} ${QT_LIBRARIES} QtCore QtXml QtOpenGL QtGui ${OPENGL_LIBRARY} glut)
 
 #########################################
@@ -56,8 +82,8 @@ file(GLOB DATASET_SOURCES
  file(GLOB DATASET_HEADERS
   "${CMAKE_SOURCE_DIR}/include/dataset/*.h"
 )
-ADD_EXECUTABLE(Dataset ${DATASET_SOURCES} ${DATASET_HEADERS} )
-TARGET_LINK_LIBRARIES(Dataset ${OpenCV_LIBRARIES} ${freenect2_LIBRARIES}
+ADD_EXECUTABLE(Dataset ${DATASET_SOURCES} ${DATASET_HEADERS})
+TARGET_LINK_LIBRARIES(Dataset Models Utils ${OpenCV_LIBRARIES} ${freenect2_LIBRARIES}
     ${QGLVIEWER_LIBRARY} ${QT_LIBRARIES} ${QT_LIBRARIES} QtCore QtXml QtOpenGL QtGui ${OPENGL_LIBRARY} glut)
 
 #########################################

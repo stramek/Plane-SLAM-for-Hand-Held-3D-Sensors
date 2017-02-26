@@ -7,30 +7,34 @@
 //
 
 #include "../../include/dataset/main.h"
+#include "include/models/Plane.h"
 
-int visualizerTest(int argc, char **argv) {
-    QApplication application(argc, argv);
-    //setlocale(LC_NUMERIC,"C");
+void startSlides() {
+    ImageLoader imageLoader(50);
+    auto interval = observable<>::interval(std::chrono::milliseconds(50));
+    interval
+            .as_blocking()
+            .subscribe([&](long value) {
+                           ImagePair imagePair = imageLoader.getNextPair();
+                           imshow("rgb", imagePair.getRgb());
+                           imshow("depth", imagePair.getDepth());
+                           waitKey(1);
+                       },
+                       []() {
+                           printf("\nOnCompleted");
+                       });
+}
+
+int main(int argc, char** argv) {
+    //startSlides();
+
+    /*QApplication application(argc,argv);
     glutInit(&argc, argv);
 
     QGLVisualizer visu;
-
-    visu.setWindowTitle("Simulator viewer");
+    visu.setWindowTitle("Dataset viewer");
     visu.show();
 
-    return application.exec();
-}
-
-int main(int argc, char **argv) {
-
-    Vector3f vec1(0, 0, 1), vec2(1, 1, 0), vec3(1, 0, 0.5);
-    vector<Vector3f> pointsVector;
-    pointsVector.push_back(vec1);
-    pointsVector.push_back(vec2);
-    pointsVector.push_back(vec3);
-    Plane planeTest = PCA::getPlane(pointsVector);
-    cout << planeTest.getA() << endl << planeTest.getB() << endl << planeTest.getC() << endl << planeTest.getD()
-         << endl;
-    //cout << PHCP_MODEL;
-    //visualizerTest(argc, argv);
+    return application.exec();*/
+    return -1;
 }
