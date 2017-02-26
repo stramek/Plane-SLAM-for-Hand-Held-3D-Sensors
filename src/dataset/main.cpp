@@ -8,8 +8,8 @@
 
 #include "../../include/dataset/main.h"
 
-int visualizerTest(int argc, char** argv){
-    QApplication application(argc,argv);
+int visualizerTest(int argc, char **argv) {
+    QApplication application(argc, argv);
     //setlocale(LC_NUMERIC,"C");
     glutInit(&argc, argv);
 
@@ -21,17 +21,16 @@ int visualizerTest(int argc, char** argv){
     return application.exec();
 }
 
-int main(int argc, char** argv) {
+int main(int argc, char **argv) {
 
-    Vector3f vec1(0.5, 0, 0), vec2(1, 2, 1.4), vec3(100, -100, -101/5.0);
+    Vector3f vec1(0, 0, 1), vec2(1, 1, 0), vec3(1, 0, 0.5);
     vector<Vector3f> pointsVector;
     pointsVector.push_back(vec1);
     pointsVector.push_back(vec2);
     pointsVector.push_back(vec3);
-    cout << pointsVector.at(0);
-    Plane plane(1.0, 2.0, 3.0, 4.0);
-    //Plane planeTest(vec1, vec2);//PCA::getPlane(pointsVector);
-    //cout<<planeTest.getA() << endl << planeTest.getB() << endl << planeTest.getC() << endl << planeTest.getD() << endl;
+    Plane planeTest = PCA::getPlane(pointsVector);
+    cout << planeTest.getA() << endl << planeTest.getB() << endl << planeTest.getC() << endl << planeTest.getD()
+         << endl;
     //cout << PHCP_MODEL;
     //visualizerTest(argc, argv);
 }

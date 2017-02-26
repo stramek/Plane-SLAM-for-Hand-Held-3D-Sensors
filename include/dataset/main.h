@@ -20,6 +20,7 @@
 #include "Qvisualizer.h"
 #include "constants.h"
 #include "PCA.h"
+#include "Plane.h"
 using namespace std;
 
 #endif

@@ -18,7 +18,7 @@ MatrixXf PCA::computeCovMatrix(MatrixXf matrix) {
     return (centered.adjoint() * centered) / double(matrix.rows() - 1);
 }
 
-void PCA::computePlane(vector<Vector3f> pointsVector) {
+Plane PCA::computePlane(vector<Vector3f> pointsVector) {
     MatrixXf matrix;
     vecContainerToMatrix(pointsVector, matrix);
     MatrixXf covMatrix = computeCovMatrix(matrix);
@@ -26,17 +26,16 @@ void PCA::computePlane(vector<Vector3f> pointsVector) {
     eigenSolver.compute(covMatrix);
     int minIndex;
     eigenSolver.eigenvalues().minCoeff(&minIndex);
-    //if (abs(eigenSolver.eigenvalues()(minIndex)) < 2) {
-    Vector3f normalVec;
-    MatrixXf eigenVectors = eigenSolver.eigenvectors();
-    cout << eigenVectors << endl;
-    normalVec = eigenVectors.col(minIndex);
-    //Plane plane(normalVec, pointsVector.at(0));
-    //return plane;
-    //}
-    //return NULL;
+    if (abs(eigenSolver.eigenvalues()(minIndex)) < 2) {
+        Vector3f normalVec;
+        MatrixXf eigenVectors = eigenSolver.eigenvectors();
+        cout<<"eigenVectors:" << endl << eigenVectors << endl;
+        normalVec = eigenVectors.col(minIndex);
+        return Plane(normalVec, pointsVector.at(0));
+    }
+    return nullptr;
 }
 
-void PCA::getPlane(vector<Vector3f> pointsVector) {
-    //return computePlane(pointsVector);
+Plane PCA::getPlane(vector<Vector3f> pointsVector) {
+    return computePlane(pointsVector);
 }

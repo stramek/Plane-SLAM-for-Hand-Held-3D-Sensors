@@ -20,10 +20,10 @@ private:
 
     static MatrixXf computeCovMatrix(MatrixXf matrix);
 
-    static void computePlane(vector<Vector3f> pointsVector);
+    static Plane computePlane(vector<Vector3f> pointsVector);
 
 public:
-    static void getPlane(vector<Vector3f> pointsVector);
+    static Plane getPlane(vector<Vector3f> pointsVector);
 };
 
 
