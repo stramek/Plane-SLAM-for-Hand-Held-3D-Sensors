@@ -16,8 +16,8 @@ ImagePair ImageLoader::loadNextImage() {
     if (currentPhoto > numberOfPhotos) currentPhoto = 0;
 
     ImagePair imagePair;
-    imagePair.setRgb(imread("dataset_photos//rgb//" + to_string(currentPhoto) + ".png"));
-    imagePair.setDepth(imread("dataset_photos//depth//" + to_string(currentPhoto) + ".png"));
+    imagePair.setRgb(imread("../dataset_photos//rgb//" + to_string(currentPhoto) + ".png"));
+    imagePair.setDepth(imread("../dataset_photos//depth//" + to_string(currentPhoto) + ".png"));
     ++currentPhoto;
 
     return imagePair;
