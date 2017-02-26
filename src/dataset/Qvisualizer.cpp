@@ -62,10 +62,6 @@ void QGLVisualizer::getPoint(unsigned int u, unsigned int v, float depth, Eigen:
     point3D = depth * PHCPModel * point;
 }
 
-//void QGLVisualizer::setPGCPModel(std::vector<Point3D> PHCPModel) {
-//
-//}
-
 /// Convert disparity image to point cloud
 void QGLVisualizer::depth2cloud(cv::Mat &depthImage, cv::Mat RGB) {
     Eigen::Vector3d point;

@@ -8,20 +8,32 @@
 
 #include "../../include/dataset/main.h"
 
-int visualizerTest(int argc, char** argv){
-    QApplication application(argc,argv);
-    //setlocale(LC_NUMERIC,"C");
-    glutInit(&argc, argv);
-
-    QGLVisualizer visu;
-
-    visu.setWindowTitle("Simulator viewer");
-    visu.show();
-
-    return application.exec();
+void startSlides() {
+    ImageLoader imageLoader(881);
+    auto interval = observable<>::interval(std::chrono::milliseconds(50));
+    interval
+            .as_blocking()
+            .subscribe([&](long value) {
+                           ImagePair imagePair = imageLoader.getNextPair();
+                           imshow("rgb", imagePair.getRgb());
+                           imshow("depth", imagePair.getDepth());
+                       },
+                       []() {
+                           printf("\nOnCompleted");
+                       });
 }
 
 int main(int argc, char** argv) {
-    cout << PHCP_MODEL;
-    //visualizerTest(argc, argv);
+
+    startSlides();
+
+    /*QApplication application(argc,argv);
+    glutInit(&argc, argv);
+
+    QGLVisualizer visu;
+    visu.setWindowTitle("Dataset viewer");
+    visu.show();
+
+    return application.exec();*/
+    return -1;
 }
