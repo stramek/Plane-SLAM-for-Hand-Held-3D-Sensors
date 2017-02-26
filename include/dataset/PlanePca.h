@@ -2,8 +2,8 @@
 // Created by mordimer on 26.02.17.
 //
 
-#ifndef PROJEKTMAGISTERSKI_PCA_H
-#define PROJEKTMAGISTERSKI_PCA_H
+#ifndef PROJEKTMAGISTERSKI_PLANEPCA_H
+#define PROJEKTMAGISTERSKI_PLANEPCA_H
 
 #include <iostream>
 #include <Eigen/Dense>
@@ -16,14 +16,15 @@ using namespace std;
 
 class PlanePca {
 private:
-    static void vecContainerToMatrix(vector<Vector3f> pointsVector, MatrixXf &matrix);
+    static void pointsVectorToMatrix(const vector<Vector3f> &pointsVector, MatrixXf &matrix);
 
     static MatrixXf computeCovMatrix(const MatrixXf &matrix);
 
-    static Plane computePlane(vector<Vector3f> pointsVector);
+    static Plane computePlane(const vector<Vector3f> &pointsVector);
 
+    const static float PCA_MAX_ACCEPTED_DISTANCE = 2.0;
 public:
-    static Plane getPlane(vector<Vector3f> pointsVector);
+    static Plane getPlane(const vector<Vector3f> &pointsVector);
 };
 
 

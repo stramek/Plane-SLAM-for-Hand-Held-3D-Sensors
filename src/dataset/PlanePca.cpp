@@ -4,12 +4,11 @@
 
 #include "include/dataset/PlanePca.h"
 
-void PlanePca::vecContainerToMatrix(vector<Vector3f> pointsVector, MatrixXf &matrix) {
+void PlanePca::pointsVectorToMatrix(const vector<Vector3f> &pointsVector, MatrixXf &matrix) {
     matrix.resize(pointsVector.size(), 3);
     int i = 0;
-    for (vector<Vector3f>::iterator it = pointsVector.begin(); it != pointsVector.end(); ++it) {
-        matrix.row(i) = *it;
-        ++i;
+    for (auto row : pointsVector) {
+        matrix.row(i++) = row;
     }
 }
 
@@ -18,15 +17,15 @@ MatrixXf PlanePca::computeCovMatrix(const MatrixXf &matrix) {
     return (centered.adjoint() * centered) / double(matrix.rows() - 1);
 }
 
-Plane PlanePca::computePlane(vector<Vector3f> pointsVector) {
+Plane PlanePca::computePlane(const vector<Vector3f> &pointsVector) {
     MatrixXf matrix;
-    vecContainerToMatrix(pointsVector, matrix);
+    pointsVectorToMatrix(pointsVector, matrix);
     MatrixXf covMatrix = computeCovMatrix(matrix);
     SelfAdjointEigenSolver<MatrixXf> eigenSolver;
     eigenSolver.compute(covMatrix);
     int minIndex;
     eigenSolver.eigenvalues().minCoeff(&minIndex);
-    if (abs(eigenSolver.eigenvalues()(minIndex)) < 2) {
+    if (abs(eigenSolver.eigenvalues()(minIndex)) < PCA_MAX_ACCEPTED_DISTANCE) {
         Vector3f normalVec;
         MatrixXf eigenVectors = eigenSolver.eigenvectors();
         normalVec = eigenVectors.col(minIndex);
@@ -35,6 +34,6 @@ Plane PlanePca::computePlane(vector<Vector3f> pointsVector) {
     return Plane();
 }
 
-Plane PlanePca::getPlane(vector<Vector3f> pointsVector) {
+Plane PlanePca::getPlane(const vector<Vector3f> &pointsVector) {
     return computePlane(pointsVector);
 }
