@@ -9,7 +9,7 @@
 #include "../../include/dataset/main.h"
 
 void startSlides() {
-    ImageLoader imageLoader(881);
+    ImageLoader imageLoader(50);
     auto interval = observable<>::interval(std::chrono::milliseconds(50));
     interval
             .as_blocking()
@@ -17,6 +17,7 @@ void startSlides() {
                            ImagePair imagePair = imageLoader.getNextPair();
                            imshow("rgb", imagePair.getRgb());
                            imshow("depth", imagePair.getDepth());
+                           waitKey(1);
                        },
                        []() {
                            printf("\nOnCompleted");
