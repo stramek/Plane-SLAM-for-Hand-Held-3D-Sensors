@@ -11,17 +11,17 @@ QGLVisualizer::~QGLVisualizer(void) {}
 
 /// draw objects
 void QGLVisualizer::draw() {
-    double GLmat[16] = {objectPose(0, 0), objectPose(1, 0), objectPose(2, 0), 0, objectPose(0, 1), objectPose(1, 1),
-                        objectPose(2, 1), 0, objectPose(0, 2), objectPose(1, 2), objectPose(2, 2), 0, objectPose(0, 3),
-                        objectPose(1, 3), objectPose(2, 3), 1};
-    glPushMatrix();
+//    double GLmat[16] = {objectPose(0, 0), objectPose(1, 0), objectPose(2, 0), 0, objectPose(0, 1), objectPose(1, 1),
+//                        objectPose(2, 1), 0, objectPose(0, 2), objectPose(1, 2), objectPose(2, 2), 0, objectPose(0, 3),
+//                        objectPose(1, 3), objectPose(2, 3), 1};
+    /*glPushMatrix();
 //    glMultMatrixd(GLmat);
     glutSolidTeapot(0.5);
-    glPopMatrix();
+    glPopMatrix();*/
 
     glPushMatrix();
     glBegin(GL_POINTS);
-    for (Point3D i : PointCloud) {
+    for (Point3D i : pointCloud) {
         glColor3f(i.red / 255.0f, i.green / 255.0f, i.blue / 255.0f);
         glVertex3f(i.x, i.y, i.z);
     }
@@ -29,6 +29,8 @@ void QGLVisualizer::draw() {
     glPopMatrix();
 
 }
+
+
 
 /// draw objects
 void QGLVisualizer::animate() {
@@ -62,26 +64,32 @@ void QGLVisualizer::getPoint(unsigned int u, unsigned int v, float depth, Eigen:
     point3D = depth * PHCPModel * point;
 }
 
+void QGLVisualizer::setPHCPModel(Eigen::Matrix<double, 3, 3> model) {
+    this->PHCPModel = model;
+}
+
 /// Convert disparity image to point cloud
 void QGLVisualizer::depth2cloud(cv::Mat &depthImage, cv::Mat RGB) {
     Eigen::Vector3d point;
-    PointCloud.clear();
+    //pointCloud.clear();
+
     for (unsigned int i = 0; i < depthImage.rows; i++) {
         for (unsigned int j = 0; j < depthImage.cols; j++) {
-            if (depthImage.at<uint16_t>(i, j) > 800 && depthImage.at<uint16_t>(i, j) < 8500) {
-                float depthM = float(depthImage.at<uint16_t>(i, j)) * 0.001;
-                getPoint(j, i, depthM, point);
-                Point3D pointPCL;
-                pointPCL.x = point(0);
-                pointPCL.y = point(1);
-                pointPCL.z = point(2);
+            float depthM = float(depthImage.at<uint16_t>(i, j)) / 5000.0f;
+            getPoint(j, i, depthM, point);
+            Point3D pointPCL;
+            pointPCL.x = point(0);
+            pointPCL.y = -point(1);
+            pointPCL.z = -point(2);
 
-                pointPCL.red = RGB.at<cv::Vec<uchar, 3>>(i, j).val[2];
-                pointPCL.green = RGB.at<cv::Vec<uchar, 3>>(i, j).val[1];
-                pointPCL.blue = RGB.at<cv::Vec<uchar, 3>>(i, j).val[0];
-                PointCloud.push_back(pointPCL);
+            pointPCL.red = RGB.at<cv::Vec<uchar, 3>>(i, j).val[2];
+            pointPCL.green = RGB.at<cv::Vec<uchar, 3>>(i, j).val[1];
+            pointPCL.blue = RGB.at<cv::Vec<uchar, 3>>(i, j).val[0];
+
+            if (i * j == depthImage.cols * depthImage.rows) {
+                pointCloud.erase(pointCloud.begin());
             }
-
+            pointCloud.push_back(pointPCL);
         }
     }
 }

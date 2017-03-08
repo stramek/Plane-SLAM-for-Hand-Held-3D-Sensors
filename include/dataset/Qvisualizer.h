@@ -41,7 +41,7 @@ public:
 
     void depth2cloud(cv::Mat &depthImage, cv::Mat RGB);
 
-    void setPGCPModel(std::vector<Point3D> PHCPModel);
+    void setPHCPModel(Eigen::Matrix<double, 3, 3> model);
 
     /// Destruction
     ~QGLVisualizer(void);
@@ -68,7 +68,7 @@ private:
 
     std::mutex mtxCamera;
 
-    std::vector<Point3D> PointCloud;
+    std::vector<Point3D> pointCloud;
 };
 
 #endif // QVISUALIZER_H_INCLUDED
