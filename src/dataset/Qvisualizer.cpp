@@ -44,7 +44,7 @@ void QGLVisualizer::init() {
     camera()->setZNearCoefficient(0.00001f);
     camera()->setZClippingCoefficient(100.0);
 
-    setBackgroundColor(QColor(255, 155, 155));
+    setBackgroundColor(QColor(100, 100, 100));
 
     glEnable(GL_LINE_SMOOTH);
     glHint(GL_LINE_SMOOTH_HINT, GL_NICEST);
