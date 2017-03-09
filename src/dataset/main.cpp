@@ -20,17 +20,17 @@ int main(int argc, char **argv) {
     ImageLoader imageLoader(50);
     ImagePair imagePair = imageLoader.getNextPair();
 
-    const int areaSize = 11; // odd number
-    const int numberOfPoints = 0;
-    if (areaSize % 2 == 0) throw runtime_error("areaSize needs to be odd number");
+    const int AREA_SIZE = 11; // odd number
+    const int NUMBER_OF_POINTS = 100000;
+    if (AREA_SIZE % 2 == 0) throw runtime_error("AREA_SIZE needs to be odd number");
 
-    for (int iteration = 0; iteration < numberOfPoints; ++iteration) {
-        pair<int, int> position = utils::getRandomPosition(imagePair.getDepth(), areaSize);
+    for (int iteration = 0; iteration < NUMBER_OF_POINTS; ++iteration) {
+        pair<int, int> position = utils::getRandomPosition(imagePair.getDepth(), AREA_SIZE);
 
         vector<Vector3f> pointsVector;
-        for (int i = position.first - (areaSize - 1) / 2; i <= position.first + (areaSize - 1) / 2; ++i) {
-            for (int j = position.second - (areaSize - 1) / 2; j <= position.second + (areaSize - 1) / 2; ++j) {
-                    pointsVector.push_back(Vector3f(i, j, imagePair.getDepthAt(i, j)));
+        for (int i = position.first - (AREA_SIZE - 1) / 2; i <= position.first + (AREA_SIZE - 1) / 2; ++i) {
+            for (int j = position.second - (AREA_SIZE - 1) / 2; j <= position.second + (AREA_SIZE - 1) / 2; ++j) {
+                pointsVector.push_back(Vector3f(i, j, imagePair.getDepthAt(i, j)));
             }
         }
         Plane plane = PlanePca::getPlane(pointsVector);
