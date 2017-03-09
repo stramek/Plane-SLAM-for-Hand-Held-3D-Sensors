@@ -17,7 +17,7 @@ ImagePair ImageLoader::loadNextImage() {
 
     ImagePair imagePair;
     imagePair.setRgb(imread("../dataset_photos//rgb//" + to_string(currentPhoto) + ".png"));
-    imagePair.setDepth(imread("../dataset_photos//depth//" + to_string(currentPhoto) + ".png"));
+    imagePair.setDepth(imread("../dataset_photos//depth//" + to_string(currentPhoto) + ".png", CV_LOAD_IMAGE_ANYDEPTH));
     ++currentPhoto;
 
     return imagePair;

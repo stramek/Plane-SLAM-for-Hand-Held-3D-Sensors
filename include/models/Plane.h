@@ -27,9 +27,11 @@ public:
     double getB();
     double getC();
     double getD();
+    bool isValid() const;
     double getDistanceFromPoint(Eigen::Vector3d  point);
 private:
     double A, B, D, C;
+    bool valid = false;
     void computePlaneEquation(Eigen::Vector3d  point1, Eigen::Vector3d  point2, Eigen::Vector3d  point3);
 };
 
