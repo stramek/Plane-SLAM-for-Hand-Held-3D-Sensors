@@ -127,6 +127,8 @@ int main() {
         cv::Mat(ir->height, ir->width, CV_32FC1, ir->data).copyTo(irmat);
         cv::Mat(depth->height, depth->width, CV_32FC1, depth->data).copyTo(depthmat);
 
+        resize(rgbmat, rgbmat, Size(), 0.3, 0.3, INTER_LINEAR);
+
         cv::imshow("rgb", rgbmat);
         cv::imshow("ir", irmat / 4500.0f);
         cv::imshow("depth", depthmat / 4500.0f);
@@ -136,6 +138,8 @@ int main() {
         cv::Mat(undistorted.height, undistorted.width, CV_32FC1, undistorted.data).copyTo(depthmatUndistorted);
         cv::Mat(registered.height, registered.width, CV_8UC4, registered.data).copyTo(rgbd);
         cv::Mat(depth2rgb.height, depth2rgb.width, CV_32FC1, depth2rgb.data).copyTo(rgbd2);
+
+        resize(rgbd2, rgbd2, Size(), 0.3, 0.3, INTER_LINEAR);
 
         cv::imshow("undistorted", depthmatUndistorted / 4500.0f);
         cv::imshow("registered", rgbd);
