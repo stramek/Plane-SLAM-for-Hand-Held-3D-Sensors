@@ -18,13 +18,14 @@
 #include <qapplication.h>
 #include <GL/glut.h>
 #include "Qvisualizer.h"
-#include "constants.h"
+#include "../utils/constants.h"
 #include <opencv2/opencv.hpp>
 #include "ImageLoader.h"
 #include "Clustering.h"
 #include "Cluster.h"
 #include <rxcpp/rx.hpp>
-
+#include <include/utils/utils.h>
+#include <include/dataset/PlanePca.h>
 
 namespace Rx {
     using namespace rxcpp;

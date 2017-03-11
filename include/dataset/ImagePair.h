@@ -24,6 +24,8 @@ public:
 
     void setDepth(const Mat &depth);
 
+    int getDepthAt(int x, int y);
+
 private:
     Mat rgb;
     Mat depth;

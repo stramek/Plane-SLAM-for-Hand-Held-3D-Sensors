@@ -23,9 +23,9 @@ class QGLVisualizer : public QGLViewer {
 public:
 
     struct Point3D {
-        double x;
-        double y;
-        double z;
+        float x;
+        float y;
+        float z;
         unsigned char red;
         unsigned char green;
         unsigned char blue;
@@ -37,13 +37,11 @@ public:
     /// Updates cloud
     void updateCloud(cv::Mat RGB, cv::Mat D);
 
-    void addToCloud(std::vector<Eigen::Vector3f> TestPoints);
-
     void getPoint(unsigned int u, unsigned int v, float depth, Eigen::Vector3d &point3D);
 
     void depth2cloud(cv::Mat &depthImage, cv::Mat RGB);
 
-    void setPGCPModel(Eigen::Matrix<double, 3, 3> PHCPModel);
+    void setPHCPModel(Eigen::Matrix<double, 3, 3> model);
 
     /// Destruction
     ~QGLVisualizer(void);
@@ -70,9 +68,7 @@ private:
 
     std::mutex mtxCamera;
 
-    std::vector<Point3D> PointCloud;
-
-    std::vector<Eigen::Vector3f> TestPoints;
+    std::vector<Point3D> pointCloud;
 };
 
 #endif // QVISUALIZER_H_INCLUDED
