@@ -21,6 +21,8 @@
 #include "constants.h"
 #include <opencv2/opencv.hpp>
 #include "ImageLoader.h"
+#include "Clustering.h"
+#include "Cluster.h"
 #include <rxcpp/rx.hpp>
 
 

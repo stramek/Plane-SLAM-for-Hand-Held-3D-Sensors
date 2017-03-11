@@ -8,7 +8,12 @@
 
 #include "../../include/models/Plane.h"
 
-Plane::Plane() {}
+Plane::Plane() {
+    A = 0;
+    B = 0;
+    C = 0;
+    D = 0;
+}
 
 Plane::Plane(Eigen::Vector3d point1, Eigen::Vector3d point2, Eigen::Vector3d point3) {
 

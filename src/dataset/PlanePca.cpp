@@ -25,6 +25,9 @@ Plane PlanePca::computePlane(const vector<Vector3f> &pointsVector) {
     eigenSolver.compute(covMatrix);
     int minIndex;
     eigenSolver.eigenvalues().minCoeff(&minIndex);
+    cout << "eigen values: " << endl << eigenSolver.eigenvalues() << endl;
+    cout << "min index: " << minIndex << endl;
+    cout << eigenSolver.eigenvalues()<< endl;
     if (abs(eigenSolver.eigenvalues()(minIndex)) < PCA_MAX_ACCEPTED_DISTANCE) {
         Vector3f normalVec;
         MatrixXf eigenVectors = eigenSolver.eigenvectors();
