@@ -23,6 +23,7 @@
 #include "ImageLoader.h"
 #include "Clustering.h"
 #include "Cluster.h"
+#include "PlaneRansac.h"
 #include <rxcpp/rx.hpp>
 #include <include/utils/utils.h>
 #include <include/dataset/PlanePca.h>

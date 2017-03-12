@@ -15,11 +15,11 @@ Plane::Plane() {
     D = 0;
 }
 
-Plane::Plane(Eigen::Vector3d point1, Eigen::Vector3d point2, Eigen::Vector3d point3) {
-
+Plane::Plane(Eigen::Vector3f point1, Eigen::Vector3f point2, Eigen::Vector3f point3) {
+    computePlaneEquation(point1, point2, point3);
 }
 
-Plane::Plane(std::array<Eigen::Vector3d, 3>) {
+Plane::Plane(std::array<Eigen::Vector3f, 3>) {
 
 }
 
@@ -31,31 +31,31 @@ Plane::Plane(Eigen::Vector3f normalVec, Eigen::Vector3f point) {
     valid = true;
 }
 
-double Plane::getA() {
+float Plane::getA() {
     return A;
 }
 
-double Plane::getB() {
+float Plane::getB() {
     return B;
 }
 
-double Plane::getC() {
+float Plane::getC() {
     return C;
 }
 
-double Plane::getD() {
+float Plane::getD() {
     return D;
 }
 
-double Plane::getDistanceFromPoint(Eigen::Vector3d point) {
-    return std::abs(A * point(0) + B * point(1) + C * point(2) + D)
-           / sqrt(pow(A, 2) + pow(B, 2) + pow(C, 2));
+float Plane::getDistanceFromPoint(Eigen::Vector3f point) {
+    return std::abs(A * point(0) + B * point(1) + C * point(2) - D)
+           / sqrtf(powf(A, 2) + powf(B, 2) + powf(C, 2));
 }
 
-void Plane::computePlaneEquation(Eigen::Vector3d point1, Eigen::Vector3d point2, Eigen::Vector3d point3) {
-    Eigen::Vector3d v = point1 - point2;
-    Eigen::Vector3d w = point1 - point3;
-    Eigen::Vector3d planeParameters = v.cross(w);
+void Plane::computePlaneEquation(Eigen::Vector3f point1, Eigen::Vector3f point2, Eigen::Vector3f point3) {
+    Eigen::Vector3f v = point1 - point2;
+    Eigen::Vector3f w = point1 - point3;
+    Eigen::Vector3f planeParameters = v.cross(w);
     A = planeParameters(0);
     B = planeParameters(1);
     C = planeParameters(2);
@@ -63,6 +63,6 @@ void Plane::computePlaneEquation(Eigen::Vector3d point1, Eigen::Vector3d point2,
     valid = true;
 }
 
-bool Plane::isValid() const {
+float Plane::isValid() const {
     return valid;
 }

@@ -82,7 +82,7 @@ file(GLOB DATASET_SOURCES
  file(GLOB DATASET_HEADERS
   "${CMAKE_SOURCE_DIR}/include/dataset/*.h"
 )
-ADD_EXECUTABLE(Dataset ${DATASET_SOURCES} ${DATASET_HEADERS} src/dataset/Clustering.cpp include/dataset/Clustering.h src/dataset/Cluster.cpp include/dataset/Cluster.h)
+ADD_EXECUTABLE(Dataset ${DATASET_SOURCES} ${DATASET_HEADERS} src/dataset/Clustering.cpp include/dataset/Clustering.h src/dataset/Cluster.cpp include/dataset/Cluster.h src/dataset/PlaneRansac.cpp include/dataset/PlaneRansac.h)
 TARGET_LINK_LIBRARIES(Dataset Models Utils ${OpenCV_LIBRARIES} ${freenect2_LIBRARIES}
     ${QGLVIEWER_LIBRARY} ${QT_LIBRARIES} ${QT_LIBRARIES} QtCore QtXml QtOpenGL QtGui ${OPENGL_LIBRARY} glut)
 

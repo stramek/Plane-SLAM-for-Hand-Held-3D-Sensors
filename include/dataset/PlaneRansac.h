@@ -1,0 +1,29 @@
+//
+// Created by mordimer on 12.03.17.
+//
+
+#ifndef PROJEKTMAGISTERSKI_PLANERANSAC_H
+#define PROJEKTMAGISTERSKI_PLANERANSAC_H
+
+#include <iostream>
+#include <Eigen/Dense>
+#include <vector>
+#include "../models/Plane.h"
+#include "../utils/constants.h"
+
+using namespace Eigen;
+using namespace std;
+
+class PlaneRansac {
+private:
+    static const int MAX_ITERATIONS_NUM = 10000;
+    static constexpr float INLAIERS_PERCENT_CONSENSUS = 0.8f;
+    static constexpr float MAX_INLARIES_POINT_PLANE_DISTANCE = 1.0f;
+    static void getRandom3Points(const vector<Vector3f> &pointsVector, Vector3f *random3Points);
+    static Plane computePlane(const vector<Vector3f> &pointsVector);
+public:
+    static Plane getPlane(const vector<Vector3f> &pointsVector);
+};
+
+
+#endif //PROJEKTMAGISTERSKI_PLANERANSAC_H

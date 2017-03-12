@@ -21,7 +21,7 @@ int main(int argc, char **argv) {
     ImagePair imagePair = imageLoader.getNextPair();
 
     const int AREA_SIZE = 21; // odd number
-    const int NUMBER_OF_POINTS = 10;
+    const int NUMBER_OF_POINTS = 50;
     if (AREA_SIZE % 2 == 0) throw runtime_error("AREA_SIZE needs to be odd number");
 
     for (int iteration = 0; iteration < NUMBER_OF_POINTS; ++iteration) {
@@ -33,7 +33,7 @@ int main(int argc, char **argv) {
                 pointsVector.push_back(Vector3f(i, j, imagePair.getDepthAt(i, j)));
             }
         }
-        Plane plane = PlanePca::getPlane(pointsVector);
+        Plane plane = PlaneRansac::getPlane(pointsVector);
         Vec3b color = plane.isValid() ? Vec3b(0, 255, 0) : Vec3b(0, 0, 255);
         for (Vector3f vector : pointsVector) {
             utils::paintPixel((Mat &) imagePair.getRgb(), vector, color);
