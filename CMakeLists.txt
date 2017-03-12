@@ -59,6 +59,19 @@ INSTALL(FILES ${DEFS_HEADERS} DESTINATION include/utils/)
 
 #########################################
 
+############### CLUSTERING ##############
+
+file(GLOB CLUSTERING_SOURCES
+        "${CMAKE_SOURCE_DIR}/src/clustering/*.cpp"
+)
+file(GLOB CLUSTERING_HEADERS
+        "${CMAKE_SOURCE_DIR}/include/clustering/*.h"
+)
+ADD_LIBRARY(Clustering STATIC ${CLUSTERING_SOURCES} ${CLUSTERING_HEADERS})
+INSTALL(FILES ${DEFS_HEADERS} DESTINATION include/clustering/)
+
+#########################################
+
 ################ Kinect ################
 
 file(GLOB MAIN_SOURCES
@@ -83,7 +96,7 @@ file(GLOB DATASET_SOURCES
   "${CMAKE_SOURCE_DIR}/include/dataset/*.h"
 )
 ADD_EXECUTABLE(Dataset ${DATASET_SOURCES} ${DATASET_HEADERS})
-TARGET_LINK_LIBRARIES(Dataset Models Utils ${OpenCV_LIBRARIES} ${freenect2_LIBRARIES}
+TARGET_LINK_LIBRARIES(Dataset Models Utils Clustering ${OpenCV_LIBRARIES} ${freenect2_LIBRARIES}
     ${QGLVIEWER_LIBRARY} ${QT_LIBRARIES} ${QT_LIBRARIES} QtCore QtXml QtOpenGL QtGui ${OPENGL_LIBRARY} glut)
 
 #########################################
