@@ -64,17 +64,17 @@ void generateRandomPointCloud(PointCloud<T> &point, const size_t N, const T max_
 }
 
 template<typename T>
-void generateMockedPointCloud(PointCloud<T> &point,  array<Point3f, 4> points) {
+void generateMockedPointCloud(PointCloud<T> &point, array<Point3f, 4> points) {
     std::cout << "Generating point cloud...";
     point.pts.resize(points.size());
 
-    cout<<endl;
+    cout << endl;
     for (size_t i = 0; i < points.size(); i++) {
         point.pts[i].x = points[i].x;
         point.pts[i].y = points[i].y;
         point.pts[i].z = points[i].z;
 
-        cout<<point.pts[i].x<<" "<<point.pts[i].y<<" "<<point.pts[i].z<<endl;
+        cout << point.pts[i].x << " " << point.pts[i].y << " " << point.pts[i].z << endl;
     }
 
     std::cout << "done\n";
@@ -139,23 +139,21 @@ void kdtree_demo(const size_t N) {
     }
 }
 
-Point getNearestPoint() {
+typedef KDTreeSingleIndexAdaptor<L2_Simple_Adaptor<float, PointCloud<float>>, PointCloud<float>, 3 /* dim */> my_kd_tree_t;
 
+Point3f getNearestPoint(const my_kd_tree_t &tree, const Point3f &point, const array<Point3f, 4> &points) {
+    float query_pt[3] = {point.x, point.y, point.z};
+
+    size_t index;
+    float distance;
+
+    tree.knnSearch(query_pt, 1, &index, &distance);
+    return points[index];
 }
 
+
 int main(int argc, char **argv) {
-// Randomize Seed
-    srand(time(NULL));
-    //kdtree_demo<float>(4);
-//    kdtree_demo<double>(100000);
-
-
-    int N = 10000;
     PointCloud<float> cloud;
-
-    // Generate points:
-    //generateRandomPointCloud(cloud, N);
-
     array<Point3f, 4> points = {
             Point3f(0, 0, 0),
             Point3f(2, 3, 0),
@@ -163,35 +161,9 @@ int main(int argc, char **argv) {
             Point3f(3, 1, 0)
     };
     generateMockedPointCloud(cloud, points);
-
-    // construct a kd-tree index:
-    typedef KDTreeSingleIndexAdaptor<L2_Simple_Adaptor<float, PointCloud<float>>, PointCloud<float>, 3 /* dim */> my_kd_tree_t;
-    my_kd_tree_t index(3 /*dim*/, cloud, KDTreeSingleIndexAdaptorParams(10 /* max leaf */));
-
+    my_kd_tree_t index(3 /*dim*/, cloud, KDTreeSingleIndexAdaptorParams());
     index.buildIndex();
-
-    const float query_pt[3] = {0.0, 0.0, 0.0};
-
-    // ----------------------------------------------------------------
-    // knnSearch():  Perform a search for the N closest points
-    // ----------------------------------------------------------------
-    {
-        size_t num_results = 4;
-        std::vector<size_t> ret_index(num_results);
-        std::vector<float> out_dist_sqr(num_results);
-
-        num_results = index.knnSearch(query_pt, num_results, &ret_index[0], &out_dist_sqr[0]);
-
-        // In case of less points in the tree than requested:
-        ret_index.resize(num_results);
-        out_dist_sqr.resize(num_results);
-
-        cout << "knnSearch(): num_results=" << num_results << "\n";
-        for (size_t i = 0; i < num_results; i++)
-            cout << "idx[" << i << "]=" << ret_index[i] << " dist[" << i << "]=" << out_dist_sqr[i] << endl;
-        cout << "\n";
-    }
-
+    cout << "Nearest point: " << getNearestPoint(index, Point3f(1, 1, 5.0), points) << endl;
 
     return 0;
 }
