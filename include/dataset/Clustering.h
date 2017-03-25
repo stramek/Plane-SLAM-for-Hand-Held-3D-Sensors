@@ -9,6 +9,7 @@
 #include <vector>
 #include <opencv2/opencv.hpp>
 #include "Cluster.h"
+#include <unordered_set>
 
 class Clustering {
 private:
@@ -21,6 +22,9 @@ private:
 
 public:
     static void computeClasters(std::vector<cv::Point_<float>> pointsVec, std::vector<Cluster> &clastersVec);
+
+    static void getClastersAfterThreshold(float cutThershold, std::vector<cv::Point_<float>> pointsVec,
+                                          std::vector<std::unordered_set<int>> &vecEachClusterPoints);
 };
 
 

@@ -9,7 +9,7 @@
 #include "include/dataset/main.h"
 
 int main(int argc, char **argv) {
-    QApplication application(argc, argv);
+/*    QApplication application(argc, argv);
     glutInit(&argc, argv);
 
     QGLVisualizer visualizer;
@@ -40,5 +40,31 @@ int main(int argc, char **argv) {
         }
     }
     visualizer.updateCloud(imagePair.getRgb(), imagePair.getDepth());
-    return application.exec();
+    return application.exec();*/
+    std::vector<cv::Point_<float>> pointsVec;
+    std::vector<Cluster> clustersVec;
+    cv::Point_<float> pointsArray[4] = {cv::Point_<float>(0.0f, 0.0f), cv::Point_<float>(2.0f, 3.0f),
+                                        cv::Point_<float>(3.0f, 2.0f), cv::Point_<float>(3.0f, 1.0f)};
+    for(int i=0; i<4; ++i){
+        pointsVec.push_back(pointsArray[i]);
+    }
+    Clustering::computeClasters(pointsVec, clustersVec);
+
+    for(Cluster cluster : clustersVec){
+        cout << cluster.getFirstLinkIndex() << " " << cluster.getSecondLinkIndex() << " "
+             << cluster.getDistanceBetweenLinks()<<std::endl;
+    }
+
+    std::vector<std::unordered_set<int>> vecEachClusterPoints;
+
+    Clustering::getClastersAfterThreshold(1.5, pointsVec, vecEachClusterPoints);
+
+    cout << endl <<"Number of clusters: " << vecEachClusterPoints.size() << endl << endl;
+
+    for(std::unordered_set<int> points: vecEachClusterPoints){
+        for(int index: points){
+            cout<< index << " ";
+        }
+        cout << endl;
+    }
 }

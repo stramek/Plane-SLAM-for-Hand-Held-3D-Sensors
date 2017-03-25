@@ -22,7 +22,7 @@ void Clustering::computeClasters(std::vector<cv::Point_<float>> pointsVec, std::
         for (int j = 0; j < pointsVec.size(); ++j) {
             SimilarityMatrix[i][j].similarity = getDistanceBetweenTwoPoints(pointsVec.at(i), pointsVec.at(j));
             SimilarityMatrix[i][j].index = j;
-            if (maxSimilarityRow > SimilarityMatrix[i][j].similarity && i!=j) {
+            if (maxSimilarityRow > SimilarityMatrix[i][j].similarity && i != j) {
                 maxSimilarityRow = SimilarityMatrix[i][j].similarity;
                 indexMaxRow = j;
             }
@@ -50,16 +50,16 @@ void Clustering::computeClasters(std::vector<cv::Point_<float>> pointsVec, std::
         clastersVec.push_back(claster);
 
         for (int j = 0; j < pointsVec.size(); ++j) {
-            if (I[j] == j && j != i1 && j != i2){
-                if(SimilarityMatrix[i1][j].similarity < SimilarityMatrix[i2][j].similarity){
+            if (I[j] == j && j != i1 && j != i2) {
+                if (SimilarityMatrix[i1][j].similarity < SimilarityMatrix[i2][j].similarity) {
                     SimilarityMatrix[i1][j].similarity = SimilarityMatrix[i1][j].similarity;
                     SimilarityMatrix[j][i1].similarity = SimilarityMatrix[i1][j].similarity;
-                } else{
+                } else {
                     SimilarityMatrix[i1][j].similarity = SimilarityMatrix[i2][j].similarity;
                     SimilarityMatrix[j][i1].similarity = SimilarityMatrix[i2][j].similarity;
                 }
             }
-            if(I[j] == i2){
+            if (I[j] == i2) {
                 I[j] = i1;
             }
         }
@@ -67,8 +67,8 @@ void Clustering::computeClasters(std::vector<cv::Point_<float>> pointsVec, std::
         SimilarityMatrixItem similarityMatrixItem_MaxSim;
         similarityMatrixItem_MaxSim.similarity = std::numeric_limits<float>::max();;
         for (int j = 0; j < pointsVec.size(); ++j) {
-            if (SimilarityMatrix[i1][j].similarity < similarityMatrixItem_MaxSim.similarity && I[j]==j && j!=i1) {
-                similarityMatrixItem_MaxSim= SimilarityMatrix[i1][j];
+            if (SimilarityMatrix[i1][j].similarity < similarityMatrixItem_MaxSim.similarity && I[j] == j && j != i1) {
+                similarityMatrixItem_MaxSim = SimilarityMatrix[i1][j];
             }
         }
         NBM[i1] = similarityMatrixItem_MaxSim;
@@ -77,4 +77,55 @@ void Clustering::computeClasters(std::vector<cv::Point_<float>> pointsVec, std::
 
 float Clustering::getDistanceBetweenTwoPoints(cv::Point_<float> point1, cv::Point_<float> point2) {
     return sqrtf(pow(point1.x - point2.x, 2) + pow(point1.y - point2.y, 2));
+}
+
+void Clustering::getClastersAfterThreshold(float cutThershold, std::vector<cv::Point_<float>> pointsVec,
+                                           std::vector<std::unordered_set<int>> &vecEachClusterPoints) {
+    std::vector<Cluster> clastersVec;
+    computeClasters(pointsVec, clastersVec);
+
+    std::unordered_set<int> *point = NULL;
+    int clusterNumber = 0;
+    for (Cluster cluster : clastersVec) {
+        if (cluster.getDistanceBetweenLinks() > cutThershold) {
+/*            for (int i = 0; i < pointsVec.size(); ++i) {
+                for (std::unordered_set<int> unordered_setPoints : vecEachClusterPoints) {
+                    if (unordered_setPoints.find(i) !=
+                        unordered_setPoints.end()) {
+                        point = new std::unordered_set<int>;
+                        point->insert(i);
+                        vecEachClusterPoints.push_back(*point);
+                    }
+                }
+            }*/
+        } else {
+            if (
+                    vecEachClusterPoints.size() == 0 &&
+                    point == NULL) {
+                point = new std::unordered_set<int>;
+                point->insert(cluster.getFirstLinkIndex());
+                point->insert(cluster.getSecondLinkIndex());
+                vecEachClusterPoints.push_back(*point);
+
+            } else if (
+                       vecEachClusterPoints.at(clusterNumber).find(cluster.getFirstLinkIndex()) !=
+                       vecEachClusterPoints.at(clusterNumber).end() ||
+                       vecEachClusterPoints.at(clusterNumber).find(cluster.getSecondLinkIndex()) !=
+                       vecEachClusterPoints.at(clusterNumber).end()) {
+                if (point != NULL) {
+                    vecEachClusterPoints.push_back(*point);
+                }
+                point = new std::unordered_set<int>;
+                clusterNumber++;
+                point->insert(cluster.getFirstLinkIndex());
+                point->insert(cluster.getSecondLinkIndex());
+                vecEachClusterPoints.push_back(*point);
+            } else {
+                if (point != NULL) {
+                    vecEachClusterPoints.at(clusterNumber).insert(cluster.getFirstLinkIndex());
+                    vecEachClusterPoints.at(clusterNumber).insert(cluster.getSecondLinkIndex());
+                }
+            }
+        }
+    }
 }
