@@ -11,8 +11,8 @@ namespace utils {
     pair<int, int> getRandomPosition(const Mat &mat, int areaSize) {
         random_device rd;
         mt19937 rng(rd());
-        uniform_int_distribution<int> colUni((areaSize - 1) / 2, mat.cols - ((areaSize - 1) / 2));
-        uniform_int_distribution<int> rowUni((areaSize - 1) / 2, mat.rows - ((areaSize - 1) / 2));
+        uniform_int_distribution<int> colUni((areaSize - 1) / 2, mat.cols - ((areaSize - 1) / 2) - 1);
+        uniform_int_distribution<int> rowUni((areaSize - 1) / 2, mat.rows - ((areaSize - 1) / 2) - 1);
         return pair<int, int>(rowUni(rng), colUni(rng));
     }
 
