@@ -10,19 +10,20 @@
 
 Plane::Plane() {}
 
-Plane::Plane(Eigen::Vector3d point1, Eigen::Vector3d point2, Eigen::Vector3d point3) {
-
+Plane::Plane(Eigen::Vector3d point1, Eigen::Vector3d point2, Eigen::Vector3d point3, const Mat& colorImage) {
+    color = HSVColor(colorImage);
 }
 
-Plane::Plane(std::array<Eigen::Vector3d, 3>) {
-
+Plane::Plane(std::array<Eigen::Vector3d, 3>, const Mat& colorImage) {
+    color = HSVColor(colorImage);
 }
 
-Plane::Plane(Eigen::Vector3f normalVec, Eigen::Vector3f point) {
+Plane::Plane(Eigen::Vector3f normalVec, Eigen::Vector3f point, const Mat& colorImage) {
     A = normalVec(0);
     B = normalVec(1);
     C = normalVec(2);
     D = A * point(0) + B * point(1) + C * point(2);
+    color = HSVColor(colorImage);
     valid = true;
 }
 
@@ -60,4 +61,8 @@ void Plane::computePlaneEquation(Eigen::Vector3d point1, Eigen::Vector3d point2,
 
 bool Plane::isValid() const {
     return valid;
+}
+
+const HSVColor &Plane::getColor() const {
+    return color;
 }
