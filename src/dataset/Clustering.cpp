@@ -133,22 +133,46 @@ void Clustering::getClustersAfterThreshold(float cutThreshold, std::vector<cv::P
         }
     }
 
-    for(int i=0;i<vecEachClusterPoints.size()-1;++i){
-        bool clusterDeleteFlag = false;
-        for(auto point : vecEachClusterPoints.at(i)){
-            for(int j=i+1;j<vecEachClusterPoints.size();++j) {
-                if(vecEachClusterPoints.at(j).find(point) != vecEachClusterPoints.at(j).end()){
-                    clusterDeleteFlag = true;
-                }
-                if(clusterDeleteFlag) {
-                    for(auto point : vecEachClusterPoints.at(j)){
-                        vecEachClusterPoints.at(i).insert(point);
+    bool flag;
+    do{
+        flag = false;
+        bool *deleteElement = new bool[vecEachClusterPoints.size()];
+        for(int i =0; i<vecEachClusterPoints.size();++i){
+            deleteElement[i] = false;
+        }
+
+        for(int i=0;i<vecEachClusterPoints.size()-1;++i){
+            bool clusterDeleteFlag = false;
+            for(auto point : vecEachClusterPoints.at(i)){
+                for(int j=i+1;j<vecEachClusterPoints.size();++j) {
+                    if(vecEachClusterPoints.at(j).find(point) != vecEachClusterPoints.at(j).end()){
+                        clusterDeleteFlag = true;
                     }
-                    vecEachClusterPoints.erase(vecEachClusterPoints.begin() + j);
-                    --j;
+                    if(clusterDeleteFlag) {
+                        for(auto pointIndex : vecEachClusterPoints.at(j)){
+                            vecEachClusterPoints.at(i).insert(pointIndex);
+                        }
+                        deleteElement[j] = true;
+                        flag = true;
+                    }
+                    clusterDeleteFlag = false;
                 }
-                clusterDeleteFlag = false;
             }
         }
-    }
+
+        std::cout<<std::endl;
+        for(int i =0; i<4;++i){
+            std::cout<<deleteElement[i]<<std::endl;
+        }
+
+        for(int i =0; i<vecEachClusterPoints.size();++i){
+            int tmp = 0;
+            if(deleteElement[i]){
+                vecEachClusterPoints.erase(vecEachClusterPoints.begin() + i + tmp);
+                tmp--;
+            }
+        }
+        delete[] deleteElement;
+    }while (flag);
+
 }
