@@ -5,7 +5,7 @@
 #include "include/dataset/Clustering.h"
 
 
-void Clustering::computeClasters(std::vector<cv::Point_<float>> pointsVec, std::vector<Cluster> &clastersVec) {
+void Clustering::computeClusters(std::vector<cv::Point_<float>> pointsVec, std::vector<Cluster> &clustersVec) {
     SimilarityMatrixItem **SimilarityMatrix;
 
     SimilarityMatrix = new SimilarityMatrixItem *[pointsVec.size()];
@@ -43,11 +43,11 @@ void Clustering::computeClasters(std::vector<cv::Point_<float>> pointsVec, std::
         }
 
         i2 = I[NBM[i1].index];
-        Cluster claster;
-        claster.setFirstLinkIndex(i1);
-        claster.setSecondLinkIndex(i2);
-        claster.setDistanceBetweenLinks(SimilarityMatrix[i1][i2].similarity);
-        clastersVec.push_back(claster);
+        Cluster cluster;
+        cluster.setFirstLinkIndex(i1);
+        cluster.setSecondLinkIndex(i2);
+        cluster.setDistanceBetweenLinks(SimilarityMatrix[i1][i2].similarity);
+        clustersVec.push_back(cluster);
 
         for (int j = 0; j < pointsVec.size(); ++j) {
             if (I[j] == j && j != i1 && j != i2) {
@@ -79,15 +79,15 @@ float Clustering::getDistanceBetweenTwoPoints(cv::Point_<float> point1, cv::Poin
     return sqrtf(pow(point1.x - point2.x, 2) + pow(point1.y - point2.y, 2));
 }
 
-void Clustering::getClastersAfterThreshold(float cutThershold, std::vector<cv::Point_<float>> pointsVec,
+void Clustering::getClustersAfterThreshold(float cutThreshold, std::vector<cv::Point_<float>> pointsVec,
                                            std::vector<std::unordered_set<int>> &vecEachClusterPoints) {
-    std::vector<Cluster> clastersVec;
-    computeClasters(pointsVec, clastersVec);
+    std::vector<Cluster> clustersVec;
+    computeClusters(pointsVec, clustersVec);
 
     std::unordered_set<int> *point = NULL;
     int clusterNumber = 0;
-    for (Cluster cluster : clastersVec) {
-        if (cluster.getDistanceBetweenLinks() > cutThershold) {
+    for (Cluster cluster : clustersVec) {
+        if (cluster.getDistanceBetweenLinks() > cutThreshold) {
             for (int i = 0; i < pointsVec.size(); ++i) {
                 bool isInCluster = false;
                 for (std::unordered_set<int> unordered_setPoints : vecEachClusterPoints) {
@@ -129,6 +129,25 @@ void Clustering::getClastersAfterThreshold(float cutThershold, std::vector<cv::P
                     vecEachClusterPoints.at(clusterNumber).insert(cluster.getFirstLinkIndex());
                     vecEachClusterPoints.at(clusterNumber).insert(cluster.getSecondLinkIndex());
                 }
+            }
+        }
+    }
+
+    for(int i=0;i<vecEachClusterPoints.size()-1;++i){
+        bool clusterDeleteFlag = false;
+        for(auto point : vecEachClusterPoints.at(i)){
+            for(int j=1;j<vecEachClusterPoints.size();++j) {
+                if(vecEachClusterPoints.at(j).find(point) != vecEachClusterPoints.at(j).end()){
+                    clusterDeleteFlag = true;
+                }
+                if(clusterDeleteFlag) {
+                    for(auto point : vecEachClusterPoints.at(j)){
+                        vecEachClusterPoints.at(i).insert(point);
+                    }
+                    vecEachClusterPoints.erase(vecEachClusterPoints.begin() + j);
+                    --j;
+                }
+                clusterDeleteFlag = false;
             }
         }
     }

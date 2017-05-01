@@ -21,9 +21,9 @@ private:
     static float getDistanceBetweenTwoPoints(cv::Point_<float> point1, cv::Point_<float> point2);
 
 public:
-    static void computeClasters(std::vector<cv::Point_<float>> pointsVec, std::vector<Cluster> &clastersVec);
+    static void computeClusters(std::vector<cv::Point_<float>> pointsVec, std::vector<Cluster> &clustersVec);
 
-    static void getClastersAfterThreshold(float cutThershold, std::vector<cv::Point_<float>> pointsVec,
+    static void getClustersAfterThreshold(float cutThreshold, std::vector<cv::Point_<float>> pointsVec,
                                           std::vector<std::unordered_set<int>> &vecEachClusterPoints);
 };
 

@@ -58,7 +58,7 @@ int main(int argc, char **argv) {
     for(int i=0; i<7; ++i){
         pointsVec.push_back(pointsArray[i]);
     }
-    Clustering::computeClasters(pointsVec, clustersVec);
+    Clustering::computeClusters(pointsVec, clustersVec);
 
     for(Cluster cluster : clustersVec){
         cout << cluster.getFirstLinkIndex() << " " << cluster.getSecondLinkIndex() << " "
@@ -67,7 +67,7 @@ int main(int argc, char **argv) {
 
     std::vector<std::unordered_set<int>> vecEachClusterPoints;
 
-    Clustering::getClastersAfterThreshold(2.5, pointsVec, vecEachClusterPoints);
+    Clustering::getClustersAfterThreshold(3.1, pointsVec, vecEachClusterPoints);
 
     cout << endl <<"Number of clusters: " << vecEachClusterPoints.size() << endl << endl;
 
