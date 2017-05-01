@@ -67,7 +67,7 @@ int main(int argc, char **argv) {
 
     std::vector<std::unordered_set<int>> vecEachClusterPoints;
 
-    Clustering::getClustersAfterThreshold(3.1, pointsVec, vecEachClusterPoints);
+    Clustering::getClustersAfterThreshold(3.5, pointsVec, vecEachClusterPoints);
 
     cout << endl <<"Number of clusters: " << vecEachClusterPoints.size() << endl << endl;
 

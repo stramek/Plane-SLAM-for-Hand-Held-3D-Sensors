@@ -136,7 +136,7 @@ void Clustering::getClustersAfterThreshold(float cutThreshold, std::vector<cv::P
     for(int i=0;i<vecEachClusterPoints.size()-1;++i){
         bool clusterDeleteFlag = false;
         for(auto point : vecEachClusterPoints.at(i)){
-            for(int j=1;j<vecEachClusterPoints.size();++j) {
+            for(int j=i+1;j<vecEachClusterPoints.size();++j) {
                 if(vecEachClusterPoints.at(j).find(point) != vecEachClusterPoints.at(j).end()){
                     clusterDeleteFlag = true;
                 }
