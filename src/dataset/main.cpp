@@ -43,9 +43,19 @@ int main(int argc, char **argv) {
     return application.exec();*/
     std::vector<cv::Point_<float>> pointsVec;
     std::vector<Cluster> clustersVec;
-    cv::Point_<float> pointsArray[4] = {cv::Point_<float>(0.0f, 0.0f), cv::Point_<float>(2.0f, 3.0f),
-                                        cv::Point_<float>(3.0f, 2.0f), cv::Point_<float>(3.0f, 1.0f)};
-    for(int i=0; i<4; ++i){
+//    cv::Point_<float> pointsArray[4] = {cv::Point_<float>(0.0f, 0.0f), cv::Point_<float>(2.0f, 3.0f),
+//                                        cv::Point_<float>(3.0f, 2.0f), cv::Point_<float>(3.0f, 1.0f)};
+
+//    cv::Point_<float> pointsArray[6] = {cv::Point_<float>(0.0f, 0.0f), cv::Point_<float>(1.0f, 1.0f),
+//                                        cv::Point_<float>(3.0f, 3.0f), cv::Point_<float>(6.0f, 6.0f),
+//                                        cv::Point_<float>(10.0f, 10.0f), cv::Point_<float>(15.0f, 15.0f)};
+
+    cv::Point_<float> pointsArray[7] = {cv::Point_<float>(0.0f, 0.0f), cv::Point_<float>(2.0f, 0.0f),
+                                        cv::Point_<float>(4.0f, 0.0f), cv::Point_<float>(7.0f, 0.0f),
+                                        cv::Point_<float>(9.0f, 0.0f), cv::Point_<float>(14.0f, 0.0f),
+                                        cv::Point_<float>(16.0f, 0.0f)};
+
+    for(int i=0; i<7; ++i){
         pointsVec.push_back(pointsArray[i]);
     }
     Clustering::computeClasters(pointsVec, clustersVec);
@@ -57,7 +67,7 @@ int main(int argc, char **argv) {
 
     std::vector<std::unordered_set<int>> vecEachClusterPoints;
 
-    Clustering::getClastersAfterThreshold(1.5, pointsVec, vecEachClusterPoints);
+    Clustering::getClastersAfterThreshold(2.5, pointsVec, vecEachClusterPoints);
 
     cout << endl <<"Number of clusters: " << vecEachClusterPoints.size() << endl << endl;
 

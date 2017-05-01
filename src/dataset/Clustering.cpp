@@ -88,16 +88,20 @@ void Clustering::getClastersAfterThreshold(float cutThershold, std::vector<cv::P
     int clusterNumber = 0;
     for (Cluster cluster : clastersVec) {
         if (cluster.getDistanceBetweenLinks() > cutThershold) {
-/*            for (int i = 0; i < pointsVec.size(); ++i) {
+            for (int i = 0; i < pointsVec.size(); ++i) {
+                bool isInCluster = false;
                 for (std::unordered_set<int> unordered_setPoints : vecEachClusterPoints) {
                     if (unordered_setPoints.find(i) !=
                         unordered_setPoints.end()) {
-                        point = new std::unordered_set<int>;
-                        point->insert(i);
-                        vecEachClusterPoints.push_back(*point);
+                        isInCluster = true;
                     }
                 }
-            }*/
+                if(!isInCluster){
+                    point = new std::unordered_set<int>;
+                    point->insert(i);
+                    vecEachClusterPoints.push_back(*point);
+                }
+            }
         } else {
             if (
                     vecEachClusterPoints.size() == 0 &&
@@ -108,13 +112,13 @@ void Clustering::getClastersAfterThreshold(float cutThershold, std::vector<cv::P
                 vecEachClusterPoints.push_back(*point);
 
             } else if (
-                       vecEachClusterPoints.at(clusterNumber).find(cluster.getFirstLinkIndex()) !=
-                       vecEachClusterPoints.at(clusterNumber).end() ||
-                       vecEachClusterPoints.at(clusterNumber).find(cluster.getSecondLinkIndex()) !=
-                       vecEachClusterPoints.at(clusterNumber).end()) {
-                if (point != NULL) {
-                    vecEachClusterPoints.push_back(*point);
-                }
+                    vecEachClusterPoints.at(clusterNumber).find(cluster.getFirstLinkIndex()) ==
+                    vecEachClusterPoints.at(clusterNumber).end() &&
+                    vecEachClusterPoints.at(clusterNumber).find(cluster.getSecondLinkIndex()) ==
+                    vecEachClusterPoints.at(clusterNumber).end()) {
+//                if (point != NULL) {
+//                    vecEachClusterPoints.push_back(*point);
+//                }
                 point = new std::unordered_set<int>;
                 clusterNumber++;
                 point->insert(cluster.getFirstLinkIndex());
