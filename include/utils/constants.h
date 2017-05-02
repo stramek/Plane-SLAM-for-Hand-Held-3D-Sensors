@@ -15,6 +15,8 @@ const double FOCAL_LENGTH_Y = 525;
 const double OPTICAL_CENTER_X = 319.5;
 const double OPTICAL_CENTER_Y = 239.5;
 
+const int MAX_SIMILARITY_VALUE = 10;
+
 const Matrix<double, 3, 3> PHCP_MODEL = [] {
     Matrix<double, 3, 3> matrix;
     matrix << 1 / FOCAL_LENGTH_X, 0, -OPTICAL_CENTER_X / FOCAL_LENGTH_X,

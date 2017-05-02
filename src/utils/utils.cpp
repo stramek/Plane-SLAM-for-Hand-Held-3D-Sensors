@@ -16,4 +16,33 @@ namespace utils {
         return pair<int, int>(rowUni(rng), colUni(rng));
     }
 
+    vector<pair<Plane, Plane>> getSimilarPlanes(const vector<Plane> &previousFrame, const vector<Plane> &currentFrame) {
+
+        vector<pair<Plane, Plane>> toReturn;
+        vector<PlaneSimilarity> planeSimilarityVec;
+
+        for (unsigned int i = 0; i < previousFrame.size(); ++i) {
+            for (unsigned int j = 0; j < currentFrame.size(); ++j) {
+                planeSimilarityVec.push_back(PlaneSimilarity(previousFrame.at(i), currentFrame.at(j), i, j));
+            }
+        }
+
+        sort(planeSimilarityVec.begin(), planeSimilarityVec.end());
+
+        for (PlaneSimilarity &outerPlaneSimilarity : planeSimilarityVec) {
+            if (!outerPlaneSimilarity.isAnyOfFramesTaken() && outerPlaneSimilarity.isSimilarityValid()) {
+                toReturn.push_back(pair<Plane, Plane>(outerPlaneSimilarity.getLastFrame(), outerPlaneSimilarity.getCurrentFrame()));
+
+                for (PlaneSimilarity &innerPlaneSimilarity : planeSimilarityVec) {
+                    if (innerPlaneSimilarity.isOneOfIndexesEqual(outerPlaneSimilarity)) {
+                        innerPlaneSimilarity.setFramesAsTaken();
+                    }
+                }
+
+            }
+        }
+
+        return toReturn;
+    };
+
 }
