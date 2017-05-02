@@ -10,6 +10,7 @@
 #include <opencv2/opencv.hpp>
 #include "Cluster.h"
 #include <unordered_set>
+#include "../models/Plane.h"
 
 class Clustering {
 private:
@@ -19,6 +20,7 @@ private:
         unsigned int index;
     };
     static float getDistanceBetweenTwoPoints(cv::Point_<float> point1, cv::Point_<float> point2);
+    static float getDistanceBetweenTwoPlanes(Plane &firstPlane, Plane &secondPlane);
 
     static void createSimilarityMatrix(SimilarityItem **&similarityMatrix, unsigned long size);
     static void deleteSimilarityMatrix(SimilarityItem **&similarityMatrix, unsigned long size);

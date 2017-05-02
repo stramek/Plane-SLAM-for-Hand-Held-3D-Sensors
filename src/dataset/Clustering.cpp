@@ -4,6 +4,16 @@
 
 #include "include/dataset/Clustering.h"
 
+
+float Clustering::getDistanceBetweenTwoPlanes(Plane &firstPlane, Plane &secondPlane){
+    float distance;
+    Eigen::Vector3f pointOnFirstPlane = firstPlane.computePointOnPlaneFromTwoCoordinate();
+    distance = abs(secondPlane.getA()*pointOnFirstPlane(0) + secondPlane.getB()*pointOnFirstPlane(1) +
+                   secondPlane.getC()*pointOnFirstPlane(2) - secondPlane.getD())
+               / sqrtf(powf(secondPlane.getA(), 2) + sqrtf(powf(secondPlane.getB(), 2)) + sqrtf(powf(secondPlane.getC(), 2)));
+    return distance;
+}
+
 void Clustering::createSimilarityMatrix(SimilarityItem **&similarityMatrix, unsigned long size){
     similarityMatrix = new SimilarityItem *[size];
     for (int i = 0; i < size; ++i) {
@@ -128,6 +138,7 @@ void Clustering::computeClusters(std::vector<cv::Point_<float>> pointsVec, std::
 
         updateNextBestMerge(SimilarityMatrix, nextBestMerge, I, firstPointToMergeIndex, pointsVec.size());
     }
+    delete[] I;
     deleteSimilarityMatrix(SimilarityMatrix, similarityMatSize);
     deleteNextBestMergeMatrix(nextBestMerge);
 }

@@ -21,7 +21,7 @@
 class Plane {
 public:
     Plane();
-    Plane(Eigen::Vector3d point1, Eigen::Vector3d  point2, Eigen::Vector3d  point3, const Mat& colorImage);
+    Plane(Eigen::Vector3f point1, Eigen::Vector3f  point2, Eigen::Vector3f  point3, const Mat& colorImage);
     Plane(std::array<Eigen::Vector3d , 3>, const Mat& colorImage);
     Plane(Eigen::Vector3f normalVec, Eigen::Vector3f point, const Mat& colorImage);
     double getA();
@@ -29,7 +29,8 @@ public:
     double getC();
     double getD();
     bool isValid() const;
-    double getDistanceFromPoint(Eigen::Vector3d  point);
+    double getDistanceFromPoint(Eigen::Vector3f  point);
+    Eigen::Vector3f computePointOnPlaneFromTwoCoordinate(float x = 0, float y = 0) const;
 
     const HSVColor &getColor() const;
 

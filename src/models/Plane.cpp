@@ -10,7 +10,7 @@
 
 Plane::Plane() {}
 
-Plane::Plane(Eigen::Vector3d point1, Eigen::Vector3d point2, Eigen::Vector3d point3, const Mat& colorImage) {
+Plane::Plane(Eigen::Vector3f point1, Eigen::Vector3f point2, Eigen::Vector3f point3, const Mat& colorImage) {
     color = HSVColor(colorImage);
 }
 
@@ -43,7 +43,7 @@ double Plane::getD() {
     return D;
 }
 
-double Plane::getDistanceFromPoint(Eigen::Vector3d point) {
+double Plane::getDistanceFromPoint(Eigen::Vector3f point) {
     return std::abs(A * point(0) + B * point(1) + C * point(2) + D)
            / sqrt(pow(A, 2) + pow(B, 2) + pow(C, 2));
 }
@@ -65,4 +65,13 @@ bool Plane::isValid() const {
 
 const HSVColor &Plane::getColor() const {
     return color;
+}
+
+Eigen::Vector3f Plane::computePointOnPlaneFromTwoCoordinate(float x, float y) const {
+    Eigen::Vector3f pointToReturn;
+    float z = (D - A * x - B * y) / C;
+    pointToReturn(0) = x;
+    pointToReturn(1) = y;
+    pointToReturn(2) = z;
+    return  pointToReturn;
 }

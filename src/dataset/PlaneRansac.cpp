@@ -4,11 +4,11 @@
 
 #include "include/dataset/PlaneRansac.h"
 
-Plane PlaneRansac::computePlane(const vector<Vector3f> &pointsVector) {
+Plane PlaneRansac::computePlane(const vector<Vector3f> &pointsVector, const Mat &colorImage ) {
     for (int i = 0; i < MAX_ITERATIONS_NUM; ++i) {
         Vector3f random3Points[3];
         getRandom3Points(pointsVector, random3Points);
-        Plane plane(random3Points[0], random3Points[1], random3Points[2]);
+        Plane plane(random3Points[0], random3Points[1], random3Points[2], colorImage);
         int inlairesNumber = 0;
         for(Vector3f point : pointsVector){
             if(plane.getDistanceFromPoint(point) < MAX_INLARIES_POINT_PLANE_DISTANCE)
@@ -40,6 +40,6 @@ void PlaneRansac::getRandom3Points(const vector<Vector3f> &pointsVector, Vector3
     }
 }
 
-Plane PlaneRansac::getPlane(const vector<Vector3f> &pointsVector) {
-    return computePlane(pointsVector);
+Plane PlaneRansac::getPlane(const vector<Vector3f> &pointsVector, const Mat &colorImage ) {
+    return computePlane(pointsVector, colorImage );
 }
