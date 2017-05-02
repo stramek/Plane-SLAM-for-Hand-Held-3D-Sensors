@@ -4,45 +4,72 @@
 
 #include "include/dataset/Clustering.h"
 
-
-void Clustering::computeClusters(std::vector<cv::Point_<float>> pointsVec, std::vector<Cluster> &clustersVec) {
-    SimilarityMatrixItem **SimilarityMatrix;
-
-    SimilarityMatrix = new SimilarityMatrixItem *[pointsVec.size()];
-    for (int i = 0; i < pointsVec.size(); ++i) {
-        SimilarityMatrix[i] = new SimilarityMatrixItem[pointsVec.size()];
+void Clustering::createSimilarityMatrix(SimilarityItem **&similarityMatrix, unsigned long size){
+    similarityMatrix = new SimilarityItem *[size];
+    for (int i = 0; i < size; ++i) {
+        similarityMatrix[i] = new SimilarityItem[size];
     }
+}
 
-    int *I = new int[pointsVec.size()];
-    SimilarityMatrixItem *NBM = new SimilarityMatrixItem[pointsVec.size()];
+void Clustering::deleteSimilarityMatrix(SimilarityItem **&similarityMatrix, unsigned long size){
+    for(int i = 0; i < size; ++i){
+        delete[] similarityMatrix[i];
+    }
+    delete[] similarityMatrix;
+}
 
+void Clustering::createNextBestMergeMatrix(SimilarityItem *&nextBestMerge, unsigned long size){
+    nextBestMerge = new SimilarityItem[size];
+}
+
+void Clustering::deleteNextBestMergeMatrix(SimilarityItem *&nextBestMerge){
+    delete[] nextBestMerge;
+}
+
+void Clustering::clusteringInitializeStep(SimilarityItem **&similarityMatrix, SimilarityItem *&nextBestMerge,
+                                          int *&I, const std::vector<cv::Point_<float>> &pointsVec){
     for (int i = 0; i < pointsVec.size(); ++i) {
         int indexMaxRow;
         float maxSimilarityRow = std::numeric_limits<float>::max();
         for (int j = 0; j < pointsVec.size(); ++j) {
-            SimilarityMatrix[i][j].similarity = getDistanceBetweenTwoPoints(pointsVec.at(i), pointsVec.at(j));
-            SimilarityMatrix[i][j].index = j;
-            if (maxSimilarityRow > SimilarityMatrix[i][j].similarity && i != j) {
-                maxSimilarityRow = SimilarityMatrix[i][j].similarity;
+            similarityMatrix[i][j].similarity = getDistanceBetweenTwoPoints(pointsVec.at(i), pointsVec.at(j));
+            similarityMatrix[i][j].index = j;
+            if (maxSimilarityRow > similarityMatrix[i][j].similarity && i != j) {
+                maxSimilarityRow = similarityMatrix[i][j].similarity;
                 indexMaxRow = j;
             }
         }
         I[i] = i;
-        NBM[i] = SimilarityMatrix[i][indexMaxRow];
+        nextBestMerge[i] = similarityMatrix[i][indexMaxRow];
     }
+}
+
+void Clustering::computeClusters(std::vector<cv::Point_<float>> pointsVec, std::vector<Cluster> &clustersVec) {
+
+
+    unsigned const long  similarityMatSize = pointsVec.size();
+    SimilarityItem **SimilarityMatrix;
+
+    createSimilarityMatrix(SimilarityMatrix, similarityMatSize);
+
+    int *I = new int[pointsVec.size()];
+    SimilarityItem *nextBestMerge;
+    createNextBestMergeMatrix(nextBestMerge, pointsVec.size());
+
+    clusteringInitializeStep(SimilarityMatrix, nextBestMerge, I, pointsVec);
 
     for (int i = 0; i < pointsVec.size() - 1; ++i) {
         int i1, i2;
         float maxNBM_Sim = std::numeric_limits<float>::max();
 
         for (int j = 0; j < pointsVec.size(); ++j) {
-            if (NBM[j].similarity < maxNBM_Sim && I[j] == j) {
-                maxNBM_Sim = NBM[j].similarity;
+            if (nextBestMerge[j].similarity < maxNBM_Sim && I[j] == j) {
+                maxNBM_Sim = nextBestMerge[j].similarity;
                 i1 = j;
             }
         }
 
-        i2 = I[NBM[i1].index];
+        i2 = I[nextBestMerge[i1].index];
         Cluster cluster;
         cluster.setFirstLinkIndex(i1);
         cluster.setSecondLinkIndex(i2);
@@ -64,15 +91,17 @@ void Clustering::computeClusters(std::vector<cv::Point_<float>> pointsVec, std::
             }
         }
 
-        SimilarityMatrixItem similarityMatrixItem_MaxSim;
+        SimilarityItem similarityMatrixItem_MaxSim;
         similarityMatrixItem_MaxSim.similarity = std::numeric_limits<float>::max();;
         for (int j = 0; j < pointsVec.size(); ++j) {
             if (SimilarityMatrix[i1][j].similarity < similarityMatrixItem_MaxSim.similarity && I[j] == j && j != i1) {
                 similarityMatrixItem_MaxSim = SimilarityMatrix[i1][j];
             }
         }
-        NBM[i1] = similarityMatrixItem_MaxSim;
+        nextBestMerge[i1] = similarityMatrixItem_MaxSim;
     }
+    deleteSimilarityMatrix(SimilarityMatrix, similarityMatSize);
+    deleteNextBestMergeMatrix(nextBestMerge);
 }
 
 float Clustering::getDistanceBetweenTwoPoints(cv::Point_<float> point1, cv::Point_<float> point2) {

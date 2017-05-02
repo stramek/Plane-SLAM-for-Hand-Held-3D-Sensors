@@ -13,13 +13,19 @@
 
 class Clustering {
 private:
-    class SimilarityMatrixItem{
+    class SimilarityItem{
     public:
         float similarity;
         int index;
     };
     static float getDistanceBetweenTwoPoints(cv::Point_<float> point1, cv::Point_<float> point2);
 
+    static void createSimilarityMatrix(SimilarityItem **&similarityMatrix, unsigned long size);
+    static void deleteSimilarityMatrix(SimilarityItem **&similarityMatrix, unsigned long size);
+    static void createNextBestMergeMatrix(SimilarityItem *&nextBestMerge, unsigned long size);
+    static void deleteNextBestMergeMatrix(SimilarityItem *&nextBestMerge);
+    static void clusteringInitializeStep(SimilarityItem **&similarityMatrix, SimilarityItem *&nextBestMerge,
+                                         int *&I, const std::vector<cv::Point_<float>> &pointsVec);
 public:
     static void computeClusters(std::vector<cv::Point_<float>> pointsVec, std::vector<Cluster> &clustersVec);
 
