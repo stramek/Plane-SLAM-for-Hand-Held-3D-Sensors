@@ -29,17 +29,13 @@ namespace utils {
 
         sort(planeSimilarityVec.begin(), planeSimilarityVec.end());
 
-        for (PlaneSimilarity &planeSimilarity : planeSimilarityVec) {
-            //TODO: Add MAX similarity to constants and add below!!!
-            if (!planeSimilarity.isLastFrameTaken() && !planeSimilarity.isCurrentFrameTaken()) {
+        for (PlaneSimilarity &outerPlaneSimilarity : planeSimilarityVec) {
+            if (!outerPlaneSimilarity.isAnyOfFramesTaken() && outerPlaneSimilarity.isSimilarityValid()) {
+                toReturn.push_back(pair<Plane, Plane>(outerPlaneSimilarity.getLastFrame(), outerPlaneSimilarity.getCurrentFrame()));
 
-                toReturn.push_back(pair<Plane, Plane>(planeSimilarity.getLastFrame(), planeSimilarity.getCurrentFrame()));
-
-                for (PlaneSimilarity &planeSimilarity1 : planeSimilarityVec) {
-                    if (planeSimilarity1.getLastFrameIndex() == planeSimilarity.getLastFrameIndex()
-                            || planeSimilarity1.getCurrentFrameIndex() == planeSimilarity.getCurrentFrameIndex()) {
-                        planeSimilarity1.setCurrentFrameTaken(true);
-                        planeSimilarity1.setLastFrameTaken(true);
+                for (PlaneSimilarity &innerPlaneSimilarity : planeSimilarityVec) {
+                    if (innerPlaneSimilarity.isOneOfIndexesEqual(outerPlaneSimilarity)) {
+                        innerPlaneSimilarity.setFramesAsTaken();
                     }
                 }
 

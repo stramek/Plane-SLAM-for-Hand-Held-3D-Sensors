@@ -31,26 +31,28 @@ unsigned int PlaneSimilarity::getCurrentFrameIndex() const {
     return currentFrameIndex;
 }
 
-bool PlaneSimilarity::isLastFrameTaken() const {
-    return lastFrameTaken;
-}
-
-bool PlaneSimilarity::isCurrentFrameTaken() const {
-    return currentFrameTaken;
-}
-
-void PlaneSimilarity::setLastFrameTaken(bool lastFrameTaken) {
-    PlaneSimilarity::lastFrameTaken = lastFrameTaken;
-}
-
-void PlaneSimilarity::setCurrentFrameTaken(bool currentFrameTaken) {
-    PlaneSimilarity::currentFrameTaken = currentFrameTaken;
-}
-
 const Plane &PlaneSimilarity::getLastFrame() const {
     return lastFrame;
 }
 
 const Plane &PlaneSimilarity::getCurrentFrame() const {
     return currentFrame;
+}
+
+bool PlaneSimilarity::isAnyOfFramesTaken() const {
+    return lastFrameTaken || currentFrameTaken;
+}
+
+void PlaneSimilarity::setFramesAsTaken() {
+    PlaneSimilarity::currentFrameTaken = true;
+    PlaneSimilarity::lastFrameTaken = true;
+}
+
+bool PlaneSimilarity::isOneOfIndexesEqual(PlaneSimilarity planeSimilarity) const {
+    return lastFrameIndex == planeSimilarity.getLastFrameIndex() ||
+           currentFrameIndex == planeSimilarity.getCurrentFrameIndex();
+}
+
+bool PlaneSimilarity::isSimilarityValid() const {
+    return similarity <= MAX_SIMILARITY_VALUE;
 }
