@@ -46,7 +46,7 @@ void Clustering::clusteringInitializeStep(SimilarityItem **&similarityMatrix, Si
 
 void Clustering::computeIndexOfTwoPointsToMerge(SimilarityItem *&nextBestMerge, unsigned int *&I,
                                                 unsigned int &firstPointToMergeIndex,
-                                                unsigned int &secondPointToMergeIndex, int size){
+                                                unsigned int &secondPointToMergeIndex, unsigned long size){
     float maxNBM_Sim = std::numeric_limits<float>::max();
 
     for (unsigned int j = 0; j < size; ++j) {
@@ -69,8 +69,9 @@ void Clustering::addNewClusterToVec(std::vector<Cluster> &clustersVec, Similarit
     clustersVec.push_back(cluster);
 }
 
-void Clustering::updateSimilarityMatrxixState(SimilarityItem **&similarityMatrix, unsigned int *&I, const unsigned int &firstPointToMergeIndex,
-                                         const unsigned int &secondPointToMergeIndex, unsigned int size){
+void Clustering::updateSimilarityMatrixState(SimilarityItem **&similarityMatrix, unsigned int *&I,
+                                             const unsigned int &firstPointToMergeIndex,
+                                             const unsigned int &secondPointToMergeIndex, unsigned long size){
     for (int j = 0; j < size; ++j) {
         if (I[j] == j && j != firstPointToMergeIndex && j != secondPointToMergeIndex) {
             if (similarityMatrix[firstPointToMergeIndex][j].similarity < similarityMatrix[secondPointToMergeIndex][j].similarity) {
@@ -86,6 +87,18 @@ void Clustering::updateSimilarityMatrxixState(SimilarityItem **&similarityMatrix
         }
     }
 
+}
+
+void Clustering::updateNextBestMerge(SimilarityItem **&similarityMatrix ,SimilarityItem *&nextBestMerge, unsigned int *&I,
+                                     unsigned int firstPointToMergeIndex,unsigned long size){
+    SimilarityItem similarityMatrixItem_MaxSim;
+    similarityMatrixItem_MaxSim.similarity = std::numeric_limits<float>::max();;
+    for (int j = 0; j < size; ++j) {
+        if (similarityMatrix[firstPointToMergeIndex][j].similarity < similarityMatrixItem_MaxSim.similarity && I[j] == j && j != firstPointToMergeIndex) {
+            similarityMatrixItem_MaxSim = similarityMatrix[firstPointToMergeIndex][j];
+        }
+    }
+    nextBestMerge[firstPointToMergeIndex] = similarityMatrixItem_MaxSim;
 }
 
 void Clustering::computeClusters(std::vector<cv::Point_<float>> pointsVec, std::vector<Cluster> &clustersVec) {
@@ -109,24 +122,18 @@ void Clustering::computeClusters(std::vector<cv::Point_<float>> pointsVec, std::
                                        pointsVec.size());
         addNewClusterToVec(clustersVec, SimilarityMatrix, firstPointToMergeIndex, secondPointToMergeIndex);
 
-        updateSimilarityMatrxixState(SimilarityMatrix, I, firstPointToMergeIndex, secondPointToMergeIndex, pointsVec.size());
+        updateSimilarityMatrixState(SimilarityMatrix, I, firstPointToMergeIndex, secondPointToMergeIndex,
+                                    pointsVec.size());
 
 
-        SimilarityItem similarityMatrixItem_MaxSim;
-        similarityMatrixItem_MaxSim.similarity = std::numeric_limits<float>::max();;
-        for (int j = 0; j < pointsVec.size(); ++j) {
-            if (SimilarityMatrix[firstPointToMergeIndex][j].similarity < similarityMatrixItem_MaxSim.similarity && I[j] == j && j != firstPointToMergeIndex) {
-                similarityMatrixItem_MaxSim = SimilarityMatrix[firstPointToMergeIndex][j];
-            }
-        }
-        nextBestMerge[firstPointToMergeIndex] = similarityMatrixItem_MaxSim;
+        updateNextBestMerge(SimilarityMatrix, nextBestMerge, I, firstPointToMergeIndex, pointsVec.size());
     }
     deleteSimilarityMatrix(SimilarityMatrix, similarityMatSize);
     deleteNextBestMergeMatrix(nextBestMerge);
 }
 
 float Clustering::getDistanceBetweenTwoPoints(cv::Point_<float> point1, cv::Point_<float> point2) {
-    return sqrtf(pow(point1.x - point2.x, 2) + pow(point1.y - point2.y, 2));
+    return sqrtf(powf(point1.x - point2.x, 2) + powf(point1.y - point2.y, 2));
 }
 
 void Clustering::getClustersAfterThreshold(float cutThreshold, std::vector<cv::Point_<float>> pointsVec,
