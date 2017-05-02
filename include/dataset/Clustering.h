@@ -16,7 +16,7 @@ private:
     class SimilarityItem{
     public:
         float similarity;
-        int index;
+        unsigned int index;
     };
     static float getDistanceBetweenTwoPoints(cv::Point_<float> point1, cv::Point_<float> point2);
 
@@ -25,7 +25,12 @@ private:
     static void createNextBestMergeMatrix(SimilarityItem *&nextBestMerge, unsigned long size);
     static void deleteNextBestMergeMatrix(SimilarityItem *&nextBestMerge);
     static void clusteringInitializeStep(SimilarityItem **&similarityMatrix, SimilarityItem *&nextBestMerge,
-                                         int *&I, const std::vector<cv::Point_<float>> &pointsVec);
+                                         unsigned int *&I, const std::vector<cv::Point_<float>> &pointsVec);
+    static void computeIndexOfTwoPointsToMerge(SimilarityItem *&nextBestMerge, unsigned int *&I,
+                                               unsigned int &firstPointToMergeIndex,
+                                               unsigned int &secondPointToMergeIndex, int size);
+    static void addNewClustertToVec(std::vector<Cluster> &clustersVec, SimilarityItem **&similarityMatrix, const unsigned int &firstPointToMergeIndex,
+                                    const unsigned int &secondPointToMergeIndex);
 public:
     static void computeClusters(std::vector<cv::Point_<float>> pointsVec, std::vector<Cluster> &clustersVec);
 
