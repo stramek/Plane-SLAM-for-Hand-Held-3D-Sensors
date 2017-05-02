@@ -29,8 +29,11 @@ private:
     static void computeIndexOfTwoPointsToMerge(SimilarityItem *&nextBestMerge, unsigned int *&I,
                                                unsigned int &firstPointToMergeIndex,
                                                unsigned int &secondPointToMergeIndex, int size);
-    static void addNewClustertToVec(std::vector<Cluster> &clustersVec, SimilarityItem **&similarityMatrix, const unsigned int &firstPointToMergeIndex,
-                                    const unsigned int &secondPointToMergeIndex);
+    static void addNewClusterToVec(std::vector<Cluster> &clustersVec, SimilarityItem **&similarityMatrix,
+                                   const unsigned int &firstPointToMergeIndex,
+                                   const unsigned int &secondPointToMergeIndex);
+    static void updateSimilarityMatrxixState(SimilarityItem **&similarityMatrix, unsigned int *&I, const unsigned int &firstPointToMergeIndex,
+                                             const unsigned int &secondPointToMergeIndex, unsigned int size);
 public:
     static void computeClusters(std::vector<cv::Point_<float>> pointsVec, std::vector<Cluster> &clustersVec);
 

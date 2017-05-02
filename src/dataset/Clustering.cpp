@@ -59,13 +59,33 @@ void Clustering::computeIndexOfTwoPointsToMerge(SimilarityItem *&nextBestMerge, 
     secondPointToMergeIndex = I[nextBestMerge[firstPointToMergeIndex].index];
 }
 
-void Clustering::addNewClustertToVec(std::vector<Cluster> &clustersVec, SimilarityItem **&similarityMatrix,
-                                     const unsigned int &firstPointToMergeIndex, const unsigned int &secondPointToMergeIndex){
+void Clustering::addNewClusterToVec(std::vector<Cluster> &clustersVec, SimilarityItem **&similarityMatrix,
+                                    const unsigned int &firstPointToMergeIndex,
+                                    const unsigned int &secondPointToMergeIndex){
     Cluster cluster;
     cluster.setFirstLinkIndex(firstPointToMergeIndex);
     cluster.setSecondLinkIndex(secondPointToMergeIndex);
     cluster.setDistanceBetweenLinks(similarityMatrix[firstPointToMergeIndex][secondPointToMergeIndex].similarity);
     clustersVec.push_back(cluster);
+}
+
+void Clustering::updateSimilarityMatrxixState(SimilarityItem **&similarityMatrix, unsigned int *&I, const unsigned int &firstPointToMergeIndex,
+                                         const unsigned int &secondPointToMergeIndex, unsigned int size){
+    for (int j = 0; j < size; ++j) {
+        if (I[j] == j && j != firstPointToMergeIndex && j != secondPointToMergeIndex) {
+            if (similarityMatrix[firstPointToMergeIndex][j].similarity < similarityMatrix[secondPointToMergeIndex][j].similarity) {
+                similarityMatrix[firstPointToMergeIndex][j].similarity = similarityMatrix[firstPointToMergeIndex][j].similarity;
+                similarityMatrix[j][firstPointToMergeIndex].similarity = similarityMatrix[firstPointToMergeIndex][j].similarity;
+            } else {
+                similarityMatrix[firstPointToMergeIndex][j].similarity = similarityMatrix[secondPointToMergeIndex][j].similarity;
+                similarityMatrix[j][firstPointToMergeIndex].similarity = similarityMatrix[secondPointToMergeIndex][j].similarity;
+            }
+        }
+        if (I[j] == secondPointToMergeIndex) {
+            I[j] = firstPointToMergeIndex;
+        }
+    }
+
 }
 
 void Clustering::computeClusters(std::vector<cv::Point_<float>> pointsVec, std::vector<Cluster> &clustersVec) {
@@ -87,23 +107,10 @@ void Clustering::computeClusters(std::vector<cv::Point_<float>> pointsVec, std::
         unsigned int firstPointToMergeIndex, secondPointToMergeIndex;
         computeIndexOfTwoPointsToMerge(nextBestMerge, I, firstPointToMergeIndex, secondPointToMergeIndex,
                                        pointsVec.size());
-        addNewClustertToVec(clustersVec, SimilarityMatrix, firstPointToMergeIndex, secondPointToMergeIndex);
+        addNewClusterToVec(clustersVec, SimilarityMatrix, firstPointToMergeIndex, secondPointToMergeIndex);
 
+        updateSimilarityMatrxixState(SimilarityMatrix, I, firstPointToMergeIndex, secondPointToMergeIndex, pointsVec.size());
 
-        for (int j = 0; j < pointsVec.size(); ++j) {
-            if (I[j] == j && j != firstPointToMergeIndex && j != secondPointToMergeIndex) {
-                if (SimilarityMatrix[firstPointToMergeIndex][j].similarity < SimilarityMatrix[secondPointToMergeIndex][j].similarity) {
-                    SimilarityMatrix[firstPointToMergeIndex][j].similarity = SimilarityMatrix[firstPointToMergeIndex][j].similarity;
-                    SimilarityMatrix[j][firstPointToMergeIndex].similarity = SimilarityMatrix[firstPointToMergeIndex][j].similarity;
-                } else {
-                    SimilarityMatrix[firstPointToMergeIndex][j].similarity = SimilarityMatrix[secondPointToMergeIndex][j].similarity;
-                    SimilarityMatrix[j][firstPointToMergeIndex].similarity = SimilarityMatrix[secondPointToMergeIndex][j].similarity;
-                }
-            }
-            if (I[j] == secondPointToMergeIndex) {
-                I[j] = firstPointToMergeIndex;
-            }
-        }
 
         SimilarityItem similarityMatrixItem_MaxSim;
         similarityMatrixItem_MaxSim.similarity = std::numeric_limits<float>::max();;
