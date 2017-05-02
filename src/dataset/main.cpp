@@ -36,11 +36,5 @@ int main(int argc, char **argv) {
 
     visualizer.updateCloud(imagePair.getRgb(), imagePair.getDepth());
 
-    for (Plane plane1 : planeVectorPreviousFrame) {
-        cout<<"Hue: "<<to_string(plane1.getColor().getHue())<<"."<<endl;
-        cout<<"Sat: "<<to_string(plane1.getColor().getSaturation())<<"."<<endl;
-        cout<<"Val: "<<to_string(plane1.getColor().getValue())<<"."<<endl<<endl;
-    }
-
     return application.exec();
 }
