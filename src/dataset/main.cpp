@@ -8,27 +8,13 @@
 
 #include "include/dataset/main.h"
 
-int main(int argc, char **argv) {
-    QApplication application(argc, argv);
-    glutInit(&argc, argv);
+void fillPlaneVector(int numberOfPoints, int areaSize, ImagePair &imagePair, vector<Plane> &planeVector) {
 
-    QGLVisualizer visualizer;
-    visualizer.setWindowTitle("Dataset viewer");
-    visualizer.setPHCPModel(PHCP_MODEL);
-    visualizer.show();
+    planeVector.clear();
 
-    ImageLoader imageLoader(50);
-    ImagePair imagePair = imageLoader.getNextPair();
-
-    vector<Plane> planeVector;
-
-    const int AREA_SIZE = 21; // odd number
-    const int NUMBER_OF_POINTS = 10;
-    if (AREA_SIZE % 2 == 0) throw runtime_error("AREA_SIZE needs to be odd number");
-
-    for (int iteration = 0; iteration < NUMBER_OF_POINTS; ++iteration) {
-        pair<int, int> position = utils::getRandomPosition(imagePair.getDepth(), AREA_SIZE);
-        ImageCoords imageCoords = ImageCoords(position, AREA_SIZE);
+    for (int iteration = 0; iteration < numberOfPoints; ++iteration) {
+        pair<int, int> position = utils::getRandomPosition(imagePair.getDepth(), areaSize);
+        ImageCoords imageCoords = ImageCoords(position, areaSize);
         Mat rgb = imagePair.getRgb();
         Mat croppedImage = rgb(Rect(imageCoords.getUpLeftX(),
                                     imageCoords.getUpLeftY(),
@@ -51,9 +37,37 @@ int main(int argc, char **argv) {
             planeVector.push_back(plane);
         }
     }
+}
+
+int main(int argc, char **argv) {
+    QApplication application(argc, argv);
+    glutInit(&argc, argv);
+
+    QGLVisualizer visualizer;
+    visualizer.setWindowTitle("Dataset viewer");
+    visualizer.setPHCPModel(PHCP_MODEL);
+    visualizer.show();
+
+    ImageLoader imageLoader(50);
+    ImagePair imagePair;
+
+    vector<Plane> planeVectorPreviousFrame;
+    vector<Plane> planeVectorCurrentFrame;
+    vector<pair<Plane, Plane>> similarPlanes;
+
+    const int AREA_SIZE = 21; // odd number
+    const int NUMBER_OF_POINTS = 20;
+    if (AREA_SIZE % 2 == 0) throw runtime_error("AREA_SIZE needs to be odd number");
+
+    imagePair = imageLoader.getNextPair();
+    fillPlaneVector(NUMBER_OF_POINTS, AREA_SIZE, imagePair, planeVectorPreviousFrame);
+    imagePair = imageLoader.getNextPair();
+    fillPlaneVector(NUMBER_OF_POINTS, AREA_SIZE, imagePair, planeVectorCurrentFrame);
+    similarPlanes = utils::getSimilarPlanes(planeVectorPreviousFrame, planeVectorCurrentFrame);
+
     visualizer.updateCloud(imagePair.getRgb(), imagePair.getDepth());
 
-    for (Plane plane1 : planeVector) {
+    for (Plane plane1 : planeVectorPreviousFrame) {
         cout<<"Hue: "<<to_string(plane1.getColor().getHue())<<"."<<endl;
         cout<<"Sat: "<<to_string(plane1.getColor().getSaturation())<<"."<<endl;
         cout<<"Val: "<<to_string(plane1.getColor().getValue())<<"."<<endl<<endl;
