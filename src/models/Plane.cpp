@@ -8,54 +8,50 @@
 
 #include "../../include/models/Plane.h"
 
-Plane::Plane() {
-    A = 0;
-    B = 0;
-    C = 0;
-    D = 0;
+Plane::Plane() {}
+
+Plane::Plane(Eigen::Vector3d point1, Eigen::Vector3d point2, Eigen::Vector3d point3, const Mat& colorImage) {
+    color = HSVColor(colorImage);
 }
 
-Plane::Plane(Eigen::Vector3f point1, Eigen::Vector3f point2, Eigen::Vector3f point3) {
-    computePlaneEquation(point1, point2, point3);
+Plane::Plane(std::array<Eigen::Vector3d, 3>, const Mat& colorImage) {
+    color = HSVColor(colorImage);
 }
 
-Plane::Plane(std::array<Eigen::Vector3f, 3>) {
-
-}
-
-Plane::Plane(Eigen::Vector3f normalVec, Eigen::Vector3f point) {
+Plane::Plane(Eigen::Vector3f normalVec, Eigen::Vector3f point, const Mat& colorImage) {
     A = normalVec(0);
     B = normalVec(1);
     C = normalVec(2);
     D = A * point(0) + B * point(1) + C * point(2);
+    color = HSVColor(colorImage);
     valid = true;
 }
 
-float Plane::getA() {
+double Plane::getA() {
     return A;
 }
 
-float Plane::getB() {
+double Plane::getB() {
     return B;
 }
 
-float Plane::getC() {
+double Plane::getC() {
     return C;
 }
 
-float Plane::getD() {
+double Plane::getD() {
     return D;
 }
 
-float Plane::getDistanceFromPoint(Eigen::Vector3f point) {
-    return std::abs(A * point(0) + B * point(1) + C * point(2) - D)
-           / sqrtf(powf(A, 2) + powf(B, 2) + powf(C, 2));
+double Plane::getDistanceFromPoint(Eigen::Vector3d point) {
+    return std::abs(A * point(0) + B * point(1) + C * point(2) + D)
+           / sqrt(pow(A, 2) + pow(B, 2) + pow(C, 2));
 }
 
-void Plane::computePlaneEquation(Eigen::Vector3f point1, Eigen::Vector3f point2, Eigen::Vector3f point3) {
-    Eigen::Vector3f v = point1 - point2;
-    Eigen::Vector3f w = point1 - point3;
-    Eigen::Vector3f planeParameters = v.cross(w);
+void Plane::computePlaneEquation(Eigen::Vector3d point1, Eigen::Vector3d point2, Eigen::Vector3d point3) {
+    Eigen::Vector3d v = point1 - point2;
+    Eigen::Vector3d w = point1 - point3;
+    Eigen::Vector3d planeParameters = v.cross(w);
     A = planeParameters(0);
     B = planeParameters(1);
     C = planeParameters(2);
@@ -63,6 +59,10 @@ void Plane::computePlaneEquation(Eigen::Vector3f point1, Eigen::Vector3f point2,
     valid = true;
 }
 
-float Plane::isValid() const {
+bool Plane::isValid() const {
     return valid;
+}
+
+const HSVColor &Plane::getColor() const {
+    return color;
 }

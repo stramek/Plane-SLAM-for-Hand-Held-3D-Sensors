@@ -19,6 +19,7 @@
 #include <GL/glut.h>
 #include "Qvisualizer.h"
 #include "../utils/constants.h"
+#include "include/utils/ImageCoords.h"
 #include <opencv2/opencv.hpp>
 #include "ImageLoader.h"
 #include "Clustering.h"
