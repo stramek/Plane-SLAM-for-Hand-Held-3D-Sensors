@@ -30,15 +30,18 @@ namespace utils {
         sort(planeSimilarityVec.begin(), planeSimilarityVec.end());
 
         for (PlaneSimilarity &outerPlaneSimilarity : planeSimilarityVec) {
-            if (!outerPlaneSimilarity.isAnyOfFramesTaken() && outerPlaneSimilarity.isSimilarityValid()) {
-                toReturn.push_back(pair<Plane, Plane>(outerPlaneSimilarity.getLastFrame(), outerPlaneSimilarity.getCurrentFrame()));
+            if (!outerPlaneSimilarity.isAnyOfFramesTaken()) {
+                if (outerPlaneSimilarity.isSimilarityValid()) {
+                    toReturn.push_back(pair<Plane, Plane>(outerPlaneSimilarity.getLastFrame(), outerPlaneSimilarity.getCurrentFrame()));
 
-                for (PlaneSimilarity &innerPlaneSimilarity : planeSimilarityVec) {
-                    if (innerPlaneSimilarity.isOneOfIndexesEqual(outerPlaneSimilarity)) {
-                        innerPlaneSimilarity.setFramesAsTaken();
+                    for (PlaneSimilarity &innerPlaneSimilarity : planeSimilarityVec) {
+                        if (innerPlaneSimilarity.isOneOfIndexesEqual(outerPlaneSimilarity)) {
+                            innerPlaneSimilarity.setFramesAsTaken();
+                        }
                     }
+                } else {
+                    break;
                 }
-
             }
         }
 
