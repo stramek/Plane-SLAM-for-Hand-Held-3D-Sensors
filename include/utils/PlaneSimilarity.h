@@ -15,18 +15,33 @@
 
 #include "include/models/Plane.h"
 #include <math.h>
+using namespace std;
 
 class PlaneSimilarity {
 public:
-    PlaneSimilarity(const Plane &lastFrame, const Plane &currentFrame);
+    PlaneSimilarity(const Plane &lastFrame, const Plane &currentFrame, unsigned int lastFrameIndex,
+                    unsigned int currentFrameIndex);
+
     int getSimilarity() const;
+
+    const Plane &getLastFrame() const;
+    const Plane &getCurrentFrame() const;
+    unsigned int getLastFrameIndex() const;
+    unsigned int getCurrentFrameIndex() const;
+    bool isLastFrameTaken() const;
+    bool isCurrentFrameTaken() const;
+    void setLastFrameTaken(bool lastFrameTaken);
+    void setCurrentFrameTaken(bool currentFrameTaken);
 
     bool operator < (const PlaneSimilarity& plane) const {
         return (similarity < plane.similarity);
     }
 private:
     Plane lastFrame, currentFrame;
-    int similarity = -1;
+    int similarity = numeric_limits<int>::max();
+    unsigned int lastFrameIndex, currentFrameIndex;
+    bool lastFrameTaken = false;
+    bool currentFrameTaken = false;
     void calculateSimilarity();
 };
 

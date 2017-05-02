@@ -8,8 +8,10 @@
 
 #include "../../include/utils/PlaneSimilarity.h"
 
-PlaneSimilarity::PlaneSimilarity(const Plane &lastFrame, const Plane &currentFrame) : lastFrame(lastFrame),
-                                                                                      currentFrame(currentFrame) {
+PlaneSimilarity::PlaneSimilarity(const Plane &lastFrame, const Plane &currentFrame, unsigned int lastFrameIndex,
+                                 unsigned int currentFrameIndex) : lastFrame(lastFrame), currentFrame(currentFrame),
+                                                                   lastFrameIndex(lastFrameIndex),
+                                                                   currentFrameIndex(currentFrameIndex) {
     calculateSimilarity();
 }
 
@@ -19,4 +21,36 @@ void PlaneSimilarity::calculateSimilarity() {
 
 int PlaneSimilarity::getSimilarity() const {
     return similarity;
+}
+
+unsigned int PlaneSimilarity::getLastFrameIndex() const {
+    return lastFrameIndex;
+}
+
+unsigned int PlaneSimilarity::getCurrentFrameIndex() const {
+    return currentFrameIndex;
+}
+
+bool PlaneSimilarity::isLastFrameTaken() const {
+    return lastFrameTaken;
+}
+
+bool PlaneSimilarity::isCurrentFrameTaken() const {
+    return currentFrameTaken;
+}
+
+void PlaneSimilarity::setLastFrameTaken(bool lastFrameTaken) {
+    PlaneSimilarity::lastFrameTaken = lastFrameTaken;
+}
+
+void PlaneSimilarity::setCurrentFrameTaken(bool currentFrameTaken) {
+    PlaneSimilarity::currentFrameTaken = currentFrameTaken;
+}
+
+const Plane &PlaneSimilarity::getLastFrame() const {
+    return lastFrame;
+}
+
+const Plane &PlaneSimilarity::getCurrentFrame() const {
+    return currentFrame;
 }

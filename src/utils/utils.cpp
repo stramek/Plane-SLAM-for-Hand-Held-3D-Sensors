@@ -19,34 +19,33 @@ namespace utils {
     vector<pair<Plane, Plane>> getSimilarPlanes(const vector<Plane> &previousFrame, const vector<Plane> &currentFrame) {
 
         vector<pair<Plane, Plane>> toReturn;
-
         vector<PlaneSimilarity> planeSimilarityVec;
-        //planeSimilarityVec.resize(previousFrame.size() * currentFrame.size());
-
-        bool* previousFrameTab = new bool[previousFrame.size()];
-        bool* currentFrameTab = new bool[currentFrame.size()];
-
-        for (unsigned int i = 0; i < previousFrame.size(); ++i) {
-            previousFrameTab[i] = true;
-        }
-
-        for (unsigned int i = 0; i < currentFrame.size(); ++i) {
-            currentFrameTab[i] = true;
-        }
-
 
         for (unsigned int i = 0; i < previousFrame.size(); ++i) {
             for (unsigned int j = 0; j < currentFrame.size(); ++j) {
-                planeSimilarityVec.push_back(PlaneSimilarity(previousFrame.at(i), currentFrame.at(j)));
+                planeSimilarityVec.push_back(PlaneSimilarity(previousFrame.at(i), currentFrame.at(j), i, j));
             }
         }
 
         sort(planeSimilarityVec.begin(), planeSimilarityVec.end());
 
+        for (PlaneSimilarity &planeSimilarity : planeSimilarityVec) {
+            //TODO: Add MAX similarity to constants and add below!!!
+            if (!planeSimilarity.isLastFrameTaken() && !planeSimilarity.isCurrentFrameTaken()) {
 
+                toReturn.push_back(pair<Plane, Plane>(planeSimilarity.getLastFrame(), planeSimilarity.getCurrentFrame()));
 
-        delete[] previousFrameTab;
-        delete[] currentFrameTab;
+                for (PlaneSimilarity &planeSimilarity1 : planeSimilarityVec) {
+                    if (planeSimilarity1.getLastFrameIndex() == planeSimilarity.getLastFrameIndex()
+                            || planeSimilarity1.getCurrentFrameIndex() == planeSimilarity.getCurrentFrameIndex()) {
+                        planeSimilarity1.setCurrentFrameTaken(true);
+                        planeSimilarity1.setLastFrameTaken(true);
+                    }
+                }
+
+            }
+        }
+
         return toReturn;
     };
 
