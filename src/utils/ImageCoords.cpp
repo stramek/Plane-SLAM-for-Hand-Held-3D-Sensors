@@ -1,6 +1,6 @@
 //
 
-#include "../../include/models/ImageCoords.h"
+#include "../../include/utils/ImageCoords.h"
 
 //
 //  ImageCoords.cpp

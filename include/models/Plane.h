@@ -13,7 +13,7 @@
 #pragma GCC system_header
 #endif
 
-#include "HSVColor.h"
+#include "include/utils/HSVColor.h"
 #include <opencv2/opencv.hpp>
 #include <array>
 #include <Eigen/Dense>
