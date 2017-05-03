@@ -95,9 +95,9 @@ void QGLVisualizer::updateCloud(Registration *registration, Frame *undistorted,
             unsigned char blue = p[0];
             if (!isnanf(z)) {
                 Point3D point3D;
-                point3D.x = x;
-                point3D.y = y;
-                point3D.z = z;
+                point3D.x = -x;
+                point3D.y = -y;
+                point3D.z = -z;
                 point3D.red = red;
                 point3D.green = green;
                 point3D.blue = blue;
