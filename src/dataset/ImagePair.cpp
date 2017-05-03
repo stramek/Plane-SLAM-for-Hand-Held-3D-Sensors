@@ -8,10 +8,17 @@ ImagePair::ImagePair() {}
 
 ImagePair::ImagePair(const Mat &rgb, const Mat &depth) : rgb(rgb), depth(depth) {}
 
+
+/**
+ * @return RGB Mat image
+ */
 const Mat &ImagePair::getRgb() const {
     return rgb;
 }
 
+/**
+ * @return Depth Mat image
+ */
 const Mat &ImagePair::getDepth() const {
     return depth;
 }

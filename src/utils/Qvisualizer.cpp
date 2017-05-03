@@ -104,17 +104,8 @@ void QGLVisualizer::updateCloud(Registration *registration, Frame *undistorted,
             float x, y, z, color;
             registration->getPointXYZRGB(undistorted, registered, r, c, x, y, z, color);
             const uint8_t *p = reinterpret_cast<uint8_t *>(&color);
-            unsigned char red = p[2];
-            unsigned char green = p[1];
-            unsigned char blue = p[0];
             if (!isnanf(z)) {
-                Point3D point3D;
-                point3D.x = -x;
-                point3D.y = -y;
-                point3D.z = -z;
-                point3D.red = red;
-                point3D.green = green;
-                point3D.blue = blue;
+                Point3D point3D(-x, -y, -z, p[2], p[1], p[0]);
                 pointCloud.push_back(point3D);
             }
         }
