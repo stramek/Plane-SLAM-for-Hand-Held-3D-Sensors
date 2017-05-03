@@ -14,6 +14,11 @@ float Clustering::getDistanceBetweenTwoPlanes(Plane &firstPlane, Plane &secondPl
     return distance;
 }
 
+float Clustering::getAngleBetweenTwoPlanes(Plane &firstPlane, Plane &secondPlane){
+    float angle = firstPlane.getPlaneNormalVec().dot(secondPlane.getPlaneNormalVec());
+    return angle;
+}
+
 void Clustering::createSimilarityMatrix(SimilarityItem **&similarityMatrix, unsigned long size){
     similarityMatrix = new SimilarityItem *[size];
     for (int i = 0; i < size; ++i) {

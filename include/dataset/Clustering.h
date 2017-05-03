@@ -21,6 +21,7 @@ private:
     };
     static float getDistanceBetweenTwoPoints(cv::Point_<float> point1, cv::Point_<float> point2);
     static float getDistanceBetweenTwoPlanes(Plane &firstPlane, Plane &secondPlane);
+    static float getAngleBetweenTwoPlanes(Plane &firstPlane, Plane &secondPlane);
 
     static void createSimilarityMatrix(SimilarityItem **&similarityMatrix, unsigned long size);
     static void deleteSimilarityMatrix(SimilarityItem **&similarityMatrix, unsigned long size);
