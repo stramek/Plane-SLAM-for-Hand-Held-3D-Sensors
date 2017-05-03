@@ -20,6 +20,7 @@ Plane::Plane(std::array<Eigen::Vector3d, 3>, const Mat& colorImage) {
 
 Plane::Plane(Eigen::Vector3f normalVec, Eigen::Vector3f point, const Mat& colorImage) {
     planeNormalVec = normalVec;
+    planeNormalVec.normalize();
     A = normalVec(0);
     B = normalVec(1);
     C = normalVec(2);
@@ -28,19 +29,29 @@ Plane::Plane(Eigen::Vector3f normalVec, Eigen::Vector3f point, const Mat& colorI
     valid = true;
 }
 
-float Plane::getA() {
+Plane::Plane(Eigen::Vector3f normalVec, float D){
+    planeNormalVec = normalVec;
+    planeNormalVec.normalize();
+    A = normalVec(0);
+    B = normalVec(1);
+    C = normalVec(2);
+    this->D = D;
+    valid = true;
+}
+
+float Plane::getA() const {
     return A;
 }
 
-float Plane::getB() {
+float Plane::getB() const {
     return B;
 }
 
-float Plane::getC() {
+float Plane::getC() const {
     return C;
 }
 
-float Plane::getD() {
+float Plane::getD() const {
     return D;
 }
 
@@ -53,6 +64,7 @@ void Plane::computePlaneEquation(Eigen::Vector3f point1, Eigen::Vector3f point2,
     Eigen::Vector3f v = point1 - point2;
     Eigen::Vector3f w = point1 - point3;
     Eigen::Vector3f planeParameters = v.cross(w);
+    planeParameters.normalize();
     A = planeParameters(0);
     B = planeParameters(1);
     C = planeParameters(2);
@@ -71,12 +83,35 @@ const HSVColor &Plane::getColor() const {
     return color;
 }
 
-Eigen::Vector3f Plane::computePointOnPlaneFromTwoCoordinate(float x, float y) const {
+Eigen::Vector3f Plane::computePointOnPlaneFromTwoCoordinate(float firstCoordinate, float secondCoordinate) const {
     Eigen::Vector3f pointToReturn;
-    float z = (D - A * x - B * y) / C;
-    pointToReturn(0) = x;
-    pointToReturn(1) = y;
-    pointToReturn(2) = z;
+    if(A == 0 && B == 0 && C == 0){
+        throw std::runtime_error("Plane equation error!");
+    } else if( A == 0 && B == 0){
+        float z = D / B;
+        pointToReturn(0) = firstCoordinate;
+        pointToReturn(1) = secondCoordinate;
+        pointToReturn(2) = z;
+    } else if(A == 0 && C == 0){
+        float y = D / B;
+        pointToReturn(0) = firstCoordinate;
+        pointToReturn(1) = y;
+        pointToReturn(2) = secondCoordinate;
+    } else if(B==0 && C==0){
+        float x = D / A;
+        pointToReturn(0) = x;
+        pointToReturn(1) = firstCoordinate;
+    } else if(C == 0){
+        float y = (D - A * firstCoordinate) / B;
+        pointToReturn(0) = firstCoordinate;
+        pointToReturn(1) = y;
+        pointToReturn(2) = secondCoordinate;
+    } else{
+        float z = (D - A * firstCoordinate - B * secondCoordinate) / C;
+        pointToReturn(0) = firstCoordinate;
+        pointToReturn(1) = secondCoordinate;
+        pointToReturn(2) = z;
+    }
     return  pointToReturn;
 }
 

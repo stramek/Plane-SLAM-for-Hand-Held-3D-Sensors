@@ -4,19 +4,38 @@
 
 #include "include/dataset/Clustering.h"
 
+const float Clustering::MAX_ANGLE_THRESHOLD = 5.0;
 
-float Clustering::getDistanceBetweenTwoPlanes(Plane &firstPlane, Plane &secondPlane){
+
+float Clustering::getDistanceBetweenTwoPlanes(const Plane &firstPlane, const Plane &secondPlane){
     float distance;
     Eigen::Vector3f pointOnFirstPlane = firstPlane.computePointOnPlaneFromTwoCoordinate();
-    distance = abs(secondPlane.getA()*pointOnFirstPlane(0) + secondPlane.getB()*pointOnFirstPlane(1) +
+
+/*    distance = abs(secondPlane.getA()*pointOnFirstPlane(0) + secondPlane.getB()*pointOnFirstPlane(1) +
                    secondPlane.getC()*pointOnFirstPlane(2) - secondPlane.getD())
-               / sqrtf(powf(secondPlane.getA(), 2) + sqrtf(powf(secondPlane.getB(), 2)) + sqrtf(powf(secondPlane.getC(), 2)));
+               / sqrtf(powf(secondPlane.getA(), 2) + sqrtf(powf(secondPlane.getB(), 2)) + sqrtf(powf(secondPlane.getC(), 2)));*/
+    distance = abs(firstPlane.getD() - secondPlane.getD());
+
     return distance;
 }
 
-float Clustering::getAngleBetweenTwoPlanes(Plane &firstPlane, Plane &secondPlane){
-    float angle = firstPlane.getPlaneNormalVec().dot(secondPlane.getPlaneNormalVec());
+float Clustering::getAngleBetweenTwoPlanes(const Plane &firstPlane, const Plane &secondPlane){
+    Eigen::Vector3f firstPlaneNormalVec = firstPlane.getPlaneNormalVec();
+    Eigen::Vector3f secondPlaneNormalVec = secondPlane.getPlaneNormalVec();
+
+    float angleCos = firstPlaneNormalVec.dot(secondPlaneNormalVec) / firstPlaneNormalVec.norm() / secondPlaneNormalVec.norm();
+    if(angleCos < -1) angleCos = -1.0f;
+    if(angleCos > 1) angleCos = 1.0f;
+    float angle = acosf(angleCos)*180.0f/(float)M_PI;
     return angle;
+}
+
+float Clustering::getSimilarityOfTwoPlanes(const Plane &firstPlane, const Plane &secondPlane){
+    float angleBetweenTwoPlanes = getAngleBetweenTwoPlanes(firstPlane, secondPlane);
+    if((int)angleBetweenTwoPlanes < (int)MAX_ANGLE_THRESHOLD){
+        return getDistanceBetweenTwoPlanes(firstPlane, secondPlane);
+    }
+    return std::numeric_limits<float>::max();
 }
 
 void Clustering::createSimilarityMatrix(SimilarityItem **&similarityMatrix, unsigned long size){
@@ -42,12 +61,12 @@ void Clustering::deleteNextBestMergeMatrix(SimilarityItem *&nextBestMerge){
 }
 
 void Clustering::clusteringInitializeStep(SimilarityItem **&similarityMatrix, SimilarityItem *&nextBestMerge,
-                                          unsigned int *&I, const std::vector<cv::Point_<float>> &pointsVec){
-    for (unsigned int i = 0; i < pointsVec.size(); ++i) {
+                                          unsigned int *&I, const std::vector<Plane> &planesVec){
+    for (unsigned int i = 0; i < planesVec.size(); ++i) {
         unsigned int indexMaxRow = 0;
         float maxSimilarityRow = std::numeric_limits<float>::max();
-        for (unsigned int j = 0; j < pointsVec.size(); ++j) {
-            similarityMatrix[i][j].similarity = getDistanceBetweenTwoPoints(pointsVec.at(i), pointsVec.at(j));
+        for (unsigned int j = 0; j < planesVec.size(); ++j) {
+            similarityMatrix[i][j].similarity = getSimilarityOfTwoPlanes(planesVec.at(i), planesVec.at(j));
             similarityMatrix[i][j].index = j;
             if (maxSimilarityRow > similarityMatrix[i][j].similarity && i != j) {
                 maxSimilarityRow = similarityMatrix[i][j].similarity;
@@ -116,10 +135,28 @@ void Clustering::updateNextBestMerge(SimilarityItem **&similarityMatrix ,Similar
     nextBestMerge[firstPointToMergeIndex] = similarityMatrixItem_MaxSim;
 }
 
-void Clustering::computeClusters(std::vector<cv::Point_<float>> pointsVec, std::vector<Cluster> &clustersVec) {
+void Clustering::computeClusters(std::vector<Plane> planesVec, std::vector<Cluster> &clustersVec) {
 
+    unsigned const long  similarityMatSize = planesVec.size();
+    SimilarityItem **SimilarityMatrix;
 
-    unsigned const long  similarityMatSize = pointsVec.size();
+    createSimilarityMatrix(SimilarityMatrix, similarityMatSize);
+
+    unsigned int *I = new unsigned int[planesVec.size()];
+    SimilarityItem *nextBestMerge;
+    createNextBestMergeMatrix(nextBestMerge, planesVec.size());
+
+    clusteringInitializeStep(SimilarityMatrix, nextBestMerge, I, planesVec);
+
+    std::cout<<std::endl;
+    for(int i = 0; i < similarityMatSize; ++i){
+        for(int j = 0; j < similarityMatSize; ++j){
+            std::cout<<SimilarityMatrix[j][i].similarity<<" ";
+        }
+        std::cout<<std::endl;
+    }
+
+/*    unsigned const long  similarityMatSize = pointsVec.size();
     SimilarityItem **SimilarityMatrix;
 
     createSimilarityMatrix(SimilarityMatrix, similarityMatSize);
@@ -145,7 +182,7 @@ void Clustering::computeClusters(std::vector<cv::Point_<float>> pointsVec, std::
     }
     delete[] I;
     deleteSimilarityMatrix(SimilarityMatrix, similarityMatSize);
-    deleteNextBestMergeMatrix(nextBestMerge);
+    deleteNextBestMergeMatrix(nextBestMerge);*/
 }
 
 float Clustering::getDistanceBetweenTwoPoints(cv::Point_<float> point1, cv::Point_<float> point2) {
@@ -154,7 +191,7 @@ float Clustering::getDistanceBetweenTwoPoints(cv::Point_<float> point1, cv::Poin
 
 void Clustering::getClustersAfterThreshold(float cutThreshold, std::vector<cv::Point_<float>> pointsVec,
                                            std::vector<std::unordered_set<int>> &vecEachClusterPoints) {
-    std::vector<Cluster> clustersVec;
+/*    std::vector<Cluster> clustersVec;
     computeClusters(pointsVec, clustersVec);
 
     std::unordered_set<int> *point = NULL;
@@ -246,6 +283,6 @@ void Clustering::getClustersAfterThreshold(float cutThreshold, std::vector<cv::P
             }
         }
         delete[] deleteElement;
-    }while (flag);
+    }while (flag);*/
 
 }

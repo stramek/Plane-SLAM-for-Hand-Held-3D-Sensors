@@ -24,14 +24,15 @@ public:
     Plane(Eigen::Vector3f point1, Eigen::Vector3f  point2, Eigen::Vector3f  point3, const Mat& colorImage);
     Plane(std::array<Eigen::Vector3d , 3>, const Mat& colorImage);
     Plane(Eigen::Vector3f normalVec, Eigen::Vector3f point, const Mat& colorImage);
-    float getA();
-    float getB();
-    float getC();
-    float getD();
+    Plane(Eigen::Vector3f normalVec, float D); // added for testing, TODO remove after testing
+    float getA() const;
+    float getB() const;
+    float getC() const;
+    float getD() const;
     bool isValid() const;
     float getDistanceFromPoint(Eigen::Vector3f  point);
     Eigen::Vector3f getPlaneNormalVec() const;
-    Eigen::Vector3f computePointOnPlaneFromTwoCoordinate(float x = 0, float y = 0) const;
+    Eigen::Vector3f computePointOnPlaneFromTwoCoordinate(float firstCoordinate = 0, float secondCoordinate = 0) const;
 
     const HSVColor &getColor() const;
 

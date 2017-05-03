@@ -9,7 +9,27 @@
 #include "include/dataset/main.h"
 
 int main(int argc, char **argv) {
-    QApplication application(argc, argv);
+
+    //some testing stuff
+    std::vector<Plane> planesVec;
+    Eigen::Vector3f v1, v2, v3, v4;
+    v1 << 1, 0, 0;
+    v2 << 1, 1, 0;
+    v3 << 0, 1, 0;
+    v4 << -1, 0, 0;
+    Plane p1(v1, 0), p2(v2, 5), p3(v3, 0), p4(v4, 0);
+    planesVec.push_back(p1);
+    planesVec.push_back(p2);
+    planesVec.push_back(p3);
+    planesVec.push_back(p4);
+    std::vector<Cluster> clustersVec;
+    Clustering::computeClusters(planesVec, clustersVec);
+
+
+
+    /////////////////////////////////////
+
+/*    QApplication application(argc, argv);
     glutInit(&argc, argv);
 
     QGLVisualizer visualizer;
@@ -36,5 +56,6 @@ int main(int argc, char **argv) {
 
     visualizer.updateCloud(imagePair.getRgb(), imagePair.getDepth());
 
-    return application.exec();
+    return application.exec();*/
+    return 0;
 }
