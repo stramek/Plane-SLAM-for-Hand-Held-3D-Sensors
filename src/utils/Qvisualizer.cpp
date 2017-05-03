@@ -1,6 +1,6 @@
 #include <cstdint>
 #include <stdint-gcc.h>
-#include "../../include/dataset/Qvisualizer.h"
+#include "../../include/utils/Qvisualizer.h"
 
 QGLVisualizer::QGLVisualizer(void) : objectPose(Mat34::Identity()), cameraPose(Mat34::Identity()) {
     objectPose(0, 3) = 2.0;
@@ -8,6 +8,20 @@ QGLVisualizer::QGLVisualizer(void) : objectPose(Mat34::Identity()), cameraPose(M
 
 /// Destruction
 QGLVisualizer::~QGLVisualizer(void) {}
+
+
+//void QGLVisualizer::keyPressEvent(QKeyEvent *event) {
+//    bool handled = false;
+//    //Qt::KeyboardModifiers modifiers = event->modifiers();
+//    if (event->key() == Qt::Key_W) {
+//        std::cout<<"W"<<std::endl;
+//    }
+//
+//
+//    if (!handled) QGLViewer::keyPressEvent(event);
+//}
+
+
 
 /// draw objects
 void QGLVisualizer::draw() {
@@ -48,6 +62,7 @@ void QGLVisualizer::updateCloud(cv::Mat RGB, cv::Mat D) {
     depth2cloud(D, RGB);
 }
 
+
 void QGLVisualizer::getPoint(unsigned int u, unsigned int v, float depth, Eigen::Vector3d &point3D) {
     Eigen::Vector3d point(u, v, 1);
     point3D = depth * PHCPModel * point;
@@ -75,10 +90,33 @@ void QGLVisualizer::depth2cloud(cv::Mat &depthImage, cv::Mat RGB) {
             pointPCL.green = RGB.at<cv::Vec<uchar, 3>>(i, j).val[1];
             pointPCL.blue = RGB.at<cv::Vec<uchar, 3>>(i, j).val[0];
 
-            if (i * j == depthImage.cols * depthImage.rows) {
-                pointCloud.erase(pointCloud.begin());
-            }
             pointCloud.push_back(pointPCL);
+        }
+    }
+}
+
+void QGLVisualizer::updateCloud(Registration *registration, Frame *undistorted,
+                                Frame *registered) {
+    pointCloud.clear();
+
+    for (int r = 0; r < undistorted->height; ++r) {
+        for (int c = 0; c < undistorted->width; ++c) {
+            float x, y, z, color;
+            registration->getPointXYZRGB(undistorted, registered, r, c, x, y, z, color);
+            const uint8_t *p = reinterpret_cast<uint8_t *>(&color);
+            unsigned char red = p[2];
+            unsigned char green = p[1];
+            unsigned char blue = p[0];
+            if (!isnanf(z)) {
+                Point3D point3D;
+                point3D.x = -x;
+                point3D.y = -y;
+                point3D.z = -z;
+                point3D.red = red;
+                point3D.green = green;
+                point3D.blue = blue;
+                pointCloud.push_back(point3D);
+            }
         }
     }
 }

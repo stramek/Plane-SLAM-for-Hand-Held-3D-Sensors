@@ -31,5 +31,7 @@
 #include <libfreenect2/logger.h>
 #include <Eigen/Dense>
 #include <rxcpp/rx.hpp>
+#include "include/utils/Qvisualizer.h"
+#include <QApplication>
 
 #endif /* libraries_include_h */
