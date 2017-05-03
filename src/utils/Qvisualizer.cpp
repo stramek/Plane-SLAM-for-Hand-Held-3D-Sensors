@@ -9,6 +9,20 @@ QGLVisualizer::QGLVisualizer(void) : objectPose(Mat34::Identity()), cameraPose(M
 /// Destruction
 QGLVisualizer::~QGLVisualizer(void) {}
 
+
+//void QGLVisualizer::keyPressEvent(QKeyEvent *event) {
+//    bool handled = false;
+//    //Qt::KeyboardModifiers modifiers = event->modifiers();
+//    if (event->key() == Qt::Key_W) {
+//        std::cout<<"W"<<std::endl;
+//    }
+//
+//
+//    if (!handled) QGLViewer::keyPressEvent(event);
+//}
+
+
+
 /// draw objects
 void QGLVisualizer::draw() {
     glPushMatrix();

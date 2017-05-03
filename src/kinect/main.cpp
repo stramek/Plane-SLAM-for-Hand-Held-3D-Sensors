@@ -6,39 +6,13 @@
 //  Copyright © 2016 Marcin Stramowski. All rights reserved.
 //
 
-#include "../../include/kinect/main.h"
+#include "include/kinect/main.h"
 
-bool protonect_shutdown = false;
+bool programFinished = false;
 
 Freenect2 freenect2;
 Freenect2Device *dev = nullptr;
 PacketPipeline *pipeline = nullptr;
-
-//void sigint_handler(int s) {
-//    protonect_shutdown = true;
-//}
-
-void quitIfDeviceNotConnected() {
-    if (freenect2.enumerateDevices() == 0) {
-        throw std::runtime_error("Didn't find any kinect.");
-    }
-}
-
-void setDepthProcessor() {
-    if (!pipeline) {
-        pipeline = new OpenCLPacketPipeline();
-    }
-}
-
-void openDevice() {
-    string serial = freenect2.getDefaultDeviceSerialNumber();
-    dev = pipeline ? freenect2.openDevice(serial, pipeline) : freenect2.openDevice(serial);
-
-    if (dev == 0) {
-        throw std::runtime_error("Failure opening device!");
-    }
-}
-
 
 int main(int argc, char **argv) {
     QApplication application(argc, argv);
@@ -48,7 +22,6 @@ int main(int argc, char **argv) {
     visualizer.show();
 
     quitIfDeviceNotConnected();
-    setDepthProcessor();
     openDevice();
 
     SyncMultiFrameListener listener(Frame::Color | Frame::Depth);
@@ -60,17 +33,17 @@ int main(int argc, char **argv) {
     Registration *registration = new Registration(dev->getIrCameraParams(), dev->getColorCameraParams());
     Frame undistorted(512, 424, 4), registered(512, 424, 4);
 
-    Mat rgbmat, depthmat, depthmatUndistorted, irmat, rgbd, rgbd2;
-
-    while (!protonect_shutdown) {
+    while (!programFinished) {
         listener.waitForNewFrame(frames);
         Frame *rgb = frames[Frame::Color];
         Frame *depth = frames[Frame::Depth];
 
         registration->apply(rgb, depth, &undistorted, &registered, true);
         visualizer.updateCloud(registration, &undistorted, &registered);
-        waitKey(); // TODO: Ask for this function
+
         listener.release(frames);
+//        this_thread::sleep_for(chrono::milliseconds(100));
+        waitKey(); // TODO: Ask for this function and QVisualizer keyPressEvent override
     }
 
     dev->stop();
@@ -78,4 +51,19 @@ int main(int argc, char **argv) {
 
     delete registration;
     return application.exec();
+}
+
+void quitIfDeviceNotConnected() {
+    if (freenect2.enumerateDevices() == 0) {
+        throw runtime_error("Didn't find any kinect.");
+    }
+}
+
+void openDevice() {
+    pipeline = new OpenCLPacketPipeline();
+    string serial = freenect2.getDefaultDeviceSerialNumber();
+    dev = freenect2.openDevice(serial, pipeline);
+    if (dev == 0) {
+        throw runtime_error("Failure opening device!");
+    }
 }

@@ -54,6 +54,9 @@ private:
     /// initialize visualizer
     void init();
 
+
+private:
+
     bool shadowFlag = false;
 
     /// object pose
