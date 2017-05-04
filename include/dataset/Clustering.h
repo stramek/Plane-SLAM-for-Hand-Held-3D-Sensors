@@ -47,7 +47,7 @@ private:
 public:
     static void computeClusters(std::vector<Plane> planesVec, std::vector<Cluster> &clustersVec);
 
-    static void getClustersAfterThreshold(float cutThreshold, std::vector<Plane> pointsVec,
+    static void getClustersAfterThreshold(float cutThreshold, std::vector<Plane> planesVec,
                                           std::vector<std::unordered_set<int>> &vecEachClusterPoints);
 };
 

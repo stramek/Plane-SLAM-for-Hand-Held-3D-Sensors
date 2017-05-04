@@ -171,16 +171,16 @@ float Clustering::getDistanceBetweenTwoPoints(cv::Point_<float> point1, cv::Poin
     return sqrtf(powf(point1.x - point2.x, 2) + powf(point1.y - point2.y, 2));
 }
 
-void Clustering::getClustersAfterThreshold(float cutThreshold, std::vector<Plane> pointsVec,
+void Clustering::getClustersAfterThreshold(float cutThreshold, std::vector<Plane> planesVec,
                                            std::vector<std::unordered_set<int>> &vecEachClusterPoints) {
     std::vector<Cluster> clustersVec;
-    computeClusters(pointsVec, clustersVec);
+    computeClusters(planesVec, clustersVec);
 
     std::unordered_set<int> *point = NULL;
-    int clusterNumber = 0;
+    unsigned int clusterNumber = 0;
     for (Cluster cluster : clustersVec) {
         if (cluster.getDistanceBetweenLinks() > cutThreshold) {
-            for (int i = 0; i < pointsVec.size(); ++i) {
+            for (int i = 0; i < planesVec.size(); ++i) {
                 bool isInCluster = false;
                 for (std::unordered_set<int> unordered_setPoints : vecEachClusterPoints) {
                     if (unordered_setPoints.find(i) !=
@@ -233,10 +233,10 @@ void Clustering::getClustersAfterThreshold(float cutThreshold, std::vector<Plane
             deleteElement[i] = false;
         }
 
-        for(int i=0;i<vecEachClusterPoints.size()-1;++i){
+        for(unsigned int i=0;i<vecEachClusterPoints.size()-1;++i){
             bool clusterDeleteFlag = false;
             for(auto point : vecEachClusterPoints.at(i)){
-                for(int j=i+1;j<vecEachClusterPoints.size();++j) {
+                for(unsigned int j=i+1;j<vecEachClusterPoints.size();++j) {
                     if(vecEachClusterPoints.at(j).find(point) != vecEachClusterPoints.at(j).end()){
                         clusterDeleteFlag = true;
                     }
