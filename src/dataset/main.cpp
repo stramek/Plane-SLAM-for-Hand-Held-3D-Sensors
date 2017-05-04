@@ -46,7 +46,7 @@ int main(int argc, char **argv) {
 
     /////////////////////////////////////
 
-/*    QApplication application(argc, argv);
+    QApplication application(argc, argv);
     glutInit(&argc, argv);
 
     QGLVisualizer visualizer;
@@ -66,24 +66,23 @@ int main(int argc, char **argv) {
 
     ImagePair imagePair1 = imageLoader.getNextPair();
     utils::fillPlaneVector(NUMBER_OF_POINTS, AREA_SIZE, imagePair1, planeVectorPreviousFrame);
-    ImagePair imagePair2 = imageLoader.getNextPair();
 
-    utils::fillPlaneVector(NUMBER_OF_POINTS, AREA_SIZE, imagePair2, planeVectorCurrentFrame);
-    similarPlanes = utils::getSimilarPlanes(planeVectorPreviousFrame, planeVectorCurrentFrame);
+    vector<vector<Plane>> clusteredPLanes;
+    Clustering::getClusteredPlaneGroup(planeVectorPreviousFrame, clusteredPLanes);
+    int i = 0;
+    for (auto singleCluster : clusteredPLanes){
+        ++i;
+        for(auto planeInCluster : singleCluster){
+            putText(imagePair1.getRgb(), to_string(i), Point(planeInCluster.getImageCoords().getCenterX(), planeInCluster.getImageCoords().getCenterY()),FONT_HERSHEY_SIMPLEX, 0.8, cv::Scalar(0, 0, 255), 2);
+        }
+    }
+
+
 
     visualizer.updateCloud(imagePair1.getRgb(), imagePair1.getDepth());
-//    imshow("First", imagePair1.getRgb());
-//    imshow("Second", imagePair2.getRgb());
+    imshow("First", imagePair1.getRgb());
 
-//    Size sz1 = imagePair1.getRgb().size();
-//    Size sz2 = imagePair2.getRgb().size();
-//    Mat im3(sz1.height, sz1.width+sz2.width, CV_8UC3);
-//    Mat left(im3, Rect(0, 0, sz1.width, sz1.height));
-//    imagePair1.getRgb().copyTo(left);
-//    Mat right(im3, Rect(sz1.width, 0, sz2.width, sz2.height));
-//    imagePair2.getRgb().copyTo(right);
-//    imshow("Two", im3);
 
-    return application.exec();*/
+    return application.exec();
     return 0;
 }

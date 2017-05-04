@@ -27,6 +27,9 @@ float Clustering::getAngleBetweenTwoPlanes(const Plane &firstPlane, const Plane 
     if(angleCos < -1) angleCos = -1.0f;
     if(angleCos > 1) angleCos = 1.0f;
     float angle = acosf(angleCos)*180.0f/(float)M_PI;
+    if(angle > 90.0f){
+        angle = 180.0f - angle;
+    }
     return angle;
 }
 
@@ -69,11 +72,13 @@ void Clustering::clusteringInitializeStep(SimilarityItem **&similarityMatrix, Si
         for (unsigned int j = 0; j < planesVec.size(); ++j) {
             similarityMatrix[i][j].similarity = getSimilarityOfTwoPlanes(planesVec.at(i), planesVec.at(j));
             similarityMatrix[i][j].index = j;
+            std::cout<<similarityMatrix[i][j].similarity << " ";
             if (maxSimilarityRow > similarityMatrix[i][j].similarity && i != j) {
                 maxSimilarityRow = similarityMatrix[i][j].similarity;
                 indexMaxRow = j;
             }
         }
+        std::cout<<std::endl;
         I[i] = i;
         nextBestMerge[i] = similarityMatrix[i][indexMaxRow];
     }
@@ -264,10 +269,9 @@ void Clustering::getClustersAfterThreshold(float cutThreshold, std::vector<Plane
 
 }
 
-vector<vector<Plane>>& Clustering::getClusteredPlaneGroup(std::vector<Plane> planesVec){
-    vector<vector<Plane>> clusteredPlanes;
+void Clustering::getClusteredPlaneGroup(std::vector<Plane> planesVec, vector<vector<Plane>>& clusteredPlanes){
     std::vector<std::unordered_set<int>> vecEachClusterPlanes;
-    getClustersAfterThreshold(46, planesVec, vecEachClusterPlanes);
+    getClustersAfterThreshold(6, planesVec, vecEachClusterPlanes);
     for(auto planesIndexesInOneCluster : vecEachClusterPlanes){
         std::vector<Plane> singleCluster;
         for(unsigned int planeIndex : planesIndexesInOneCluster){
@@ -276,5 +280,4 @@ vector<vector<Plane>>& Clustering::getClusteredPlaneGroup(std::vector<Plane> pla
         }
         clusteredPlanes.push_back(singleCluster);
     }
-    return clusteredPlanes;
 }

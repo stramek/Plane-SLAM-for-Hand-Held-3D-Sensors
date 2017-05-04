@@ -49,7 +49,7 @@ public:
 
     static void getClustersAfterThreshold(float cutThreshold, std::vector<Plane> planesVec,
                                           std::vector<std::unordered_set<int>> &vecEachClusterPlanes);
-    static vector<vector<Plane>> &getClusteredPlaneGroup(std::vector<Plane> planesVec);
+    static void getClusteredPlaneGroup(std::vector<Plane> planesVec, vector<vector<Plane>>& clusteredPlanes);
 };
 
 
