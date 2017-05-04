@@ -55,6 +55,7 @@ file(GLOB UTILS_HEADERS
    "${CMAKE_SOURCE_DIR}/include/utils/*.h"
 )
 ADD_LIBRARY(Utils STATIC ${UTILS_SOURCES} ${UTILS_HEADERS})
+TARGET_LINK_LIBRARIES(Utils Models)
 INSTALL(FILES ${DEFS_HEADERS} DESTINATION include/utils/)
 
 #########################################

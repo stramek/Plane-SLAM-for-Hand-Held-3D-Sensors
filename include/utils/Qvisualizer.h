@@ -13,6 +13,7 @@
 #include <thread>
 #include <mutex>
 #include <opencv2/opencv.hpp>
+#include <QKeyEvent>
 #include <GL/glut.h>
 #include <libfreenect2/registration.h>
 #include "include/models/Point3D.h"
@@ -38,6 +39,10 @@ public:
     void depth2cloud(cv::Mat &depthImage, cv::Mat RGB);
 
     void setPHCPModel(Eigen::Matrix<double, 3, 3> model);
+
+public:
+
+    void keyPressEvent(QKeyEvent *event);
 
     /// Destruction
     ~QGLVisualizer(void);

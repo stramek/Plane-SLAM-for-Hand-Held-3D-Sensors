@@ -13,28 +13,35 @@
 #pragma GCC system_header
 #endif
 
-#include "include/utils/HSVColor.h"
+#include "include/models/HSVColor.h"
+#include "include/models/ImageCoords.h"
+#include "include/models/Point3D.h"
 #include <opencv2/opencv.hpp>
 #include <array>
 #include <Eigen/Dense>
 
+using namespace Eigen;
+
 class Plane {
 public:
     Plane();
-    Plane(Eigen::Vector3d point1, Eigen::Vector3d  point2, Eigen::Vector3d  point3, const Mat& colorImage);
-    Plane(std::array<Eigen::Vector3d , 3>, const Mat& colorImage);
-    Plane(Eigen::Vector3f normalVec, Eigen::Vector3f point, const Mat& colorImage);
+    Plane(Vector3f normalVec, Vector3f point, const Mat& colorImage, const vector<Vector3f> &points, const ImageCoords &imageCoords);
     double getA();
     double getB();
     double getC();
     double getD();
     bool isValid() const;
     double getDistanceFromPoint(Eigen::Vector3d  point);
-
+    const ImageCoords &getImageCoords() const;
+    void setImageCoords(const ImageCoords &imageCoords);
     const HSVColor &getColor() const;
+    const vector<Vector3f> &getPoints() const;
+    void setPoints(const vector<Vector3f> &points);
 
 private:
     double A, B, D, C;
+    vector<Vector3f> points;
+    ImageCoords imageCoords = ImageCoords();
     HSVColor color = HSVColor();
     bool valid = false;
     void computePlaneEquation(Eigen::Vector3d  point1, Eigen::Vector3d  point2, Eigen::Vector3d  point3);

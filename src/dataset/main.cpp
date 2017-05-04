@@ -18,7 +18,6 @@ int main(int argc, char **argv) {
     visualizer.show();
 
     ImageLoader imageLoader(50);
-    ImagePair imagePair;
 
     vector<Plane> planeVectorPreviousFrame;
     vector<Plane> planeVectorCurrentFrame;
@@ -28,13 +27,25 @@ int main(int argc, char **argv) {
     const int NUMBER_OF_POINTS = 10;
     if (AREA_SIZE % 2 == 0) throw runtime_error("AREA_SIZE needs to be odd number");
 
-    imagePair = imageLoader.getNextPair();
-    utils::fillPlaneVector(NUMBER_OF_POINTS, AREA_SIZE, imagePair, planeVectorPreviousFrame);
-    imagePair = imageLoader.getNextPair();
-    utils::fillPlaneVector(NUMBER_OF_POINTS, AREA_SIZE, imagePair, planeVectorCurrentFrame);
+    ImagePair imagePair1 = imageLoader.getNextPair();
+    utils::fillPlaneVector(NUMBER_OF_POINTS, AREA_SIZE, imagePair1, planeVectorPreviousFrame);
+    ImagePair imagePair2 = imageLoader.getNextPair();
+
+    utils::fillPlaneVector(NUMBER_OF_POINTS, AREA_SIZE, imagePair2, planeVectorCurrentFrame);
     similarPlanes = utils::getSimilarPlanes(planeVectorPreviousFrame, planeVectorCurrentFrame);
 
-    visualizer.updateCloud(imagePair.getRgb(), imagePair.getDepth());
+    visualizer.updateCloud(imagePair1.getRgb(), imagePair1.getDepth());
+//    imshow("First", imagePair1.getRgb());
+//    imshow("Second", imagePair2.getRgb());
+
+//    Size sz1 = imagePair1.getRgb().size();
+//    Size sz2 = imagePair2.getRgb().size();
+//    Mat im3(sz1.height, sz1.width+sz2.width, CV_8UC3);
+//    Mat left(im3, Rect(0, 0, sz1.width, sz1.height));
+//    imagePair1.getRgb().copyTo(left);
+//    Mat right(im3, Rect(sz1.width, 0, sz2.width, sz2.height));
+//    imagePair2.getRgb().copyTo(right);
+//    imshow("Two", im3);
 
     return application.exec();
 }

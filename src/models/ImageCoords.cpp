@@ -1,13 +1,14 @@
 //
 
-#include "../../include/utils/ImageCoords.h"
+#include "include/models/ImageCoords.h"
 
 //
 //  ImageCoords.cpp
 //  ProjektMagisterski
 //
 //  Created by Marcin Stramowski on 01.05.2017.
-//
+
+ImageCoords::ImageCoords() {}
 
 /**
  * Calculates up left and down right corners
@@ -21,6 +22,8 @@ ImageCoords::ImageCoords(const pair<int, int> &position, const int areaSize) {
     upLeftY = position.first - (areaSize - 1) / 2;
     downRightX = position.second + (areaSize - 1) / 2;
     downRightY = position.first + (areaSize - 1) / 2;
+    centerX = (upLeftX + downRightX) / 2;
+    centerY = (upLeftY + downRightY) / 2;
     this->areaSize = areaSize;
 }
 
@@ -62,4 +65,12 @@ int ImageCoords::getDownRightY() const {
  */
 int ImageCoords::getAreaSize() const {
     return areaSize;
+}
+
+int ImageCoords::getCenterX() const {
+    return centerX;
+}
+
+int ImageCoords::getCenterY() const {
+    return centerY;
 }
