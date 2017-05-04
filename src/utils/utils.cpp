@@ -48,11 +48,28 @@ namespace utils {
         return toReturn;
     };
 
-    void fillPlaneVector(int numberOfPoints, int areaSize, ImagePair &imagePair, vector<Plane> &planeVector) {
-        planeVector.clear();
+    void fillPlaneVector(int numberOfPoints, int areaSize, ImagePair &imagePair, vector<Plane> *planeVector,
+                         vector<Plane> *previousPlaneVector, float previousPlanePercent, bool colorPlanes) {
+        planeVector->clear();
+
+        if (previousPlaneVector != nullptr) {
+            auto engine = default_random_engine{};
+            shuffle(previousPlaneVector->begin(), previousPlaneVector->end(), engine);
+        }
+
         for (int iteration = 0; iteration < numberOfPoints; ++iteration) {
-            pair<int, int> position = utils::getRandomPosition(imagePair.getDepth(), areaSize);
-            ImageCoords imageCoords = ImageCoords(position, areaSize);
+
+            ImageCoords imageCoords;
+
+            pair<int, int> position;
+            if (previousPlaneVector != nullptr && iteration <= numberOfPoints * previousPlanePercent
+                && iteration < previousPlaneVector->size()) {
+                imageCoords = previousPlaneVector->at(iteration).getImageCoords();
+            } else {
+                position = utils::getRandomPosition(imagePair.getDepth(), areaSize);
+                imageCoords = ImageCoords(position, areaSize);
+            }
+
             Mat rgb = imagePair.getRgb();
             Mat croppedImage = rgb(Rect(imageCoords.getUpLeftX(),
                                         imageCoords.getUpLeftY(),
@@ -67,14 +84,51 @@ namespace utils {
             }
 
             Plane plane = PlanePca::getPlane(pointsVector, croppedImage, imageCoords);
-            Vec3b color = plane.isValid() ? Vec3b(0, 255, 0) : Vec3b(0, 0, 255);
-            for (Vector3f vector : pointsVector) {
-                utils::paintPixel((Mat &) imagePair.getRgb(), vector, color);
+            if (colorPlanes) {
+                Vec3b color = plane.isValid() ? Vec3b(0, 255, 0) : Vec3b(0, 0, 255);
+                for (Vector3f vector : pointsVector) {
+                    utils::paintPixel((Mat &) imagePair.getRgb(), vector, color);
+                }
             }
             if (plane.isValid()) {
-                planeVector.push_back(plane);
+                planeVector->push_back(plane);
             }
         }
+    }
+
+    void visualizeSimilarPlanes(vector<pair<Plane, Plane>> &similarPlanes, const Mat &previousImage,
+                                const Mat &currentImage, int limitPoints) {
+        Size previousImageSize = previousImage.size();
+        Size currentImageSize = currentImage.size();
+        Mat merged(previousImageSize.height, previousImageSize.width + currentImageSize.width, CV_8UC3);
+        Mat left(merged, Rect(0, 0, previousImageSize.width, previousImageSize.height));
+        previousImage.copyTo(left);
+        Mat right(merged, Rect(previousImageSize.width, 0, currentImageSize.width, currentImageSize.height));
+        currentImage.copyTo(right);
+
+        RNG rng(12345);
+        int pointNumber = 0;
+        for (pair<Plane, Plane> pair : similarPlanes) {
+
+            ImageCoords previousImageCoords = pair.first.getImageCoords();
+            ImageCoords currentImageCoords = pair.second.getImageCoords();
+
+            Point previousPlanePoint = Point(previousImageCoords.getCenterX(), previousImageCoords.getCenterY());
+            Point currentPlanePoint = Point(previousImageSize.width + currentImageCoords.getCenterX(), currentImageCoords.getCenterY());
+
+            int size = previousImageCoords.getAreaSize() / 2;
+            Scalar color = Scalar(rng.uniform(100, 255), rng.uniform(100, 255), rng.uniform(100, 255));
+
+            circle(merged, previousPlanePoint, size, color, 1);
+            circle(merged, currentPlanePoint, size, color, 1);
+            line(merged, previousPlanePoint, currentPlanePoint, color, 1);
+
+            pointNumber++;
+            if (pointNumber >= limitPoints) break;
+        }
+
+        imshow("Merged", merged);
+        waitKey();
     }
 
 }
