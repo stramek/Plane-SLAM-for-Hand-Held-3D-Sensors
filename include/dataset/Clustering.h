@@ -34,20 +34,20 @@ private:
     static void clusteringInitializeStep(SimilarityItem **&similarityMatrix, SimilarityItem *&nextBestMerge,
                                          unsigned int *&I, const std::vector<Plane> &planesVec);
     static void computeIndexOfTwoPlanesToMerge(SimilarityItem *&nextBestMerge, unsigned int *&I,
-                                               unsigned int &firstPointToMergeIndex,
-                                               unsigned int &secondPointToMergeIndex, unsigned long size);
+                                               unsigned int &firstPlaneIndexToMerge,
+                                               unsigned int &secondPlaneIndexToMerge, unsigned long size);
     static void addNewClusterToVec(std::vector<Cluster> &clustersVec, SimilarityItem **&similarityMatrix,
-                                   const unsigned int &firstPointToMergeIndex,
-                                   const unsigned int &secondPointToMergeIndex);
+                                   const unsigned int &firstPlaneIndexToMerge,
+                                   const unsigned int &secondPlaneIndexToMerge);
     static void updateSimilarityMatrixState(SimilarityItem **&similarityMatrix, unsigned int *&I,
-                                            const unsigned int &firstPointToMergeIndex,
-                                            const unsigned int &secondPointToMergeIndex, unsigned long size);
+                                            const unsigned int &firstPlaneIndexToMerge,
+                                            const unsigned int &secondPlaneIndexToMerge, unsigned long size);
     static void updateNextBestMerge(SimilarityItem **&similarityMatrix ,SimilarityItem *&nextBestMerge, unsigned int *&I,
-                                    unsigned int firstPointToMergeIndex,unsigned long size);
+                                    unsigned int firstPlaneIndexToMerge,unsigned long size);
 public:
     static void computeClusters(std::vector<Plane> planesVec, std::vector<Cluster> &clustersVec);
 
-    static void getClustersAfterThreshold(float cutThreshold, std::vector<cv::Point_<float>> pointsVec,
+    static void getClustersAfterThreshold(float cutThreshold, std::vector<Plane> pointsVec,
                                           std::vector<std::unordered_set<int>> &vecEachClusterPoints);
 };
 

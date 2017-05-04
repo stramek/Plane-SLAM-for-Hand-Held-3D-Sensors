@@ -23,11 +23,17 @@ int main(int argc, char **argv) {
     planesVec.push_back(p3);
     planesVec.push_back(p4);
     std::vector<Cluster> clustersVec;
-    Clustering::computeClusters(planesVec, clustersVec);
+    std::vector<std::unordered_set<int>> vecEachClusterPlanes;
+    Clustering::getClustersAfterThreshold(46, planesVec, vecEachClusterPlanes);
 
-    for(auto i : clustersVec){
-        std::cout<<i.getFirstLinkIndex() << " "<<i.getSecondLinkIndex() << " "<< i.getDistanceBetweenLinks()<<std::endl;
+    std::cout<<std::endl;
+    for(auto i : vecEachClusterPlanes){
+        for(auto j : i){
+            std::cout<<j<<" ";
+        }
+        std::cout<<std::endl;
     }
+
 
 
 
