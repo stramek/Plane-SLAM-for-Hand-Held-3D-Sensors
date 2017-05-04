@@ -12,19 +12,26 @@ int main(int argc, char **argv) {
 
     //some testing stuff
     std::vector<Plane> planesVec;
-    Eigen::Vector3f v1, v2, v3, v4;
-    v1 << 1, 0, 0;
-    v2 << 1, 1, 0;
-    v3 << 0, 1, 0;
-    v4 << -1, 0, 0;
-    Plane p1(v1, 0), p2(v2, 5), p3(v3, 0), p4(v4, 0);
+    Eigen::Vector3f v1, v2, v3, v4, v5;
+    v1 << cos(30.0*M_PI/180.0), sin(30.0*M_PI/180.0), 0;
+    v2 << 1, 0, 0;
+    v3 << 1, -1, 0;
+    v4 << -1, -1, 0;
+    v5 << -1, 0, 0;
+    Plane p1(v1, 0), p2(v2, 5), p3(v3, 0), p4(v4, 0), p5(v5, 0);
     planesVec.push_back(p1);
     planesVec.push_back(p2);
     planesVec.push_back(p3);
     planesVec.push_back(p4);
+    planesVec.push_back(p5);
     std::vector<Cluster> clustersVec;
     std::vector<std::unordered_set<int>> vecEachClusterPlanes;
-    Clustering::getClustersAfterThreshold(46, planesVec, vecEachClusterPlanes);
+    Clustering::computeClusters(planesVec, clustersVec);
+    Clustering::getClustersAfterThreshold(46.0f, planesVec, vecEachClusterPlanes);
+
+    for(auto i : clustersVec){
+        std::cout<<i.getFirstLinkIndex() << " "<< i.getSecondLinkIndex() << " "<<i.getDistanceBetweenLinks()<<std::endl;
+    }
 
     std::cout<<std::endl;
     for(auto i : vecEachClusterPlanes){

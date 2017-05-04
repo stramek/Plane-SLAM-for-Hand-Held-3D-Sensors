@@ -252,11 +252,6 @@ void Clustering::getClustersAfterThreshold(float cutThreshold, std::vector<Plane
             }
         }
 
-        std::cout<<std::endl;
-        for(int i =0; i<4;++i){
-            std::cout<<deleteElement[i]<<std::endl;
-        }
-
         for(int i =0; i<vecEachClusterPoints.size();++i){
             int tmp = 0;
             if(deleteElement[i]){
