@@ -10,15 +10,15 @@
 
 Plane::Plane() {}
 
-Plane::Plane(Eigen::Vector3f point1, Eigen::Vector3f point2, Eigen::Vector3f point3, const Mat& colorImage) {
+Plane::Plane(Vector3f point1, Vector3f point2, Vector3f point3, const Mat& colorImage) {
     color = HSVColor(colorImage);
 }
 
-Plane::Plane(std::array<Eigen::Vector3d, 3>, const Mat& colorImage) {
+Plane::Plane(std::array<Vector3d, 3>, const Mat& colorImage) {
     color = HSVColor(colorImage);
 }
 
-Plane::Plane(Eigen::Vector3f normalVec, Eigen::Vector3f point, const Mat& colorImage) {
+Plane::Plane(Vector3f normalVec, Vector3f point, const Mat& colorImage, const vector<Vector3f> &points, const ImageCoords &imageCoords) {
     planeNormalVec = normalVec;
     planeNormalVec.normalize();
     A = normalVec(0);
@@ -26,10 +26,12 @@ Plane::Plane(Eigen::Vector3f normalVec, Eigen::Vector3f point, const Mat& colorI
     C = normalVec(2);
     D = A * point(0) + B * point(1) + C * point(2);
     color = HSVColor(colorImage);
+    this->points = points;
+    this->imageCoords = imageCoords;
     valid = true;
 }
 
-Plane::Plane(Eigen::Vector3f normalVec, float D){
+Plane::Plane(Vector3f normalVec, float D){
     planeNormalVec = normalVec;
     planeNormalVec.normalize();
     A = normalVec(0);
@@ -55,12 +57,12 @@ float Plane::getD() const {
     return D;
 }
 
-float Plane::getDistanceFromPoint(Eigen::Vector3f point) {
+float Plane::getDistanceFromPoint(Vector3f point) {
     return std::abs(A * point(0) + B * point(1) + C * point(2) + D)
            / sqrtf(powf(A, 2) + powf(B, 2) + powf(C, 2));
 }
 
-void Plane::computePlaneEquation(Eigen::Vector3f point1, Eigen::Vector3f point2, Eigen::Vector3f point3) {
+void Plane::computePlaneEquation(Vector3f point1, Vector3f point2, Vector3f point3) {
     Eigen::Vector3f v = point1 - point2;
     Eigen::Vector3f w = point1 - point3;
     Eigen::Vector3f planeParameters = v.cross(w);
@@ -83,8 +85,8 @@ const HSVColor &Plane::getColor() const {
     return color;
 }
 
-Eigen::Vector3f Plane::computePointOnPlaneFromTwoCoordinate(float firstCoordinate, float secondCoordinate) const {
-    Eigen::Vector3f pointToReturn;
+Vector3f Plane::computePointOnPlaneFromTwoCoordinate(float firstCoordinate, float secondCoordinate) const {
+    Vector3f pointToReturn;
     if(A == 0 && B == 0 && C == 0){
         throw std::runtime_error("Plane equation error!");
     } else if( A == 0 && B == 0){
@@ -115,6 +117,22 @@ Eigen::Vector3f Plane::computePointOnPlaneFromTwoCoordinate(float firstCoordinat
     return  pointToReturn;
 }
 
-Eigen::Vector3f Plane::getPlaneNormalVec() const{
+Vector3f Plane::getPlaneNormalVec() const{
     return planeNormalVec;
+}
+
+const ImageCoords &Plane::getImageCoords() const {
+    return imageCoords;
+}
+
+void Plane::setImageCoords(const ImageCoords &imageCoords) {
+    Plane::imageCoords = imageCoords;
+}
+
+const vector<Vector3f> &Plane::getPoints() const {
+    return points;
+}
+
+void Plane::setPoints(const vector<Vector3f> &points) {
+    Plane::points = points;
 }
