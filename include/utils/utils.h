@@ -7,9 +7,9 @@
 #include <Eigen/Dense>
 #include <opencv2/opencv.hpp>
 #include "include/models/Plane.h"
-#include "include/utils/PlaneSimilarity.h"
+#include "include/models/PlaneSimilarity.h"
 #include <include/dataset/PlanePca.h>
-#include "include/utils/ImageCoords.h"
+#include "include/models/ImageCoords.h"
 #include <include/dataset/ImagePair.h>
 
 using namespace cv;

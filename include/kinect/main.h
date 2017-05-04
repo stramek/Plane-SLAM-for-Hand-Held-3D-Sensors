@@ -11,3 +11,7 @@ using namespace std;
 using namespace cv;
 using namespace Eigen;
 using namespace Rx;
+using namespace libfreenect2;
+
+void quitIfDeviceNotConnected();
+void openDevice();

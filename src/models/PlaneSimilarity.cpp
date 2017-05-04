@@ -6,7 +6,7 @@
 //
 //
 
-#include "../../include/utils/PlaneSimilarity.h"
+#include "include/models/PlaneSimilarity.h"
 
 PlaneSimilarity::PlaneSimilarity(const Plane &lastFrame, const Plane &currentFrame, unsigned int lastFrameIndex,
                                  unsigned int currentFrameIndex) : lastFrame(lastFrame), currentFrame(currentFrame),

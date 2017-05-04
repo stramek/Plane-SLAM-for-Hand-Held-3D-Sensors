@@ -17,7 +17,7 @@ MatrixXf PlanePca::computeCovMatrix(const MatrixXf &matrix) {
     return (centered.adjoint() * centered) / double(matrix.rows() - 1);
 }
 
-Plane PlanePca::computePlane(const vector<Vector3f> &pointsVector, const Mat& colorImage) {
+Plane PlanePca::computePlane(const vector<Vector3f> &pointsVector, const Mat& colorImage, const ImageCoords& imageCoords) {
     MatrixXf matrix;
     pointsVectorToMatrix(pointsVector, matrix);
     MatrixXf covMatrix = computeCovMatrix(matrix);
@@ -29,11 +29,11 @@ Plane PlanePca::computePlane(const vector<Vector3f> &pointsVector, const Mat& co
         Vector3f normalVec;
         MatrixXf eigenVectors = eigenSolver.eigenvectors();
         normalVec = eigenVectors.col(minIndex);
-        return Plane(normalVec, pointsVector.at(0), colorImage);
+        return Plane(normalVec, pointsVector.at(0), colorImage, pointsVector, imageCoords);
     }
     return Plane();
 }
 
-Plane PlanePca::getPlane(const vector<Vector3f> &pointsVector, const Mat& colorImage) {
-    return computePlane(pointsVector, colorImage);
+Plane PlanePca::getPlane(const vector<Vector3f> &pointsVector, const Mat& colorImage, const ImageCoords& imageCoords) {
+    return computePlane(pointsVector, colorImage, imageCoords);
 }

@@ -17,9 +17,9 @@
 #include <QGLViewer/qglviewer.h>
 #include <qapplication.h>
 #include <GL/glut.h>
-#include "Qvisualizer.h"
+#include "include/utils/Qvisualizer.h"
 #include "../utils/constants.h"
-#include "include/utils/ImageCoords.h"
+#include "include/models/ImageCoords.h"
 #include <opencv2/opencv.hpp>
 #include "ImageLoader.h"
 #include "Clustering.h"

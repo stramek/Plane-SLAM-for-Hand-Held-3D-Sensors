@@ -13,7 +13,12 @@
 #include <thread>
 #include <mutex>
 #include <opencv2/opencv.hpp>
+#include <QKeyEvent>
 #include <GL/glut.h>
+#include <libfreenect2/registration.h>
+#include "include/models/Point3D.h"
+
+using namespace libfreenect2;
 
 /// Homogeneous representation of SE(3) rigid body transformations
 typedef Eigen::Transform<double, 3, Eigen::Affine> Mat34;
@@ -21,27 +26,23 @@ typedef Eigen::Transform<double, 3, Eigen::Affine> Mat34;
 /// Map implementation
 class QGLVisualizer : public QGLViewer {
 public:
-
-    struct Point3D {
-        float x;
-        float y;
-        float z;
-        unsigned char red;
-        unsigned char green;
-        unsigned char blue;
-    };
-
     /// Construction
     QGLVisualizer(void);
 
     /// Updates cloud
     void updateCloud(cv::Mat RGB, cv::Mat D);
 
+    void updateCloud(Registration *registration, Frame *undistorted, Frame *registered);
+
     void getPoint(unsigned int u, unsigned int v, float depth, Eigen::Vector3d &point3D);
 
     void depth2cloud(cv::Mat &depthImage, cv::Mat RGB);
 
     void setPHCPModel(Eigen::Matrix<double, 3, 3> model);
+
+public:
+
+    void keyPressEvent(QKeyEvent *event);
 
     /// Destruction
     ~QGLVisualizer(void);
@@ -57,6 +58,9 @@ private:
 
     /// initialize visualizer
     void init();
+
+
+private:
 
     bool shadowFlag = false;
 
