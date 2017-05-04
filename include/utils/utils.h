@@ -7,10 +7,13 @@
 #include <Eigen/Dense>
 #include <opencv2/opencv.hpp>
 #include "include/models/Plane.h"
-#include "include/utils/PlaneSimilarity.h"
+#include "include/models/PlaneSimilarity.h"
 #include <include/dataset/PlanePca.h>
-#include "include/utils/ImageCoords.h"
+#include "include/models/ImageCoords.h"
 #include <include/dataset/ImagePair.h>
+#include <limits.h>
+#include <algorithm>
+#include <random>
 
 using namespace cv;
 using namespace std;
@@ -20,7 +23,11 @@ namespace utils {
     void paintPixel(Mat &rgb, const Vector3f &vector, Vec3b color);
     pair<int, int> getRandomPosition(const Mat &mat, int areaSize);
     vector<pair<Plane, Plane>> getSimilarPlanes(const vector<Plane> &previousFrame, const vector<Plane> &currentFrame);
-    void fillPlaneVector(int numberOfPoints, int areaSize, ImagePair &imagePair, vector<Plane> &planeVector);
+    void fillPlaneVector(int numberOfPoints, int areaSize, ImagePair &imagePair,
+                         vector<Plane> *planeVector, vector<Plane> *previousPlaneVector = nullptr,
+                         float previousPlanePercent = 0.5, bool colorPlanes = false);
+    void visualizeSimilarPlanes(vector<pair<Plane, Plane>> &similarPlanes, const Mat &previousImage,
+                                const Mat &currentImage, int limitPoints = INT_MAX);
 }
 
 #endif //PROJEKTMAGISTERSKI_UTILS_H

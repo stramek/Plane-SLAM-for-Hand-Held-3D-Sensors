@@ -43,7 +43,7 @@ int main(int argc, char **argv) {
 
         listener.release(frames);
 //        this_thread::sleep_for(chrono::milliseconds(100));
-        waitKey(); // TODO: Ask for this function and QVisualizer keyPressEvent override
+        cv::waitKey(); // TODO: Ask for this function and QVisualizer keyPressEvent override
     }
 
     dev->stop();

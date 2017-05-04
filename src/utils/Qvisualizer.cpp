@@ -111,3 +111,11 @@ void QGLVisualizer::updateCloud(Registration *registration, Frame *undistorted,
         }
     }
 }
+
+void QGLVisualizer::keyPressEvent(QKeyEvent *event) {
+    //QKeyEvent event1;
+//    event1.key();
+    const Qt::KeyboardModifiers modifiers = event->modifiers();
+
+    QGLViewer::keyPressEvent(event);
+}

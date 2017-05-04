@@ -10,6 +10,7 @@
 #include <vector>
 #include "../models/Plane.h"
 #include "../utils/constants.h"
+#include "include/models/ImageCoords.h"
 
 using namespace Eigen;
 using namespace std;
@@ -21,10 +22,10 @@ private:
 
     static MatrixXf computeCovMatrix(const MatrixXf &matrix);
 
-    static Plane computePlane(const vector<Vector3f> &pointsVector, const Mat& colorImage);
+    static Plane computePlane(const vector<Vector3f> &pointsVector, const Mat& colorImage, const ImageCoords& imageCoords);
 
 public:
-    static Plane getPlane(const vector<Vector3f> &pointsVector, const Mat& colorImage);
+    static Plane getPlane(const vector<Vector3f> &pointsVector, const Mat& colorImage, const ImageCoords& imageCoords);
 };
 
 

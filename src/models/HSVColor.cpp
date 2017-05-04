@@ -1,6 +1,6 @@
 //
 
-#include "../../include/utils/HSVColor.h"
+#include "../../include/models/HSVColor.h"
 
 //
 //  HSVColor.cpp
@@ -34,8 +34,8 @@ HSVColor::HSVColor(const Mat &colorImage) {
             saturationSum += ptr->val[1];
             valueSum += ptr->val[2];
         }
-        //delete(ptr);
-        //delete(ptr_end);
+//        delete(ptr);
+//        delete(ptr_end);
         //TODO: Ask about deleting garbage
     }
 
