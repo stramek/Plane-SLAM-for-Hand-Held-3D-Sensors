@@ -32,10 +32,11 @@ float Clustering::getAngleBetweenTwoPlanes(const Plane &firstPlane, const Plane 
 
 float Clustering::getSimilarityOfTwoPlanes(const Plane &firstPlane, const Plane &secondPlane){
     float angleBetweenTwoPlanes = getAngleBetweenTwoPlanes(firstPlane, secondPlane);
-    if((int)angleBetweenTwoPlanes < (int)MAX_ANGLE_THRESHOLD){
+/*    if(abs(angleBetweenTwoPlanes) < MAX_ANGLE_THRESHOLD){
         return getDistanceBetweenTwoPlanes(firstPlane, secondPlane);
     }
-    return std::numeric_limits<float>::max();
+    return std::numeric_limits<float>::max();*/
+    return abs(angleBetweenTwoPlanes);
 }
 
 void Clustering::createSimilarityMatrix(SimilarityItem **&similarityMatrix, unsigned long size){
@@ -78,7 +79,7 @@ void Clustering::clusteringInitializeStep(SimilarityItem **&similarityMatrix, Si
     }
 }
 
-void Clustering::computeIndexOfTwoPointsToMerge(SimilarityItem *&nextBestMerge, unsigned int *&I,
+void Clustering::computeIndexOfTwoPlanesToMerge(SimilarityItem *&nextBestMerge, unsigned int *&I,
                                                 unsigned int &firstPointToMergeIndex,
                                                 unsigned int &secondPointToMergeIndex, unsigned long size){
     float maxNBM_Sim = std::numeric_limits<float>::max();
@@ -148,13 +149,22 @@ void Clustering::computeClusters(std::vector<Plane> planesVec, std::vector<Clust
 
     clusteringInitializeStep(SimilarityMatrix, nextBestMerge, I, planesVec);
 
-    std::cout<<std::endl;
-    for(int i = 0; i < similarityMatSize; ++i){
-        for(int j = 0; j < similarityMatSize; ++j){
-            std::cout<<SimilarityMatrix[j][i].similarity<<" ";
-        }
-        std::cout<<std::endl;
+    for (int i = 0; i < planesVec.size() - 1; ++i) {
+
+        unsigned int firstPointToMergeIndex, secondPointToMergeIndex;
+        computeIndexOfTwoPlanesToMerge(nextBestMerge, I, firstPointToMergeIndex, secondPointToMergeIndex,
+                                       planesVec.size());
+        addNewClusterToVec(clustersVec, SimilarityMatrix, firstPointToMergeIndex, secondPointToMergeIndex);
+
+        updateSimilarityMatrixState(SimilarityMatrix, I, firstPointToMergeIndex, secondPointToMergeIndex,
+                                    clustersVec.size());
+
+
+        updateNextBestMerge(SimilarityMatrix, nextBestMerge, I, firstPointToMergeIndex, clustersVec.size());
     }
+    delete[] I;
+    deleteSimilarityMatrix(SimilarityMatrix, similarityMatSize);
+    deleteNextBestMergeMatrix(nextBestMerge);
 
 /*    unsigned const long  similarityMatSize = pointsVec.size();
     SimilarityItem **SimilarityMatrix;

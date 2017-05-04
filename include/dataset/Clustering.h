@@ -33,7 +33,7 @@ private:
     static void deleteNextBestMergeMatrix(SimilarityItem *&nextBestMerge);
     static void clusteringInitializeStep(SimilarityItem **&similarityMatrix, SimilarityItem *&nextBestMerge,
                                          unsigned int *&I, const std::vector<Plane> &planesVec);
-    static void computeIndexOfTwoPointsToMerge(SimilarityItem *&nextBestMerge, unsigned int *&I,
+    static void computeIndexOfTwoPlanesToMerge(SimilarityItem *&nextBestMerge, unsigned int *&I,
                                                unsigned int &firstPointToMergeIndex,
                                                unsigned int &secondPointToMergeIndex, unsigned long size);
     static void addNewClusterToVec(std::vector<Cluster> &clustersVec, SimilarityItem **&similarityMatrix,

@@ -25,6 +25,10 @@ int main(int argc, char **argv) {
     std::vector<Cluster> clustersVec;
     Clustering::computeClusters(planesVec, clustersVec);
 
+    for(auto i : clustersVec){
+        std::cout<<i.getFirstLinkIndex() << " "<<i.getSecondLinkIndex() << " "<< i.getDistanceBetweenLinks()<<std::endl;
+    }
+
 
 
     /////////////////////////////////////
