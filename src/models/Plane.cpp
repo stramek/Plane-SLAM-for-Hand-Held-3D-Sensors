@@ -141,7 +141,7 @@ unsigned int Plane::getNumberOfPoints() const {
     return (unsigned int)points.size();
 }
 
-float Plane::getAngleBetweenTwoPlanes(Plane &plane) const {
+float Plane::getAngleBetweenTwoPlanes(const Plane &plane) const {
     Eigen::Vector3f planeNormalVec = plane.getPlaneNormalVec();
 
     float angleCos = this->planeNormalVec.dot(planeNormalVec) / this->planeNormalVec.norm() / planeNormalVec.norm();

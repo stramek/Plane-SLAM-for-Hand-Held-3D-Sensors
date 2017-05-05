@@ -42,7 +42,7 @@ float Clustering::getAngleBetweenTwoPlanes(const Plane &firstPlane, const Plane 
 }
 
 float Clustering::getSimilarityOfTwoPlanes(const Plane &firstPlane, const Plane &secondPlane){
-    float angleBetweenTwoPlanes = getAngleBetweenTwoPlanes(firstPlane, secondPlane);
+    float angleBetweenTwoPlanes = firstPlane.getAngleBetweenTwoPlanes(secondPlane);
 /*    if(abs(angleBetweenTwoPlanes) < MAX_ANGLE_THRESHOLD){
         return getDistanceBetweenTwoPlanes(firstPlane, secondPlane);
     }
