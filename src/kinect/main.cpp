@@ -8,8 +8,6 @@
 
 #include "include/kinect/main.h"
 
-bool programFinished = false;
-
 Freenect2 freenect2;
 Freenect2Device *dev = nullptr;
 PacketPipeline *pipeline = nullptr;
@@ -33,7 +31,7 @@ int main(int argc, char **argv) {
     Registration *registration = new Registration(dev->getIrCameraParams(), dev->getColorCameraParams());
     Frame undistorted(512, 424, 4), registered(512, 424, 4);
 
-    while (!programFinished) {
+    while (!visualizer.isProgramFinished()) {
         listener.waitForNewFrame(frames);
         Frame *rgb = frames[Frame::Color];
         Frame *depth = frames[Frame::Depth];
@@ -41,9 +39,11 @@ int main(int argc, char **argv) {
         registration->apply(rgb, depth, &undistorted, &registered, true);
         visualizer.updateCloud(registration, &undistorted, &registered);
 
+//        utils::generateOctoMap("Kinect", visualizer.getPointCloud(), 0.01);
+
         listener.release(frames);
-//        this_thread::sleep_for(chrono::milliseconds(100));
         cv::waitKey(); // TODO: Ask for this function and QVisualizer keyPressEvent override
+
     }
 
     dev->stop();

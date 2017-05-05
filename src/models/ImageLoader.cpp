@@ -2,7 +2,7 @@
 // Created by stramek on 26.02.17.
 //
 
-#include "include/dataset/ImageLoader.h"
+#include "include/models/ImageLoader.h"
 
 /**
  * RGB photos should by places inside dataset_photos/rgb

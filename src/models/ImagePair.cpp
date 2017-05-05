@@ -2,7 +2,7 @@
 // Created by stramek on 26.02.17.
 //
 
-#include "include/dataset/ImagePair.h"
+#include "include/models/ImagePair.h"
 
 ImagePair::ImagePair() {}
 

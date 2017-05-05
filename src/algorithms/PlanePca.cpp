@@ -2,7 +2,7 @@
 // Created by mordimer on 26.02.17.
 //
 
-#include "include/dataset/PlanePca.h"
+#include "include/algorithms/PlanePca.h"
 
 void PlanePca::pointsVectorToMatrix(const vector<Vector3f> &pointsVector, MatrixXf &matrix) {
     matrix.resize(pointsVector.size(), 3);

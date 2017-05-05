@@ -1,6 +1,4 @@
-#include <cstdint>
-#include <stdint-gcc.h>
-#include "../../include/utils/Qvisualizer.h"
+#include "include/utils/Qvisualizer.h"
 
 QGLVisualizer::QGLVisualizer(void) : objectPose(Mat34::Identity()), cameraPose(Mat34::Identity()) {
     objectPose(0, 3) = 2.0;
@@ -9,19 +7,7 @@ QGLVisualizer::QGLVisualizer(void) : objectPose(Mat34::Identity()), cameraPose(M
 /// Destruction
 QGLVisualizer::~QGLVisualizer(void) {}
 
-
-//void QGLVisualizer::keyPressEvent(QKeyEvent *event) {
-//    bool handled = false;
-//    //Qt::KeyboardModifiers modifiers = event->modifiers();
-//    if (event->key() == Qt::Key_W) {
-//        std::cout<<"W"<<std::endl;
-//    }
-//
-//
-//    if (!handled) QGLViewer::keyPressEvent(event);
 //}
-
-
 
 /// draw objects
 void QGLVisualizer::draw() {
@@ -57,11 +43,11 @@ void QGLVisualizer::init() {
     startAnimation();
 }
 
+
 /// Updates cloud
 void QGLVisualizer::updateCloud(cv::Mat RGB, cv::Mat D) {
     depth2cloud(D, RGB);
 }
-
 
 void QGLVisualizer::getPoint(unsigned int u, unsigned int v, float depth, Eigen::Vector3d &point3D) {
     Eigen::Vector3d point(u, v, 1);
@@ -113,9 +99,26 @@ void QGLVisualizer::updateCloud(Registration *registration, Frame *undistorted,
 }
 
 void QGLVisualizer::keyPressEvent(QKeyEvent *event) {
-    //QKeyEvent event1;
-//    event1.key();
-    const Qt::KeyboardModifiers modifiers = event->modifiers();
+    int key = event->key();
 
-    QGLViewer::keyPressEvent(event);
+    switch (key) {
+        case Qt::Key_Q:
+            setProgramFinished(true);
+            close();
+            break;
+        default:
+            QGLViewer::keyPressEvent(event);
+    }
+}
+
+const std::vector<Point3D> &QGLVisualizer::getPointCloud() const {
+    return pointCloud;
+}
+
+bool QGLVisualizer::isProgramFinished() const {
+    return programFinished;
+}
+
+void QGLVisualizer::setProgramFinished(bool programFinished) {
+    QGLVisualizer::programFinished = programFinished;
 }

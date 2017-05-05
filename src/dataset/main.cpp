@@ -9,7 +9,6 @@
 #include "include/dataset/main.h"
 
 int main(int argc, char **argv) {
-
     QApplication application(argc, argv);
     glutInit(&argc, argv);
 
@@ -25,37 +24,24 @@ int main(int argc, char **argv) {
     vector<pair<Plane, Plane>> similarPlanes;
 
     const int AREA_SIZE = 21; // odd number
-    const int NUMBER_OF_POINTS = 10;
+    const int NUMBER_OF_POINTS = 30;
     if (AREA_SIZE % 2 == 0) throw runtime_error("AREA_SIZE needs to be odd number");
 
     ImagePair imagePair1 = imageLoader.getNextPair();
-    utils::fillPlaneVector(NUMBER_OF_POINTS, AREA_SIZE, imagePair1, planeVectorPreviousFrame);
+    planeUtils::fillPlaneVector(NUMBER_OF_POINTS, AREA_SIZE, imagePair1, &planeVectorPreviousFrame);
+    ImagePair imagePair2 = imageLoader.getNextPair();
+    planeUtils::fillPlaneVector(NUMBER_OF_POINTS, AREA_SIZE, imagePair2, &planeVectorCurrentFrame,
+                           &planeVectorPreviousFrame, 0.3f);
 
-    vector<vector<Plane>> clusteredPLanes;
-    Clustering::getClusteredPlaneGroup(planeVectorPreviousFrame, clusteredPLanes);
-    int i = 0;
-    std::cout<<std::endl;
-    for (auto singleCluster : clusteredPLanes){
-        ++i;
-        std::cout<<"Cluster number " << i << std::endl;
-        for(auto planeInCluster : singleCluster){
-            putText(imagePair1.getRgb(), to_string(i), Point(planeInCluster.getImageCoords().getCenterX(), planeInCluster.getImageCoords().getCenterY()),FONT_HERSHEY_SIMPLEX, 0.8, cv::Scalar(0, 0, 255), 2);
-            std::cout<<"A: "<<planeInCluster.getA() << " B: "<<planeInCluster.getB() << " C: "<<planeInCluster.getC() << " D: "<<planeInCluster.getD() << std::endl;
-        }
-        std::cout<<std::endl;
 
-    }
+    similarPlanes = planeUtils::getSimilarPlanes(planeVectorPreviousFrame, planeVectorCurrentFrame);
 
-    utils::mergePlanes(planeVectorPreviousFrame);
-    for(int i=0;i<planeVectorPreviousFrame.size();++i){
-        std::cout<<"Cluster number " << i + 1<< std::endl;
-        std::cout<<"A: "<<planeVectorPreviousFrame.at(i).getA() << " B: "<<planeVectorPreviousFrame.at(i).getB() << " C: "<<planeVectorPreviousFrame.at(i).getC() << " D: "<<planeVectorPreviousFrame.at(i).getD() << std::endl;
-    }
+//    planeUtils::filterPairsByAngle(similarPlanes);
+    planeUtils::visualizeSimilarPlanes(similarPlanes, imagePair1.getRgb(), imagePair2.getRgb());
 
-    visualizer.updateCloud(imagePair1.getRgb(), imagePair1.getDepth());
-    imshow("First", imagePair1.getRgb());
+    visualizer.updateCloud(imagePair1.getRgb(), imagePair2.getDepth());
 
+    utils::generateOctoMap("Dataset", visualizer.getPointCloud());
 
     return application.exec();
-    return 0;
 }

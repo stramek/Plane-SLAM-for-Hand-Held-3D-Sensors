@@ -8,22 +8,24 @@
 #include <opencv2/opencv.hpp>
 #include "include/models/Plane.h"
 #include "include/models/PlaneSimilarity.h"
-#include <include/dataset/PlanePca.h>
+#include <include/algorithms/PlanePca.h>
 #include "include/models/ImageCoords.h"
-#include <include/dataset/ImagePair.h>
-#include "../dataset/Clustering.h"
+#include <include/models/ImagePair.h>
+#include <limits.h>
+#include <algorithm>
+#include <random>
+#include <octomap/octomap.h>
+#include <octomap/ColorOcTree.h>
 
 using namespace cv;
 using namespace std;
 using namespace Eigen;
+using namespace octomap;
 
 namespace utils {
     void paintPixel(Mat &rgb, const Vector3f &vector, Vec3b color);
     pair<int, int> getRandomPosition(const Mat &mat, int areaSize);
-    vector<pair<Plane, Plane>> getSimilarPlanes(const vector<Plane> &previousFrame, const vector<Plane> &currentFrame);
-    void fillPlaneVector(int numberOfPoints, int areaSize, ImagePair &imagePair, vector<Plane> &planeVector);
-    void mergePlanes(vector<Plane> &planeVector);
-    void displayClusteredPlanes(ImagePair &imagePair, vector<Plane> plane);
+    void generateOctoMap(const string fileName, const vector<Point3D> pointCloud, const float resolution = 0.05);
 }
 
 #endif //PROJEKTMAGISTERSKI_UTILS_H
