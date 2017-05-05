@@ -44,6 +44,7 @@ public:
     const vector<Vector3f> &getPoints() const;
     void setPoints(const vector<Vector3f> &points);
     unsigned int getNumberOfPoints() const;
+    float getAngleBetweenTwoPlanes(Plane &plane) const;
 
 private:
     float A, B, D, C;

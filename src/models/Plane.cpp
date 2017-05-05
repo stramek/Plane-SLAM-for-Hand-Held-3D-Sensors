@@ -140,3 +140,16 @@ void Plane::setPoints(const vector<Vector3f> &points) {
 unsigned int Plane::getNumberOfPoints() const {
     return (unsigned int)points.size();
 }
+
+float Plane::getAngleBetweenTwoPlanes(Plane &plane) const {
+    Eigen::Vector3f planeNormalVec = plane.getPlaneNormalVec();
+
+    float angleCos = this->planeNormalVec.dot(planeNormalVec) / this->planeNormalVec.norm() / planeNormalVec.norm();
+    if(angleCos < -1) angleCos = -1.0f;
+    if(angleCos > 1) angleCos = 1.0f;
+    float angle = acosf(angleCos)*180.0f/(float)M_PI;
+    if(angle > 90.0f){
+        angle = 180.0f - angle;
+    }
+    return angle;
+}
