@@ -28,6 +28,7 @@ namespace utils {
                          float previousPlanePercent = 0.5, bool colorPlanes = false);
     void visualizeSimilarPlanes(vector<pair<Plane, Plane>> &similarPlanes, const Mat &previousImage,
                                 const Mat &currentImage, int limitPoints = INT_MAX);
+    void filterPairsByAngle(vector<pair<Plane, Plane>> &pairs);
 }
 
 #endif //PROJEKTMAGISTERSKI_UTILS_H

@@ -131,4 +131,15 @@ namespace utils {
         waitKey();
     }
 
+    void filterPairsByAngle(vector<pair<Plane, Plane>> &pairs) {
+        for (auto it = pairs.begin(); it != pairs.end(); ) {
+            if (/**it->first.getAngleBetween(*it->second) > MAX_ANGLE_BETWEEN_PLANES*/ true) {
+                it = pairs.erase(it);
+            }
+            else {
+                ++it;
+            }
+        }
+    }
+
 }

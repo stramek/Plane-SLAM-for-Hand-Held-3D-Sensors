@@ -34,8 +34,8 @@ int main(int argc, char **argv) {
                             &planeVectorPreviousFrame, 0.3f);
     similarPlanes = utils::getSimilarPlanes(planeVectorPreviousFrame, planeVectorCurrentFrame);
 
+    utils::filterPairsByAngle(similarPlanes);
     utils::visualizeSimilarPlanes(similarPlanes, imagePair1.getRgb(), imagePair2.getRgb());
-
     //visualizer.updateCloud(imagePair1.getRgb(), imagePair2.getDepth());
     return application.exec();
 }
