@@ -8,8 +8,6 @@
 
 #include "include/kinect/main.h"
 
-bool programFinished = false;
-
 Freenect2 freenect2;
 Freenect2Device *dev = nullptr;
 PacketPipeline *pipeline = nullptr;
@@ -33,7 +31,7 @@ int main(int argc, char **argv) {
     Registration *registration = new Registration(dev->getIrCameraParams(), dev->getColorCameraParams());
     Frame undistorted(512, 424, 4), registered(512, 424, 4);
 
-    while (!programFinished) {
+    while (!visualizer.isProgramFinished()) {
         listener.waitForNewFrame(frames);
         Frame *rgb = frames[Frame::Color];
         Frame *depth = frames[Frame::Depth];

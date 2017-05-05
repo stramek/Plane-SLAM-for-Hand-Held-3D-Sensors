@@ -17,6 +17,9 @@
 #include <GL/glut.h>
 #include <libfreenect2/registration.h>
 #include "include/models/Point3D.h"
+#include <cstdint>
+#include <stdint-gcc.h>
+#include "include/kinect/main.h"
 
 using namespace libfreenect2;
 
@@ -42,7 +45,7 @@ public:
 
     const std::vector<Point3D> &getPointCloud() const;
 
-public:
+    bool isProgramFinished() const;
 
     void keyPressEvent(QKeyEvent *event);
 
@@ -61,10 +64,12 @@ private:
     /// initialize visualizer
     void init();
 
+public:
+    void setProgramFinished(bool programFinished);
 
 private:
 
-    bool shadowFlag = false;
+    bool programFinished = false;
 
     /// object pose
     Mat34 objectPose;
