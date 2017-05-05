@@ -6,15 +6,23 @@
 
 const float Clustering::MAX_ANGLE_THRESHOLD = 5.0;
 
+float Clustering::getDistanceBetweenPointAndPlane(Plane plane, Vector3f point){
+    float distance = abs(plane.getA()*point(0) + plane.getB()*point(1) + plane.getC()*point(2) + plane.getD()) /
+                    sqrtf(powf(plane.getA(), 2) + powf(plane.getB(), 2) + powf(plane.getC(), 2));
+    return distance;
+}
 
-float Clustering::getDistanceBetweenTwoPlanes(const Plane &firstPlane, const Plane &secondPlane){
-    float distance;
-    Eigen::Vector3f pointOnFirstPlane = firstPlane.computePointOnPlaneFromTwoCoordinate();
+float Clustering::getDistanceBetweenTwoPlanes(const Plane &firstPlane,  const Plane &secondPlane){
+    float distance = 0;
+    vector<Vector3f> pointsVec = secondPlane.getPoints();
 
-/*    distance = abs(secondPlane.getA()*pointOnFirstPlane(0) + secondPlane.getB()*pointOnFirstPlane(1) +
-                   secondPlane.getC()*pointOnFirstPlane(2) - secondPlane.getD())
-               / sqrtf(powf(secondPlane.getA(), 2) + sqrtf(powf(secondPlane.getB(), 2)) + sqrtf(powf(secondPlane.getC(), 2)));*/
-    distance = abs(firstPlane.getD() - secondPlane.getD());
+    for(int i=0;i<10;++i){
+        random_device rd;
+        mt19937 rng(rd());
+        uniform_int_distribution<unsigned int> pointIndex(0, secondPlane.getNumberOfPoints() - 1);
+        Vector3f randomPointOnSecondPlane = pointsVec[pointIndex(rng)];
+        distance += getDistanceBetweenPointAndPlane(firstPlane, randomPointOnSecondPlane) / 10;
+    }
 
     return distance;
 }

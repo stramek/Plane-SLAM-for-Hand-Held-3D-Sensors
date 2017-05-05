@@ -44,6 +44,8 @@ private:
                                             const unsigned int &secondPlaneIndexToMerge, unsigned long size);
     static void updateNextBestMerge(SimilarityItem **&similarityMatrix ,SimilarityItem *&nextBestMerge, unsigned int *&I,
                                     unsigned int firstPlaneIndexToMerge,unsigned long size);
+
+    static float getDistanceBetweenPointAndPlane(Plane plane, Vector3f point);
 public:
     static void computeClusters(std::vector<Plane> planesVec, std::vector<Cluster> &clustersVec);
 

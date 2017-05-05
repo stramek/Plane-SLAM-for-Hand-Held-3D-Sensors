@@ -136,3 +136,7 @@ const vector<Vector3f> &Plane::getPoints() const {
 void Plane::setPoints(const vector<Vector3f> &points) {
     Plane::points = points;
 }
+
+unsigned int Plane::getNumberOfPoints() const {
+    return (unsigned int)points.size();
+}
