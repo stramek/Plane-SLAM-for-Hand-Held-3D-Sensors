@@ -300,10 +300,7 @@ vector<Plane> Clustering::getAveragedPlanes(vector<vector<Plane>>& clusteredPlan
         Vector3f averagedNormalVec = Vector3f::Zero();
         for(auto plane : planesFromCluster){
             averagedNormalVec += plane.getPlaneNormalVec();
-            std::cout<<"Before sum: "<<averagedD<<std::endl;
-            std::cout<<"Added is: "<< plane.getD()<<std::endl;
             averagedD += plane.getD();
-            std::cout<<"After sum: "<<averagedD<<std::endl;
             averagedHue += plane.getColor().getHue();
             averagedSaturation += plane.getColor().getSaturation();
             averagedValue += plane.getColor().getValue();
@@ -313,13 +310,8 @@ vector<Plane> Clustering::getAveragedPlanes(vector<vector<Plane>>& clusteredPlan
             mergedPlanePoints.insert(mergedPlanePoints.end(), points.begin(), points.end());
             mergedPlaneImageCoordsVec.insert(mergedPlaneImageCoordsVec.end(), imageCoordsVec.begin(), imageCoordsVec.end());
         }
-        std::cout<<"Divided by: "<<planesFromCluster.size()<<std::endl;
         averagedNormalVec = averagedNormalVec / planesFromCluster.size();
         averagedD = averagedD / planesFromCluster.size();
-        std::cout<<"Average value before normalize: "<<averagedD<<std::endl<<std::endl;
-        averagedD = averagedD / averagedNormalVec.norm();
-        std::cout<<"Average value after normalize: "<<averagedD<<std::endl<<std::endl;
-        averagedNormalVec.normalize();
         averagedHue = averagedHue / (int)planesFromCluster.size();
         averagedSaturation = averagedSaturation / (int)planesFromCluster.size();
         averagedValue = averagedValue / (int)planesFromCluster.size();
