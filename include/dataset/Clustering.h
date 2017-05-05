@@ -46,12 +46,14 @@ private:
                                     unsigned int firstPlaneIndexToMerge,unsigned long size);
 
     static float getDistanceBetweenPointAndPlane(Plane plane, Vector3f point);
+
 public:
     static void computeClusters(std::vector<Plane> planesVec, std::vector<Cluster> &clustersVec);
 
     static void getClustersAfterThreshold(float cutThreshold, std::vector<Plane> planesVec,
                                           std::vector<std::unordered_set<int>> &vecEachClusterPlanes);
     static void getClusteredPlaneGroup(std::vector<Plane> planesVec, vector<vector<Plane>>& clusteredPlanes);
+    static vector<Plane> getAveragedPlanes(vector<vector<Plane>>& clusteredPlanes);
 };
 
 

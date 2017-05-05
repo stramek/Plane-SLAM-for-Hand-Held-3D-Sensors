@@ -28,6 +28,7 @@ public:
     Plane(Vector3f point1, Vector3f  point2, Vector3f  point3, const Mat& colorImage);
     Plane(std::array<Eigen::Vector3d , 3>, const Mat& colorImage);
     Plane(Vector3f normalVec, Vector3f point, const Mat& colorImage, const vector<Vector3f> &points, const ImageCoords &imageCoords);
+    Plane(Vector3f normalVec, float D, vector<Vector3f> points, vector<ImageCoords> imageCoordsVec, HSVColor color);
     Plane(Vector3f normalVec, float D); // added for testing, TODO remove after testing
     float getA() const;
     float getB() const;
@@ -45,13 +46,24 @@ public:
     void setPoints(const vector<Vector3f> &points);
     unsigned int getNumberOfPoints() const;
     float getAngleBetweenTwoPlanes(const Plane &plane) const;
+    void insertPoints(vector<Vector3f> points);
+    void mergePlane(Plane plane);
+    void insertImageCoords(vector<ImageCoords> imageCoordsVec);
 
 private:
     float A, B, D, C;
     vector<Vector3f> points;
-    ImageCoords imageCoords = ImageCoords();
+    vector<ImageCoords> imageCoordsVec;
+public:
+    const vector<ImageCoords> &getImageCoordsVec() const;
+
+private:
     Vector3f planeNormalVec;
     HSVColor color = HSVColor();
+public:
+    void setColor(const HSVColor &color);
+
+private:
     bool valid = false;
     void computePlaneEquation(Vector3f  point1, Vector3f  point2, Vector3f  point3);
 };

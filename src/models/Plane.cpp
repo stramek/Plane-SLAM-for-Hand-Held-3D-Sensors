@@ -27,7 +27,19 @@ Plane::Plane(Vector3f normalVec, Vector3f point, const Mat& colorImage, const ve
     D = A * point(0) + B * point(1) + C * point(2);
     color = HSVColor(colorImage);
     this->points = points;
-    this->imageCoords = imageCoords;
+    this->imageCoordsVec.push_back(imageCoords);
+    valid = true;
+}
+
+Plane::Plane(Vector3f normalVec, float D, vector<Vector3f> points, vector<ImageCoords> imageCoordsVec, HSVColor color){
+    this->planeNormalVec = normalVec;
+    this->D = D;
+    this->A = normalVec(0);
+    this->B = normalVec(1);
+    this->C = normalVec(2);
+    this->points = points;
+    this->imageCoordsVec = imageCoordsVec;
+    this->color = color;
     valid = true;
 }
 
@@ -122,11 +134,11 @@ Vector3f Plane::getPlaneNormalVec() const{
 }
 
 const ImageCoords &Plane::getImageCoords() const {
-    return imageCoords;
+    return imageCoordsVec[0];
 }
 
 void Plane::setImageCoords(const ImageCoords &imageCoords) {
-    Plane::imageCoords = imageCoords;
+    Plane::imageCoordsVec.push_back(imageCoords);
 }
 
 const vector<Vector3f> &Plane::getPoints() const {
@@ -153,3 +165,27 @@ float Plane::getAngleBetweenTwoPlanes(const Plane &plane) const {
     }
     return angle;
 }
+
+void Plane::setColor(const HSVColor &color) {
+    Plane::color = color;
+}
+
+void Plane::insertPoints(vector<Vector3f> points){
+    this->points.insert(this->points.end(), points.begin(), points.end());
+}
+
+void Plane::insertImageCoords(vector<ImageCoords> imageCoordsVec){
+    this->imageCoordsVec.insert(this->imageCoordsVec.end(), imageCoordsVec.begin(), imageCoordsVec.end());
+}
+
+void Plane::mergePlane(Plane plane){
+    int colorSum = color.getHue() + plane.getColor().getHue();
+    color.setHue((uint8_t)(colorSum / 2));
+    insertPoints(plane.getPoints());
+    insertImageCoords(plane.getImageCoordsVec());
+}
+
+const vector<ImageCoords> &Plane::getImageCoordsVec() const {
+    return imageCoordsVec;
+}
+

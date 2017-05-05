@@ -44,6 +44,12 @@ HSVColor::HSVColor(const Mat &colorImage) {
     value = (uint8_t) (valueSum / numberOfPixels);
 }
 
+HSVColor::HSVColor(uint8_t hue, uint8_t saturation, uint8_t value){
+    this->hue = hue;
+    this->saturation = saturation;
+    this->value = value;
+}
+
 /**
  * @return 0 - 180 range hue of HSV color
  */
@@ -64,4 +70,8 @@ uint8_t HSVColor::getSaturation() const {
  */
 uint8_t HSVColor::getValue() const {
     return value;
+}
+
+void HSVColor::setHue(uint8_t hue) {
+    HSVColor::hue = hue;
 }

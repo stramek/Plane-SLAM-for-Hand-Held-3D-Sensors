@@ -11,6 +11,7 @@
 #include <include/dataset/PlanePca.h>
 #include "include/models/ImageCoords.h"
 #include <include/dataset/ImagePair.h>
+#include "../dataset/Clustering.h"
 
 using namespace cv;
 using namespace std;
@@ -21,6 +22,8 @@ namespace utils {
     pair<int, int> getRandomPosition(const Mat &mat, int areaSize);
     vector<pair<Plane, Plane>> getSimilarPlanes(const vector<Plane> &previousFrame, const vector<Plane> &currentFrame);
     void fillPlaneVector(int numberOfPoints, int areaSize, ImagePair &imagePair, vector<Plane> &planeVector);
+    void mergePlanes(vector<Plane> &planeVector);
+    void displayClusteredPlanes(ImagePair &imagePair, vector<Plane> plane);
 }
 
 #endif //PROJEKTMAGISTERSKI_UTILS_H
