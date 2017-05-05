@@ -33,6 +33,11 @@ include_directories(${QGLVIEWER_INCLUDE_DIR})
 include_directories(${QT_INCLUDES})
 link_directories(${QGLVIEWER_LIBRARY})
 
+#octomap library
+find_package(octomap REQUIRED)
+include_directories(${OCTOMAP_INCLUDE_DIRS})
+link_libraries(${OCTOMAP_LIBRARIES})
+
 ################ MODELS ################
 
 file(GLOB MODEL_SOURCES
