@@ -37,5 +37,6 @@ int main(int argc, char **argv) {
     utils::filterPairsByAngle(similarPlanes);
     utils::visualizeSimilarPlanes(similarPlanes, imagePair1.getRgb(), imagePair2.getRgb());
     //visualizer.updateCloud(imagePair1.getRgb(), imagePair2.getDepth());
+
     return application.exec();
 }
