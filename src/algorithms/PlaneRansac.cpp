@@ -2,7 +2,7 @@
 // Created by mordimer on 12.03.17.
 //
 
-#include "include/dataset/PlaneRansac.h"
+#include "include/algorithms/PlaneRansac.h"
 
 Plane PlaneRansac::computePlane(const vector<Vector3f> &pointsVector, const Mat &colorImage ) {
     for (int i = 0; i < MAX_ITERATIONS_NUM; ++i) {

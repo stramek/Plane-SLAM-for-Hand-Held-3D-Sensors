@@ -8,9 +8,9 @@
 #include <istream>
 #include <vector>
 #include <opencv2/opencv.hpp>
-#include "Cluster.h"
+#include "include/models/Cluster.h"
 #include <unordered_set>
-#include "../models/Plane.h"
+#include "include/models/Plane.h"
 
 class Clustering {
 private:

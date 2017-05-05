@@ -118,12 +118,32 @@ namespace planeUtils {
 
     void filterPairsByAngle(vector<pair<Plane, Plane>> &pairs) {
         for (auto it = pairs.begin(); it != pairs.end(); ) {
-            if (/**it->first.getAngleBetween(*it->second) > MAX_ANGLE_BETWEEN_PLANES*/ true) {
-                it = pairs.erase(it);
+            if (it->first.getAngleBetweenTwoPlanes(it->second) > MAX_ANGLE_BETWEEN_PLANES ) {
+                it = pairs.erase(pairs.begin() + 1);
             }
             else {
                 ++it;
             }
         }
+    }
+
+    void mergePlanes(vector<Plane> &planeVector){
+        vector<vector<Plane>> clusteredPLanes;
+        Clustering::getClusteredPlaneGroup(planeVector, clusteredPLanes);
+        planeVector = Clustering::getAveragedPlanes(clusteredPLanes);
+
+    }
+
+    void displayClusteredPlanes(ImagePair &imagePair, vector<Plane> plane){
+        vector<vector<Plane>> clusteredPLanes;
+        Clustering::getClusteredPlaneGroup(plane, clusteredPLanes);
+        int i = 0;
+        for (auto singleCluster : clusteredPLanes){
+            ++i;
+            for(auto planeInCluster : singleCluster){
+                putText(imagePair.getRgb(), to_string(i), Point(planeInCluster.getImageCoords().getCenterX(), planeInCluster.getImageCoords().getCenterY()),FONT_HERSHEY_SIMPLEX, 0.8, cv::Scalar(0, 0, 255), 2);
+            }
+        }
+        imshow("Clustered planes", imagePair.getRgb());
     }
 }

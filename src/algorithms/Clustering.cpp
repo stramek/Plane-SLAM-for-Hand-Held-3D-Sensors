@@ -2,7 +2,7 @@
 // Created by mordimer on 11.03.17.
 //
 
-#include "include/dataset/Clustering.h"
+#include "include/algorithms/Clustering.h"
 
 const float Clustering::MAX_ANGLE_THRESHOLD = 5.0;
 
@@ -306,7 +306,7 @@ vector<Plane> Clustering::getAveragedPlanes(vector<vector<Plane>>& clusteredPlan
             averagedValue += plane.getColor().getValue();
 
             vector<Vector3f> points = plane.getPoints();
-            vector<ImageCoords> imageCoordsVec;
+            vector<ImageCoords> imageCoordsVec = plane.getImageCoordsVec();
             mergedPlanePoints.insert(mergedPlanePoints.end(), points.begin(), points.end());
             mergedPlaneImageCoordsVec.insert(mergedPlaneImageCoordsVec.end(), imageCoordsVec.begin(), imageCoordsVec.end());
         }

@@ -6,7 +6,7 @@
 //
 //
 
-#include "../../include/models/Plane.h"
+#include "include/models/Plane.h"
 
 Plane::Plane() {}
 

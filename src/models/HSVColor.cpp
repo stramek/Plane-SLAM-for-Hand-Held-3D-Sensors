@@ -1,6 +1,6 @@
 //
 
-#include "../../include/models/HSVColor.h"
+#include "include/models/HSVColor.h"
 
 //
 //  HSVColor.cpp

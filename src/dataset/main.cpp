@@ -24,19 +24,21 @@ int main(int argc, char **argv) {
     vector<pair<Plane, Plane>> similarPlanes;
 
     const int AREA_SIZE = 21; // odd number
-    const int NUMBER_OF_POINTS = 30;
+    const int NUMBER_OF_POINTS = 1;
     if (AREA_SIZE % 2 == 0) throw runtime_error("AREA_SIZE needs to be odd number");
 
     ImagePair imagePair1 = imageLoader.getNextPair();
     planeUtils::fillPlaneVector(NUMBER_OF_POINTS, AREA_SIZE, imagePair1, &planeVectorPreviousFrame);
     ImagePair imagePair2 = imageLoader.getNextPair();
     planeUtils::fillPlaneVector(NUMBER_OF_POINTS, AREA_SIZE, imagePair2, &planeVectorCurrentFrame,
-                           &planeVectorPreviousFrame, 0.3f);
+                           &planeVectorPreviousFrame, 0.0f);
 
 
+    planeUtils::mergePlanes(planeVectorPreviousFrame);
+    planeUtils::mergePlanes(planeVectorCurrentFrame);
     similarPlanes = planeUtils::getSimilarPlanes(planeVectorPreviousFrame, planeVectorCurrentFrame);
 
-//    planeUtils::filterPairsByAngle(similarPlanes);
+    planeUtils::filterPairsByAngle(similarPlanes);
     planeUtils::visualizeSimilarPlanes(similarPlanes, imagePair1.getRgb(), imagePair2.getRgb());
 
     visualizer.updateCloud(imagePair1.getRgb(), imagePair2.getDepth());

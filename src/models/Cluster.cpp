@@ -2,7 +2,7 @@
 // Created by mordimer on 11.03.17.
 //
 
-#include "include/dataset/Cluster.h"
+#include "include/models/Cluster.h"
 
 void Cluster::setFirstLinkIndex(int firstLinkIndex) {
     Cluster::firstLinkIndex = firstLinkIndex;

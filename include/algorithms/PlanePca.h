@@ -8,8 +8,8 @@
 #include <iostream>
 #include <Eigen/Dense>
 #include <vector>
-#include "../models/Plane.h"
-#include "../utils/constants.h"
+#include "include/models/Plane.h"
+#include "include/utils/constants.h"
 #include "include/models/ImageCoords.h"
 
 using namespace Eigen;
