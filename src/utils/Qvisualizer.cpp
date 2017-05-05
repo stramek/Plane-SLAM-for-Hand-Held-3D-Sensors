@@ -119,3 +119,7 @@ void QGLVisualizer::keyPressEvent(QKeyEvent *event) {
 
     QGLViewer::keyPressEvent(event);
 }
+
+const std::vector<Point3D> &QGLVisualizer::getPointCloud() const {
+    return pointCloud;
+}

@@ -40,6 +40,8 @@ public:
 
     void setPHCPModel(Eigen::Matrix<double, 3, 3> model);
 
+    const std::vector<Point3D> &getPointCloud() const;
+
 public:
 
     void keyPressEvent(QKeyEvent *event);

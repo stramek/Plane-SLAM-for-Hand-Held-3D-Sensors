@@ -41,9 +41,11 @@ int main(int argc, char **argv) {
         registration->apply(rgb, depth, &undistorted, &registered, true);
         visualizer.updateCloud(registration, &undistorted, &registered);
 
+//        utils::generateOctoMap("Kinect", visualizer.getPointCloud(), 0.01);
+
         listener.release(frames);
-//        this_thread::sleep_for(chrono::milliseconds(100));
         cv::waitKey(); // TODO: Ask for this function and QVisualizer keyPressEvent override
+
     }
 
     dev->stop();
