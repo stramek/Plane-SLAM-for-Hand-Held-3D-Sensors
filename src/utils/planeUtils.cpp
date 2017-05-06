@@ -115,6 +115,9 @@ namespace planeUtils {
         }
 
         imshow("Merged", merged);
+
+        imwrite( "../images/similar.png", merged );
+
         waitKey();
     }
 
