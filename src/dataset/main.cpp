@@ -24,7 +24,7 @@ int main(int argc, char **argv) {
     vector<pair<Plane, Plane>> similarPlanes;
 
     const int AREA_SIZE = 21; // odd number
-    const int NUMBER_OF_POINTS = 0;
+    const int NUMBER_OF_POINTS = 50;
     if (AREA_SIZE % 2 == 0) throw runtime_error("AREA_SIZE needs to be odd number");
 
     ImagePair imagePair1 = imageLoader.getNextPair();
@@ -32,6 +32,8 @@ int main(int argc, char **argv) {
     ImagePair imagePair2 = imageLoader.getNextPair();
     planeUtils::fillPlaneVector(NUMBER_OF_POINTS, AREA_SIZE, imagePair2, &planeVectorCurrentFrame,
                            &planeVectorPreviousFrame, 0.0f);
+
+    //planeUtils::fillPlaneVector(NUMBER_OF_POINTS, AREA_SIZE, imagePair1, &planeVectorCurrentFrame, )
 
 
     planeUtils::mergePlanes(planeVectorPreviousFrame);

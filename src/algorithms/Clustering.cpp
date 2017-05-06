@@ -16,12 +16,12 @@ float Clustering::getDistanceBetweenTwoPlanes(const Plane &firstPlane,  const Pl
     float distance = 0;
     vector<Vector3f> pointsVec = secondPlane.getPoints();
 
-    for(int i=0;i<10;++i){
+    for(int i=0;i<50;++i){
         random_device rd;
         mt19937 rng(rd());
         uniform_int_distribution<unsigned int> pointIndex(0, secondPlane.getNumberOfPoints() - 1);
         Vector3f randomPointOnSecondPlane = pointsVec[pointIndex(rng)];
-        distance += getDistanceBetweenPointAndPlane(firstPlane, randomPointOnSecondPlane) / 10;
+        distance += getDistanceBetweenPointAndPlane(firstPlane, randomPointOnSecondPlane) / 50;
     }
 
     return distance;
@@ -277,7 +277,7 @@ void Clustering::getClustersAfterThreshold(float cutThreshold, std::vector<Plane
 
 void Clustering::getClusteredPlaneGroup(std::vector<Plane> planesVec, vector<vector<Plane>>& clusteredPlanes){
     std::vector<std::unordered_set<int>> vecEachClusterPlanes;
-    getClustersAfterThreshold(6, planesVec, vecEachClusterPlanes);
+    getClustersAfterThreshold(20, planesVec, vecEachClusterPlanes);
     for(auto planesIndexesInOneCluster : vecEachClusterPlanes){
         std::vector<Plane> singleCluster;
         for(unsigned int planeIndex : planesIndexesInOneCluster){
