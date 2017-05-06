@@ -150,6 +150,7 @@ void Clustering::updateNextBestMerge(SimilarityItem **&similarityMatrix ,Similar
 
 void Clustering::computeClusters(std::vector<Plane> planesVec, std::vector<Cluster> &clustersVec) {
     std::vector<std::vector<float>> similarityMatrix;
+    std::vector<bool> isClustered;
     for(unsigned long rowNumber = 0; rowNumber < planesVec.size(); ++ rowNumber){
         std::vector<float> similarityVector;
         for(unsigned long columnNumber = 0; columnNumber < planesVec.size(); ++ columnNumber){
@@ -157,9 +158,46 @@ void Clustering::computeClusters(std::vector<Plane> planesVec, std::vector<Clust
             similarityVector.push_back(planeSimilarity);
         }
         similarityMatrix.push_back(similarityVector);
+        isClustered.push_back(false);
     }
 
+    clustersVec.clear();
 
+    for(unsigned int clusteringStepNum = 0; clusteringStepNum < planesVec.size() - 1; ++clusteringStepNum){
+        float maxSimilarity = std::numeric_limits<float>::max(); // most similar if value is smaller
+        unsigned int firstPlaneToClusterIndex = 0;
+        unsigned int secondPlaneToClusterIndex = 0;
+        for(unsigned int rowNumber = 0; rowNumber < planesVec.size(); ++ rowNumber){
+            for(unsigned int columnNumber = 0; columnNumber < planesVec.size(); ++ columnNumber){
+                std::cout << "Size nXn: " << similarityMatrix.size() << " x " << similarityMatrix.at(0).size() <<" i: " << rowNumber << " j: " << columnNumber << std::endl;
+                if(rowNumber != columnNumber && !isClustered.at(rowNumber) && !isClustered.at(columnNumber)){
+                    if(maxSimilarity >= similarityMatrix.at(rowNumber).at(columnNumber)){
+                        maxSimilarity = similarityMatrix.at(rowNumber).at(columnNumber);
+                        firstPlaneToClusterIndex = rowNumber;
+                        secondPlaneToClusterIndex = columnNumber;
+                    }
+                }
+            }
+        }
+        Cluster cluster;
+        cluster.setFirstLinkIndex(firstPlaneToClusterIndex);
+        cluster.setSecondLinkIndex(secondPlaneToClusterIndex);
+        cluster.setDistanceBetweenLinks(maxSimilarity);
+        clustersVec.push_back(cluster);
+
+        for(unsigned int columnNumber = 0; columnNumber < planesVec.size(); ++columnNumber){
+            std::cout << "Size nXn: " << similarityMatrix.size() << " x " << similarityMatrix.at(0).size() <<" i: " << columnNumber << " j: " << firstPlaneToClusterIndex << std::endl;
+            std::cout << "Size nXn: " << similarityMatrix.size() << " x " << similarityMatrix.at(0).size() <<" i: " << columnNumber << " j: " << secondPlaneToClusterIndex << std::endl;
+            if(similarityMatrix.at(firstPlaneToClusterIndex).at(columnNumber) < similarityMatrix.at(secondPlaneToClusterIndex).at(columnNumber)){
+                similarityMatrix.at(firstPlaneToClusterIndex).at(columnNumber) = similarityMatrix.at(firstPlaneToClusterIndex).at(columnNumber);
+                similarityMatrix.at(columnNumber).at(firstPlaneToClusterIndex) = similarityMatrix.at(firstPlaneToClusterIndex).at(columnNumber);
+            } else {
+                similarityMatrix.at(secondPlaneToClusterIndex).at(columnNumber) = similarityMatrix.at(secondPlaneToClusterIndex).at(columnNumber);
+                similarityMatrix.at(columnNumber).at(secondPlaneToClusterIndex) = similarityMatrix.at(secondPlaneToClusterIndex).at(columnNumber);
+            }
+        }
+        isClustered.at(secondPlaneToClusterIndex) = true;
+    }
 }
 
 float Clustering::getDistanceBetweenTwoPoints(cv::Point_<float> point1, cv::Point_<float> point2) {
@@ -261,7 +299,7 @@ void Clustering::getClustersAfterThreshold(float cutThreshold, std::vector<Plane
 
 void Clustering::getClusteredPlaneGroup(std::vector<Plane> planesVec, vector<vector<Plane>>& clusteredPlanes){
     std::vector<std::unordered_set<int>> vecEachClusterPlanes;
-    getClustersAfterThreshold(50, planesVec, vecEachClusterPlanes);
+    getClustersAfterThreshold(80, planesVec, vecEachClusterPlanes);
     for(auto planesIndexesInOneCluster : vecEachClusterPlanes){
         std::vector<Plane> singleCluster;
         for(unsigned int planeIndex : planesIndexesInOneCluster){
