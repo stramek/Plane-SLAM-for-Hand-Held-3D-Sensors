@@ -21,10 +21,10 @@ float Clustering::getDistanceBetweenTwoPlanes(const Plane &firstPlane,  const Pl
         mt19937 rng(rd());
         uniform_int_distribution<unsigned int> pointIndex(0, secondPlane.getNumberOfPoints() - 1);
         Vector3f randomPointOnSecondPlane = pointsVec[pointIndex(rng)];
-        distance += getDistanceBetweenPointAndPlane(firstPlane, randomPointOnSecondPlane) / 50;
+        distance += getDistanceBetweenPointAndPlane(firstPlane, randomPointOnSecondPlane);
     }
 
-    return distance;
+    return distance / 50;
 }
 
 float Clustering::getAngleBetweenTwoPlanes(const Plane &firstPlane, const Plane &secondPlane){
@@ -43,11 +43,12 @@ float Clustering::getAngleBetweenTwoPlanes(const Plane &firstPlane, const Plane 
 
 float Clustering::getSimilarityOfTwoPlanes(const Plane &firstPlane, const Plane &secondPlane){
     float angleBetweenTwoPlanes = firstPlane.getAngleBetweenTwoPlanes(secondPlane);
-/*    if(abs(angleBetweenTwoPlanes) < MAX_ANGLE_THRESHOLD){
-        return getDistanceBetweenTwoPlanes(firstPlane, secondPlane);
+    if(abs(angleBetweenTwoPlanes) < MAX_ANGLE_THRESHOLD){
+        //return getDistanceBetweenTwoPlanes(firstPlane, secondPlane);
+        return abs(firstPlane.getD() - secondPlane.getD());
     }
-    return std::numeric_limits<float>::max();*/
-    return abs(angleBetweenTwoPlanes);
+    return std::numeric_limits<float>::max();
+    //return abs(angleBetweenTwoPlanes);
 }
 
 void Clustering::createSimilarityMatrix(SimilarityItem **&similarityMatrix, unsigned long size){
@@ -277,7 +278,7 @@ void Clustering::getClustersAfterThreshold(float cutThreshold, std::vector<Plane
 
 void Clustering::getClusteredPlaneGroup(std::vector<Plane> planesVec, vector<vector<Plane>>& clusteredPlanes){
     std::vector<std::unordered_set<int>> vecEachClusterPlanes;
-    getClustersAfterThreshold(20, planesVec, vecEachClusterPlanes);
+    getClustersAfterThreshold(50, planesVec, vecEachClusterPlanes);
     for(auto planesIndexesInOneCluster : vecEachClusterPlanes){
         std::vector<Plane> singleCluster;
         for(unsigned int planeIndex : planesIndexesInOneCluster){
