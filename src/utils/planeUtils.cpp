@@ -48,7 +48,7 @@ namespace planeUtils {
             ImageCoords imageCoords;
 
             pair<int, int> position;
-            if (previousPlaneVector != nullptr && iteration <= numberOfPoints * previousPlanePercent
+            if (previousPlaneVector != nullptr && iteration < numberOfPoints * previousPlanePercent
                 && iteration < previousPlaneVector->size()) {
                 imageCoords = previousPlaneVector->at(iteration).getImageCoords();
             } else {
@@ -119,13 +119,18 @@ namespace planeUtils {
     }
 
     void filterPairsByAngle(vector<pair<Plane, Plane>> &pairs) {
+        cout<<endl<<endl<<endl;
         for (auto it = pairs.begin(); it != pairs.end();) {
+            cout<<"Angle is: "<<it->first.getAngleBetweenTwoPlanes(it->second)<<"... ";
             if (it->first.getAngleBetweenTwoPlanes(it->second) > MAX_ANGLE_BETWEEN_PLANES) {
-                it = pairs.erase(pairs.begin() + 1);
+                cout<<"deleteing."<<endl;
+                it = pairs.erase(it++);
             } else {
+                cout<<"it's fine."<<endl;
                 ++it;
             }
         }
+        // TODO: WTF
     }
 
     void mergePlanes(vector<Plane> &planeVector) {
