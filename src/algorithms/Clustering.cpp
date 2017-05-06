@@ -149,34 +149,17 @@ void Clustering::updateNextBestMerge(SimilarityItem **&similarityMatrix ,Similar
 }
 
 void Clustering::computeClusters(std::vector<Plane> planesVec, std::vector<Cluster> &clustersVec) {
-
-    unsigned const long  similarityMatSize = planesVec.size();
-    SimilarityItem **SimilarityMatrix;
-
-    createSimilarityMatrix(SimilarityMatrix, similarityMatSize);
-
-    unsigned int *I = new unsigned int[planesVec.size()];
-    SimilarityItem *nextBestMerge;
-    createNextBestMergeMatrix(nextBestMerge, planesVec.size());
-
-    clusteringInitializeStep(SimilarityMatrix, nextBestMerge, I, planesVec);
-
-    for (int i = 0; i < planesVec.size() - 1; ++i) {
-
-        unsigned int firstPointToMergeIndex, secondPointToMergeIndex;
-        computeIndexOfTwoPlanesToMerge(nextBestMerge, I, firstPointToMergeIndex, secondPointToMergeIndex,
-                                       planesVec.size());
-        addNewClusterToVec(clustersVec, SimilarityMatrix, firstPointToMergeIndex, secondPointToMergeIndex);
-
-        updateSimilarityMatrixState(SimilarityMatrix, I, firstPointToMergeIndex, secondPointToMergeIndex,
-                                    planesVec.size());
-
-
-        updateNextBestMerge(SimilarityMatrix, nextBestMerge, I, firstPointToMergeIndex, planesVec.size());
+    std::vector<std::vector<float>> similarityMatrix;
+    for(unsigned long rowNumber = 0; rowNumber < planesVec.size(); ++ rowNumber){
+        std::vector<float> similarityVector;
+        for(unsigned long columnNumber = 0; columnNumber < planesVec.size(); ++ columnNumber){
+            float planeSimilarity = getSimilarityOfTwoPlanes(planesVec.at(rowNumber), planesVec.at(columnNumber));
+            similarityVector.push_back(planeSimilarity);
+        }
+        similarityMatrix.push_back(similarityVector);
     }
-    delete[] I;
-    deleteSimilarityMatrix(SimilarityMatrix, similarityMatSize);
-    deleteNextBestMergeMatrix(nextBestMerge);
+
+
 }
 
 float Clustering::getDistanceBetweenTwoPoints(cv::Point_<float> point1, cv::Point_<float> point2) {
