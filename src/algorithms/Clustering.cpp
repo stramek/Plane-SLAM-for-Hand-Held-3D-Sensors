@@ -6,17 +6,17 @@
 
 const float Clustering::MAX_ANGLE_THRESHOLD = 5.0;
 
-float Clustering::getDistanceBetweenPointAndPlane(Plane plane, Vector3f point){
-    float distance = abs(plane.getA()*point(0) + plane.getB()*point(1) + plane.getC()*point(2) + plane.getD()) /
-                    sqrtf(powf(plane.getA(), 2) + powf(plane.getB(), 2) + powf(plane.getC(), 2));
+float Clustering::getDistanceBetweenPointAndPlane(Plane plane, Vector3f point) {
+    float distance = abs(plane.getA() * point(0) + plane.getB() * point(1) + plane.getC() * point(2) + plane.getD()) /
+                     sqrtf(powf(plane.getA(), 2) + powf(plane.getB(), 2) + powf(plane.getC(), 2));
     return distance;
 }
 
-float Clustering::getDistanceBetweenTwoPlanes(const Plane &firstPlane,  const Plane &secondPlane){
+float Clustering::getDistanceBetweenTwoPlanes(const Plane &firstPlane, const Plane &secondPlane) {
     float distance = 0;
     vector<Vector3f> pointsVec = secondPlane.getPoints();
 
-    for(int i=0;i<50;++i){
+    for (int i = 0; i < 50; ++i) {
         random_device rd;
         mt19937 rng(rd());
         uniform_int_distribution<unsigned int> pointIndex(0, secondPlane.getNumberOfPoints() - 1);
@@ -27,21 +27,22 @@ float Clustering::getDistanceBetweenTwoPlanes(const Plane &firstPlane,  const Pl
     return distance / 50;
 }
 
-float Clustering::getAngleBetweenTwoPlanes(const Plane &firstPlane, const Plane &secondPlane){
+float Clustering::getAngleBetweenTwoPlanes(const Plane &firstPlane, const Plane &secondPlane) {
     Eigen::Vector3f firstPlaneNormalVec = firstPlane.getPlaneNormalVec();
     Eigen::Vector3f secondPlaneNormalVec = secondPlane.getPlaneNormalVec();
 
-    float angleCos = firstPlaneNormalVec.dot(secondPlaneNormalVec) / firstPlaneNormalVec.norm() / secondPlaneNormalVec.norm();
-    if(angleCos < -1) angleCos = -1.0f;
-    if(angleCos > 1) angleCos = 1.0f;
-    float angle = acosf(angleCos)*180.0f/(float)M_PI;
-    if(angle > 90.0f){
+    float angleCos =
+            firstPlaneNormalVec.dot(secondPlaneNormalVec) / firstPlaneNormalVec.norm() / secondPlaneNormalVec.norm();
+    if (angleCos < -1) angleCos = -1.0f;
+    if (angleCos > 1) angleCos = 1.0f;
+    float angle = acosf(angleCos) * 180.0f / (float) M_PI;
+    if (angle > 90.0f) {
         angle = 180.0f - angle;
     }
     return angle;
 }
 
-float Clustering::getSimilarityOfTwoPlanes(const Plane &firstPlane, const Plane &secondPlane){
+float Clustering::getSimilarityOfTwoPlanes(const Plane &firstPlane, const Plane &secondPlane) {
     float angleBetweenTwoPlanes = firstPlane.getAngleBetweenTwoPlanes(secondPlane);
 /*    if(abs(angleBetweenTwoPlanes) < MAX_ANGLE_THRESHOLD){
         //return getDistanceBetweenTwoPlanes(firstPlane, secondPlane);
@@ -51,30 +52,30 @@ float Clustering::getSimilarityOfTwoPlanes(const Plane &firstPlane, const Plane 
     return abs(angleBetweenTwoPlanes);
 }
 
-void Clustering::createSimilarityMatrix(SimilarityItem **&similarityMatrix, unsigned long size){
+void Clustering::createSimilarityMatrix(SimilarityItem **&similarityMatrix, unsigned long size) {
     similarityMatrix = new SimilarityItem *[size];
     for (int i = 0; i < size; ++i) {
         similarityMatrix[i] = new SimilarityItem[size];
     }
 }
 
-void Clustering::deleteSimilarityMatrix(SimilarityItem **&similarityMatrix, unsigned long size){
-    for(int i = 0; i < size; ++i){
+void Clustering::deleteSimilarityMatrix(SimilarityItem **&similarityMatrix, unsigned long size) {
+    for (int i = 0; i < size; ++i) {
         delete[] similarityMatrix[i];
     }
     delete[] similarityMatrix;
 }
 
-void Clustering::createNextBestMergeMatrix(SimilarityItem *&nextBestMerge, unsigned long size){
+void Clustering::createNextBestMergeMatrix(SimilarityItem *&nextBestMerge, unsigned long size) {
     nextBestMerge = new SimilarityItem[size];
 }
 
-void Clustering::deleteNextBestMergeMatrix(SimilarityItem *&nextBestMerge){
+void Clustering::deleteNextBestMergeMatrix(SimilarityItem *&nextBestMerge) {
     delete[] nextBestMerge;
 }
 
 void Clustering::clusteringInitializeStep(SimilarityItem **&similarityMatrix, SimilarityItem *&nextBestMerge,
-                                          unsigned int *&I, const std::vector<Plane> &planesVec){
+                                          unsigned int *&I, const std::vector<Plane> &planesVec) {
     for (unsigned int i = 0; i < planesVec.size(); ++i) {
         unsigned int indexMaxRow = 0;
         float maxSimilarityRow = std::numeric_limits<float>::max();
@@ -93,7 +94,7 @@ void Clustering::clusteringInitializeStep(SimilarityItem **&similarityMatrix, Si
 
 void Clustering::computeIndexOfTwoPlanesToMerge(SimilarityItem *&nextBestMerge, unsigned int *&I,
                                                 unsigned int &firstPlaneIndexToMerge,
-                                                unsigned int &secondPlaneIndexToMerge, unsigned long size){
+                                                unsigned int &secondPlaneIndexToMerge, unsigned long size) {
     float maxNBM_Sim = std::numeric_limits<float>::max();
 
     for (unsigned int j = 0; j < size; ++j) {
@@ -108,7 +109,7 @@ void Clustering::computeIndexOfTwoPlanesToMerge(SimilarityItem *&nextBestMerge, 
 
 void Clustering::addNewClusterToVec(std::vector<Cluster> &clustersVec, SimilarityItem **&similarityMatrix,
                                     const unsigned int &firstPlaneIndexToMerge,
-                                    const unsigned int &secondPlaneIndexToMerge){
+                                    const unsigned int &secondPlaneIndexToMerge) {
     Cluster cluster;
     cluster.setFirstLinkIndex(firstPlaneIndexToMerge);
     cluster.setSecondLinkIndex(secondPlaneIndexToMerge);
@@ -118,10 +119,11 @@ void Clustering::addNewClusterToVec(std::vector<Cluster> &clustersVec, Similarit
 
 void Clustering::updateSimilarityMatrixState(SimilarityItem **&similarityMatrix, unsigned int *&I,
                                              const unsigned int &firstPlaneIndexToMerge,
-                                             const unsigned int &secondPlaneIndexToMerge, unsigned long size){
+                                             const unsigned int &secondPlaneIndexToMerge, unsigned long size) {
     for (int j = 0; j < size; ++j) {
         if (I[j] == j && j != firstPlaneIndexToMerge && j != secondPlaneIndexToMerge) {
-            if (similarityMatrix[firstPlaneIndexToMerge][j].similarity < similarityMatrix[secondPlaneIndexToMerge][j].similarity) {
+            if (similarityMatrix[firstPlaneIndexToMerge][j].similarity <
+                similarityMatrix[secondPlaneIndexToMerge][j].similarity) {
                 similarityMatrix[firstPlaneIndexToMerge][j].similarity = similarityMatrix[firstPlaneIndexToMerge][j].similarity;
                 similarityMatrix[j][firstPlaneIndexToMerge].similarity = similarityMatrix[firstPlaneIndexToMerge][j].similarity;
             } else {
@@ -136,12 +138,14 @@ void Clustering::updateSimilarityMatrixState(SimilarityItem **&similarityMatrix,
 
 }
 
-void Clustering::updateNextBestMerge(SimilarityItem **&similarityMatrix ,SimilarityItem *&nextBestMerge, unsigned int *&I,
-                                     unsigned int firstPlaneIndexToMerge,unsigned long size){
+void
+Clustering::updateNextBestMerge(SimilarityItem **&similarityMatrix, SimilarityItem *&nextBestMerge, unsigned int *&I,
+                                unsigned int firstPlaneIndexToMerge, unsigned long size) {
     SimilarityItem similarityMatrixItem_MaxSim;
     similarityMatrixItem_MaxSim.similarity = std::numeric_limits<float>::max();;
     for (int j = 0; j < size; ++j) {
-        if (similarityMatrix[firstPlaneIndexToMerge][j].similarity < similarityMatrixItem_MaxSim.similarity && I[j] == j && j != firstPlaneIndexToMerge) {
+        if (similarityMatrix[firstPlaneIndexToMerge][j].similarity < similarityMatrixItem_MaxSim.similarity &&
+            I[j] == j && j != firstPlaneIndexToMerge) {
             similarityMatrixItem_MaxSim = similarityMatrix[firstPlaneIndexToMerge][j];
         }
     }
@@ -151,9 +155,9 @@ void Clustering::updateNextBestMerge(SimilarityItem **&similarityMatrix ,Similar
 void Clustering::computeClusters(std::vector<Plane> planesVec, std::vector<Cluster> &clustersVec) {
     std::vector<std::vector<float>> similarityMatrix;
     std::vector<bool> isClustered;
-    for(unsigned long rowNumber = 0; rowNumber < planesVec.size(); ++ rowNumber){
+    for (unsigned long rowNumber = 0; rowNumber < planesVec.size(); ++rowNumber) {
         std::vector<float> similarityVector;
-        for(unsigned long columnNumber = 0; columnNumber < planesVec.size(); ++ columnNumber){
+        for (unsigned long columnNumber = 0; columnNumber < planesVec.size(); ++columnNumber) {
             float planeSimilarity = getSimilarityOfTwoPlanes(planesVec.at(rowNumber), planesVec.at(columnNumber));
             similarityVector.push_back(planeSimilarity);
         }
@@ -163,15 +167,16 @@ void Clustering::computeClusters(std::vector<Plane> planesVec, std::vector<Clust
 
     clustersVec.clear();
 
-    for(unsigned int clusteringStepNum = 0; clusteringStepNum < planesVec.size() - 1; ++clusteringStepNum){
+    for (unsigned int clusteringStepNum = 0; clusteringStepNum < planesVec.size() - 1; ++clusteringStepNum) {
         float maxSimilarity = std::numeric_limits<float>::max(); // most similar if value is smaller
         unsigned int firstPlaneToClusterIndex = 0;
         unsigned int secondPlaneToClusterIndex = 0;
-        for(unsigned int rowNumber = 0; rowNumber < planesVec.size(); ++ rowNumber){
-            for(unsigned int columnNumber = 0; columnNumber < planesVec.size(); ++ columnNumber){
-                std::cout << "Size nXn: " << similarityMatrix.size() << " x " << similarityMatrix.at(0).size() <<" i: " << rowNumber << " j: " << columnNumber << std::endl;
-                if(rowNumber != columnNumber && !isClustered.at(rowNumber) && !isClustered.at(columnNumber)){
-                    if(maxSimilarity >= similarityMatrix.at(rowNumber).at(columnNumber)){
+        for (unsigned int rowNumber = 0; rowNumber < planesVec.size(); ++rowNumber) {
+            for (unsigned int columnNumber = 0; columnNumber < planesVec.size(); ++columnNumber) {
+                std::cout << "Size nXn: " << similarityMatrix.size() << " x " << similarityMatrix.at(0).size() << " i: "
+                          << rowNumber << " j: " << columnNumber << std::endl;
+                if (rowNumber != columnNumber && !isClustered.at(rowNumber) && !isClustered.at(columnNumber)) {
+                    if (maxSimilarity >= similarityMatrix.at(rowNumber).at(columnNumber)) {
                         maxSimilarity = similarityMatrix.at(rowNumber).at(columnNumber);
                         firstPlaneToClusterIndex = rowNumber;
                         secondPlaneToClusterIndex = columnNumber;
@@ -185,15 +190,22 @@ void Clustering::computeClusters(std::vector<Plane> planesVec, std::vector<Clust
         cluster.setDistanceBetweenLinks(maxSimilarity);
         clustersVec.push_back(cluster);
 
-        for(unsigned int columnNumber = 0; columnNumber < planesVec.size(); ++columnNumber){
-            std::cout << "Size nXn: " << similarityMatrix.size() << " x " << similarityMatrix.at(0).size() <<" i: " << columnNumber << " j: " << firstPlaneToClusterIndex << std::endl;
-            std::cout << "Size nXn: " << similarityMatrix.size() << " x " << similarityMatrix.at(0).size() <<" i: " << columnNumber << " j: " << secondPlaneToClusterIndex << std::endl;
-            if(similarityMatrix.at(firstPlaneToClusterIndex).at(columnNumber) < similarityMatrix.at(secondPlaneToClusterIndex).at(columnNumber)){
-                similarityMatrix.at(firstPlaneToClusterIndex).at(columnNumber) = similarityMatrix.at(firstPlaneToClusterIndex).at(columnNumber);
-                similarityMatrix.at(columnNumber).at(firstPlaneToClusterIndex) = similarityMatrix.at(firstPlaneToClusterIndex).at(columnNumber);
+        for (unsigned int columnNumber = 0; columnNumber < planesVec.size(); ++columnNumber) {
+            std::cout << "Size nXn: " << similarityMatrix.size() << " x " << similarityMatrix.at(0).size() << " i: "
+                      << columnNumber << " j: " << firstPlaneToClusterIndex << std::endl;
+            std::cout << "Size nXn: " << similarityMatrix.size() << " x " << similarityMatrix.at(0).size() << " i: "
+                      << columnNumber << " j: " << secondPlaneToClusterIndex << std::endl;
+            if (similarityMatrix.at(firstPlaneToClusterIndex).at(columnNumber) <
+                similarityMatrix.at(secondPlaneToClusterIndex).at(columnNumber)) {
+                similarityMatrix.at(firstPlaneToClusterIndex).at(columnNumber) = similarityMatrix.at(
+                        firstPlaneToClusterIndex).at(columnNumber);
+                similarityMatrix.at(columnNumber).at(firstPlaneToClusterIndex) = similarityMatrix.at(
+                        firstPlaneToClusterIndex).at(columnNumber);
             } else {
-                similarityMatrix.at(secondPlaneToClusterIndex).at(columnNumber) = similarityMatrix.at(secondPlaneToClusterIndex).at(columnNumber);
-                similarityMatrix.at(columnNumber).at(secondPlaneToClusterIndex) = similarityMatrix.at(secondPlaneToClusterIndex).at(columnNumber);
+                similarityMatrix.at(secondPlaneToClusterIndex).at(columnNumber) = similarityMatrix.at(
+                        secondPlaneToClusterIndex).at(columnNumber);
+                similarityMatrix.at(columnNumber).at(secondPlaneToClusterIndex) = similarityMatrix.at(
+                        secondPlaneToClusterIndex).at(columnNumber);
             }
         }
         isClustered.at(secondPlaneToClusterIndex) = true;
@@ -204,14 +216,20 @@ float Clustering::getDistanceBetweenTwoPoints(cv::Point_<float> point1, cv::Poin
     return sqrtf(powf(point1.x - point2.x, 2) + powf(point1.y - point2.y, 2));
 }
 
-/*void eraseFromMapByCluster(const unordered_map<int, Cluster> &map, Cluster &cluster) {
+void eraseFromMapByClusterIndexes(unordered_map<int, Cluster> &clusters, Cluster &cluster) {
     for (auto &index : cluster.getIndexList()) {
-        map.erase()
+        clusters.erase(index);
     }
-}*/
+}
+
+void insertToMapByClusterIndexes(unordered_map<int, Cluster> &clusters, Cluster &cluster) {
+    for (auto &index : cluster.getIndexList()) {
+        clusters.insert(pair<int, Cluster>(index, cluster));
+    }
+}
 
 void Clustering::getClustersAfterThreshold(float cutThreshold, std::vector<Plane> planesVec,
-                                           set<Cluster>& output) {
+                                           set<Cluster> &output) {
     output.clear();
     vector<Cluster> clustersVec;
     computeClusters(planesVec, clustersVec);
@@ -223,64 +241,38 @@ void Clustering::getClustersAfterThreshold(float cutThreshold, std::vector<Plane
         if (clusters.count(cluster.getFirstLinkIndex()) && clusters.count(cluster.getSecondLinkIndex())) {
             Cluster child1 = clusters.at(cluster.getFirstLinkIndex());
             Cluster child2 = clusters.at(cluster.getSecondLinkIndex());
-
-            for (auto &index : child1.getIndexList()) {
-                clusters.erase(index);
-            }
-            for (auto &index : child2.getIndexList()) {
-                clusters.erase(index);
-            }
-
+            eraseFromMapByClusterIndexes(clusters, child1);
+            eraseFromMapByClusterIndexes(clusters, child2);
             cluster.mergeClildrenIndexes(child1, child2);
-
-            for (auto &index : cluster.getIndexList()) {
-                clusters.insert(pair<int, Cluster>(index, cluster));
-            }
+            insertToMapByClusterIndexes(clusters, cluster);
         } else if (clusters.count(cluster.getFirstLinkIndex())) {
             Cluster child = clusters.at(cluster.getFirstLinkIndex());
-            for (auto &index : child.getIndexList()) {
-                clusters.erase(index);
-            }
-            for (auto &index : cluster.getIndexList()) {
-                clusters.erase(index);
-            }
+            eraseFromMapByClusterIndexes(clusters, child);
+            eraseFromMapByClusterIndexes(clusters, cluster);
             cluster.mergeClildrenIndexes(cluster, child);
-            for (auto &index : cluster.getIndexList()) {
-                clusters.insert(pair<int, Cluster>(index, cluster));
-            }
+            insertToMapByClusterIndexes(clusters, cluster);
         } else if (clusters.count(cluster.getSecondLinkIndex())) {
             Cluster child = clusters.at(cluster.getSecondLinkIndex());
-            for (auto &index : child.getIndexList()) {
-                clusters.erase(index);
-            }
-            for (auto &index : cluster.getIndexList()) {
-                clusters.erase(index);
-            }
+            eraseFromMapByClusterIndexes(clusters, child);
+            eraseFromMapByClusterIndexes(clusters, cluster);
             cluster.mergeClildrenIndexes(cluster, child);
-            for (auto &index : cluster.getIndexList()) {
-                clusters.insert(pair<int, Cluster>(index, cluster));
-            }
+            insertToMapByClusterIndexes(clusters, cluster);
         } else {
             clusters.insert(pair<int, Cluster>(cluster.getFirstLinkIndex(), cluster));
             clusters.insert(pair<int, Cluster>(cluster.getSecondLinkIndex(), cluster));
         }
     }
 
-
-
-    set<Cluster> test;
     for (auto pair : clusters) {
-        test.insert(pair.second);
         output.insert(pair.second);
     }
-    cout<<"asd"<<endl;
 
 }
 
-void Clustering::getClusteredPlaneGroup(std::vector<Plane> planesVec, vector<vector<Plane>>& clusteredPlanes){
+void Clustering::getClusteredPlaneGroup(std::vector<Plane> planesVec, vector<vector<Plane>> &clusteredPlanes) {
     set<Cluster> vecEachClusterPlanes;
     getClustersAfterThreshold(15, planesVec, vecEachClusterPlanes);
-    for(auto planesIndexesInOneCluster : vecEachClusterPlanes){
+    for (auto planesIndexesInOneCluster : vecEachClusterPlanes) {
         vector<Plane> singleCluster;
         for (auto &index : planesIndexesInOneCluster.getIndexList()) {
             Plane singleClusterPlane = planesVec.at(index);
@@ -290,9 +282,9 @@ void Clustering::getClusteredPlaneGroup(std::vector<Plane> planesVec, vector<vec
     }
 }
 
-vector<Plane> Clustering::getAveragedPlanes(vector<vector<Plane>>& clusteredPlanes){
+vector<Plane> Clustering::getAveragedPlanes(vector<vector<Plane>> &clusteredPlanes) {
     vector<Plane> averagedPlanesVec;
-    for(auto planesFromCluster : clusteredPlanes){
+    for (auto planesFromCluster : clusteredPlanes) {
         float averagedD = 0;
         int averagedHue = 0;
         int averagedSaturation = 0;
@@ -300,7 +292,7 @@ vector<Plane> Clustering::getAveragedPlanes(vector<vector<Plane>>& clusteredPlan
         vector<Vector3f> mergedPlanePoints;
         vector<ImageCoords> mergedPlaneImageCoordsVec;
         Vector3f averagedNormalVec = Vector3f::Zero();
-        for(auto plane : planesFromCluster){
+        for (auto plane : planesFromCluster) {
             averagedNormalVec += plane.getPlaneNormalVec();
             averagedD += plane.getD();
             averagedHue += plane.getColor().getHue();
@@ -310,14 +302,16 @@ vector<Plane> Clustering::getAveragedPlanes(vector<vector<Plane>>& clusteredPlan
             vector<Vector3f> points = plane.getPoints();
             vector<ImageCoords> imageCoordsVec = plane.getImageCoordsVec();
             mergedPlanePoints.insert(mergedPlanePoints.end(), points.begin(), points.end());
-            mergedPlaneImageCoordsVec.insert(mergedPlaneImageCoordsVec.end(), imageCoordsVec.begin(), imageCoordsVec.end());
+            mergedPlaneImageCoordsVec.insert(mergedPlaneImageCoordsVec.end(), imageCoordsVec.begin(),
+                                             imageCoordsVec.end());
         }
         averagedNormalVec = averagedNormalVec / planesFromCluster.size();
         averagedD = averagedD / planesFromCluster.size();
-        averagedHue = averagedHue / (int)planesFromCluster.size();
-        averagedSaturation = averagedSaturation / (int)planesFromCluster.size();
-        averagedValue = averagedValue / (int)planesFromCluster.size();
-        Plane averagedPlane(averagedNormalVec, averagedD, mergedPlanePoints, mergedPlaneImageCoordsVec, HSVColor((uint8_t)averagedHue, (uint8_t)averagedSaturation, (uint8_t)averagedValue));
+        averagedHue = averagedHue / (int) planesFromCluster.size();
+        averagedSaturation = averagedSaturation / (int) planesFromCluster.size();
+        averagedValue = averagedValue / (int) planesFromCluster.size();
+        Plane averagedPlane(averagedNormalVec, averagedD, mergedPlanePoints, mergedPlaneImageCoordsVec,
+                            HSVColor((uint8_t) averagedHue, (uint8_t) averagedSaturation, (uint8_t) averagedValue));
         averagedPlanesVec.push_back(averagedPlane);
     }
     return averagedPlanesVec;
