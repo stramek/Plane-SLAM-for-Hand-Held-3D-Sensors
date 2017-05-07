@@ -179,8 +179,6 @@ void Clustering::computeClusters(std::vector<Plane> planesVec, std::vector<Clust
         unsigned int secondPlaneToClusterIndex = 0;
         for (unsigned int rowNumber = 0; rowNumber < planesVec.size(); ++rowNumber) {
             for (unsigned int columnNumber = 0; columnNumber < planesVec.size(); ++columnNumber) {
-                std::cout << "Size nXn: " << similarityMatrix.size() << " x " << similarityMatrix.at(0).size() << " i: "
-                          << rowNumber << " j: " << columnNumber << std::endl;
                 if (rowNumber != columnNumber && !isClustered.at(rowNumber) && !isClustered.at(columnNumber)) {
                     if (maxSimilarity >= similarityMatrix.at(rowNumber).at(columnNumber)) {
                         maxSimilarity = similarityMatrix.at(rowNumber).at(columnNumber);
@@ -230,6 +228,11 @@ void insertToMapByClusterIndexes(unordered_map<int, Cluster> &clusters, Cluster 
     }
 }
 
+void setIndexToSet(set<int> &set, int value) {
+    set.clear();
+    set.insert(value);
+}
+
 void Clustering::getClustersAfterThreshold(float cutThreshold, vector<Plane> planesVec,
                                            set<Cluster> &output) {
     output.clear();
@@ -237,6 +240,13 @@ void Clustering::getClustersAfterThreshold(float cutThreshold, vector<Plane> pla
     computeClusters(planesVec, clustersVec);
     sort(clustersVec.begin(), clustersVec.end());
     unordered_map<int, Cluster> clusters;
+
+    cout<<endl<<endl<<endl<<endl;
+    int i = 0;
+    for (Cluster cluster : clustersVec) {
+        i++;
+        cout<<"Cluster nr. "<<i<<" index 1: "<<cluster.getFirstLinkIndex()<<" index 2: "<<cluster.getSecondLinkIndex()<<" distance: "<<cluster.getDistanceBetweenLinks()<<endl;
+    }
 
     for (Cluster &cluster : clustersVec) {
         if (cluster.getDistanceBetweenLinks() <= cutThreshold) {
@@ -270,13 +280,26 @@ void Clustering::getClustersAfterThreshold(float cutThreshold, vector<Plane> pla
             cluster.getIndexList().erase(cluster.getSecondLinkIndex());
             clusters.insert(pair<int, Cluster>(cluster.getFirstLinkIndex(), cluster));
         } else {
+            setIndexToSet(cluster.getIndexList(), cluster.getFirstLinkIndex());
             clusters.insert(pair<int, Cluster>(cluster.getFirstLinkIndex(), cluster));
+            setIndexToSet(cluster.getIndexList(), cluster.getSecondLinkIndex());
             clusters.insert(pair<int, Cluster>(cluster.getSecondLinkIndex(), cluster));
         }
     }
 
     for (auto pair : clusters) {
         output.insert(pair.second);
+    }
+
+    cout<<endl<<endl;
+    int j = 0;
+    for (auto cluster : output) {
+        j++;
+        cout<<"Cluster nr. "<<j<<": ";
+        for (int number : cluster.getIndexList()) {
+            cout<<number<<", ";
+        }
+        cout<<endl;
     }
 }
 

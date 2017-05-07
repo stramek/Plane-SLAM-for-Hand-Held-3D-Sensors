@@ -17,7 +17,7 @@ int main(int argc, char **argv) {
     visualizer.setPHCPModel(PHCP_MODEL);
     visualizer.show();
 
-    //while (true) {
+    while (true) {
 
         ImageLoader imageLoader(50);
 
@@ -47,7 +47,7 @@ int main(int argc, char **argv) {
         //visualizer.updateCloud(imagePair1.getRgb(), imagePair2.getDepth());
 
         //utils::generateOctoMap("Dataset", visualizer.getPointCloud());
-    //}
+    }
 
 
     return application.exec();

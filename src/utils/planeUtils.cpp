@@ -157,5 +157,6 @@ namespace planeUtils {
             }
         }
         imshow("Clustered planes", imagePair.getRgb());
+        waitKey();
     }
 }
