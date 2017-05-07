@@ -154,7 +154,7 @@ Clustering::updateNextBestMerge(SimilarityItem **&similarityMatrix, SimilarityIt
 
 void Clustering::computeClusters(std::vector<Plane> planesVec, std::vector<Cluster> &clustersVec) {
     clustersVec.clear();
-    if(planesVec.size() == 1){
+    if (planesVec.size() == 1) {
         Cluster cluster;
         cluster.setDistanceBetweenLinks(std::numeric_limits<float>::max());
         cluster.setFirstLinkIndex(0);
@@ -273,17 +273,11 @@ void Clustering::getClustersAfterThreshold(float cutThreshold, vector<Plane> pla
             clusters.insert(pair<int, Cluster>(cluster.getFirstLinkIndex(), cluster));
             clusters.insert(pair<int, Cluster>(cluster.getSecondLinkIndex(), cluster));
         }
-
     }
 
-
-
-    set<Cluster> test;
     for (auto pair : clusters) {
         output.insert(pair.second);
-        test.insert(pair.second);
     }
-    cout<<"asd";
 }
 
 void Clustering::getClusteredPlaneGroup(std::vector<Plane> planesVec, vector<vector<Plane>> &clusteredPlanes) {
