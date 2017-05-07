@@ -241,9 +241,9 @@ void Clustering::getClustersAfterThreshold(float cutThreshold, vector<Plane> pla
     computeClusters(planesVec, clustersVec);
     sort(clustersVec.begin(), clustersVec.end());
     std::cout<<std::endl;
-    for(auto cluster : clustersVec){
-        std::cout<< "First: "cluster.getFirstLinkIndex() << " Second: "<<cluster.getSecondLinkIndex() << " Distance: "<<cluster.setDistanceBetweenLinks() << std::endl;
-    }
+/*    for(auto cluster : clustersVec){
+        std::cout<< "First: "cluster.getFirstLinkIndex() << " Second: "<<cluster.getSecondLinkIndex() << " Distance: "<<cluster.getDistanceBetweenLinks() << std::endl;
+    }*/
 
     unordered_map<int, Cluster> clusters;
 
