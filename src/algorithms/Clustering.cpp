@@ -235,6 +235,7 @@ void setIndexToSet(set<int> &set, int value) {
 
 void Clustering::getClustersAfterThreshold(float cutThreshold, vector<Plane> planesVec,
                                            set<Cluster> &output) {
+   // set<Cluster> output;
     output.clear();
     vector<Cluster> clustersVec;
     computeClusters(planesVec, clustersVec);
@@ -283,7 +284,9 @@ void Clustering::getClustersAfterThreshold(float cutThreshold, vector<Plane> pla
             setIndexToSet(cluster.getIndexList(), cluster.getFirstLinkIndex());
             clusters.insert(pair<int, Cluster>(cluster.getFirstLinkIndex(), cluster));
             setIndexToSet(cluster.getIndexList(), cluster.getSecondLinkIndex());
+            //cluster.setDistanceBetweenLinks(cluster.getDistanceBetweenLinks() * 0.9999999f);
             clusters.insert(pair<int, Cluster>(cluster.getSecondLinkIndex(), cluster));
+            cout<<"asd"<<endl;
         }
     }
 
@@ -305,7 +308,7 @@ void Clustering::getClustersAfterThreshold(float cutThreshold, vector<Plane> pla
 
 void Clustering::getClusteredPlaneGroup(std::vector<Plane> planesVec, vector<vector<Plane>> &clusteredPlanes) {
     set<Cluster> vecEachClusterPlanes;
-    getClustersAfterThreshold(15, planesVec, vecEachClusterPlanes);
+    getClustersAfterThreshold(10, planesVec, vecEachClusterPlanes);
     for (auto planesIndexesInOneCluster : vecEachClusterPlanes) {
         vector<Plane> singleCluster;
         for (auto &index : planesIndexesInOneCluster.getIndexList()) {

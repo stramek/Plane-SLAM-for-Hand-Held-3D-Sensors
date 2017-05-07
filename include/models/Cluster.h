@@ -34,9 +34,19 @@ public:
 
     void setIndexList(set<int> &indexList);
 
-    bool operator < (const Cluster& cluster) const {
+    bool operator<(const Cluster &cluster) const {
         return (distanceBetweenLinks < cluster.distanceBetweenLinks);
     }
+
+    struct ClusterCompare {
+        bool operator() (const Cluster& lhs, const Cluster& rhs) const{
+            return lhs.firstLinkIndex == rhs.secondLinkIndex &&
+                lhs.secondLinkIndex == rhs.secondLinkIndex &&
+                lhs.distanceBetweenLinks == rhs.distanceBetweenLinks &&
+                lhs.indexList.size() == rhs.indexList.size() &&
+                lhs.indexList == rhs.indexList;
+        }
+    };
 };
 
 
