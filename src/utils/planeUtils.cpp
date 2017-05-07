@@ -144,6 +144,7 @@ namespace planeUtils {
     }
 
     void displayClusteredPlanes(ImagePair &imagePair, vector<Plane> plane) {
+        if (plane.size() == 0) return;
         vector<vector<Plane>> clusteredPLanes;
         Clustering::getClusteredPlaneGroup(plane, clusteredPLanes);
         int i = 0;
