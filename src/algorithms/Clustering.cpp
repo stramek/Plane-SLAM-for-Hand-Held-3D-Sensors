@@ -157,6 +157,8 @@ void Clustering::computeClusters(std::vector<Plane> planesVec, std::vector<Clust
     if(planesVec.size() == 1){
         Cluster cluster;
         cluster.setDistanceBetweenLinks(std::numeric_limits<float>::max());
+        cluster.setFirstLinkIndex(0);
+        cluster.setSecondLinkIndex(0);
         clustersVec.push_back(cluster);
     }
     std::vector<std::vector<float>> similarityMatrix;
@@ -238,8 +240,13 @@ void Clustering::getClustersAfterThreshold(float cutThreshold, vector<Plane> pla
     vector<Cluster> clustersVec;
     computeClusters(planesVec, clustersVec);
     sort(clustersVec.begin(), clustersVec.end());
+    std::cout<<std::endl;
+    for(auto cluster : clustersVec){
+        std::cout<< "First: "cluster.getFirstLinkIndex() << " Second: "<<cluster.getSecondLinkIndex() << " Distance: "<<cluster.setDistanceBetweenLinks() << std::endl;
+    }
 
     unordered_map<int, Cluster> clusters;
+
 
     for (Cluster &cluster : clustersVec) {
         if (cluster.getDistanceBetweenLinks() <= cutThreshold) {
