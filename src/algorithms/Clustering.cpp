@@ -173,8 +173,6 @@ void Clustering::computeClusters(std::vector<Plane> planesVec, std::vector<Clust
         unsigned int secondPlaneToClusterIndex = 0;
         for (unsigned int rowNumber = 0; rowNumber < planesVec.size(); ++rowNumber) {
             for (unsigned int columnNumber = 0; columnNumber < planesVec.size(); ++columnNumber) {
-                std::cout << "Size nXn: " << similarityMatrix.size() << " x " << similarityMatrix.at(0).size() << " i: "
-                          << rowNumber << " j: " << columnNumber << std::endl;
                 if (rowNumber != columnNumber && !isClustered.at(rowNumber) && !isClustered.at(columnNumber)) {
                     if (maxSimilarity >= similarityMatrix.at(rowNumber).at(columnNumber)) {
                         maxSimilarity = similarityMatrix.at(rowNumber).at(columnNumber);
@@ -191,10 +189,6 @@ void Clustering::computeClusters(std::vector<Plane> planesVec, std::vector<Clust
         clustersVec.push_back(cluster);
 
         for (unsigned int columnNumber = 0; columnNumber < planesVec.size(); ++columnNumber) {
-            std::cout << "Size nXn: " << similarityMatrix.size() << " x " << similarityMatrix.at(0).size() << " i: "
-                      << columnNumber << " j: " << firstPlaneToClusterIndex << std::endl;
-            std::cout << "Size nXn: " << similarityMatrix.size() << " x " << similarityMatrix.at(0).size() << " i: "
-                      << columnNumber << " j: " << secondPlaneToClusterIndex << std::endl;
             if (similarityMatrix.at(firstPlaneToClusterIndex).at(columnNumber) <
                 similarityMatrix.at(secondPlaneToClusterIndex).at(columnNumber)) {
                 similarityMatrix.at(firstPlaneToClusterIndex).at(columnNumber) = similarityMatrix.at(
@@ -236,6 +230,13 @@ void Clustering::getClustersAfterThreshold(float cutThreshold, vector<Plane> pla
     sort(clustersVec.begin(), clustersVec.end());
     unordered_map<int, Cluster> clusters;
 
+    set<int> testNumbers;
+    for (Cluster cluster1 : clustersVec) {
+        testNumbers.insert(cluster1.getFirstLinkIndex());
+        testNumbers.insert(cluster1.getSecondLinkIndex());
+    }
+    cout<<"Got "<<testNumbers.size()<<" vectors inside clusters..."<<endl;
+
     for (Cluster &cluster : clustersVec) {
         if (cluster.getDistanceBetweenLinks() <= cutThreshold) {
             if (clusters.count(cluster.getFirstLinkIndex()) && clusters.count(cluster.getSecondLinkIndex())) {
@@ -267,6 +268,9 @@ void Clustering::getClustersAfterThreshold(float cutThreshold, vector<Plane> pla
         } else if (clusters.count(cluster.getSecondLinkIndex())) {
             cluster.getIndexList().erase(cluster.getSecondLinkIndex());
             clusters.insert(pair<int, Cluster>(cluster.getFirstLinkIndex(), cluster));
+        } else {
+            clusters.insert(pair<int, Cluster>(cluster.getFirstLinkIndex(), cluster));
+            clusters.insert(pair<int, Cluster>(cluster.getSecondLinkIndex(), cluster));
         }
 
     }
