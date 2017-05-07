@@ -153,6 +153,12 @@ Clustering::updateNextBestMerge(SimilarityItem **&similarityMatrix, SimilarityIt
 }
 
 void Clustering::computeClusters(std::vector<Plane> planesVec, std::vector<Cluster> &clustersVec) {
+    clustersVec.clear();
+    if(planesVec.size() == 1){
+        Cluster cluster;
+        cluster.setDistanceBetweenLinks(std::numeric_limits<float>::max());
+        clustersVec.push_back(cluster);
+    }
     std::vector<std::vector<float>> similarityMatrix;
     std::vector<bool> isClustered;
     for (unsigned long rowNumber = 0; rowNumber < planesVec.size(); ++rowNumber) {
@@ -164,8 +170,6 @@ void Clustering::computeClusters(std::vector<Plane> planesVec, std::vector<Clust
         similarityMatrix.push_back(similarityVector);
         isClustered.push_back(false);
     }
-
-    clustersVec.clear();
 
     for (unsigned int clusteringStepNum = 0; clusteringStepNum < planesVec.size() - 1; ++clusteringStepNum) {
         float maxSimilarity = std::numeric_limits<float>::max(); // most similar if value is smaller
@@ -234,6 +238,7 @@ void Clustering::getClustersAfterThreshold(float cutThreshold, vector<Plane> pla
     vector<Cluster> clustersVec;
     computeClusters(planesVec, clustersVec);
     sort(clustersVec.begin(), clustersVec.end());
+
     unordered_map<int, Cluster> clusters;
 
     for (Cluster &cluster : clustersVec) {
