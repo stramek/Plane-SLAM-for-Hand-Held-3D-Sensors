@@ -228,7 +228,7 @@ void insertToMapByClusterIndexes(unordered_map<int, Cluster> &clusters, Cluster 
     }
 }
 
-void Clustering::getClustersAfterThreshold(float cutThreshold, std::vector<Plane> planesVec,
+void Clustering::getClustersAfterThreshold(float cutThreshold, vector<Plane> planesVec,
                                            set<Cluster> &output) {
     output.clear();
     vector<Cluster> clustersVec;
@@ -237,36 +237,48 @@ void Clustering::getClustersAfterThreshold(float cutThreshold, std::vector<Plane
     unordered_map<int, Cluster> clusters;
 
     for (Cluster &cluster : clustersVec) {
-        if (cluster.getDistanceBetweenLinks() > cutThreshold) break;
-        if (clusters.count(cluster.getFirstLinkIndex()) && clusters.count(cluster.getSecondLinkIndex())) {
-            Cluster child1 = clusters.at(cluster.getFirstLinkIndex());
-            Cluster child2 = clusters.at(cluster.getSecondLinkIndex());
-            eraseFromMapByClusterIndexes(clusters, child1);
-            eraseFromMapByClusterIndexes(clusters, child2);
-            cluster.mergeClildrenIndexes(child1, child2);
-            insertToMapByClusterIndexes(clusters, cluster);
+        if (cluster.getDistanceBetweenLinks() <= cutThreshold) {
+            if (clusters.count(cluster.getFirstLinkIndex()) && clusters.count(cluster.getSecondLinkIndex())) {
+                Cluster child1 = clusters.at(cluster.getFirstLinkIndex());
+                Cluster child2 = clusters.at(cluster.getSecondLinkIndex());
+                eraseFromMapByClusterIndexes(clusters, child1);
+                eraseFromMapByClusterIndexes(clusters, child2);
+                cluster.mergeClildrenIndexes(child1, child2);
+                insertToMapByClusterIndexes(clusters, cluster);
+            } else if (clusters.count(cluster.getFirstLinkIndex())) {
+                Cluster child = clusters.at(cluster.getFirstLinkIndex());
+                eraseFromMapByClusterIndexes(clusters, child);
+                eraseFromMapByClusterIndexes(clusters, cluster);
+                cluster.mergeClildrenIndexes(cluster, child);
+                insertToMapByClusterIndexes(clusters, cluster);
+            } else if (clusters.count(cluster.getSecondLinkIndex())) {
+                Cluster child = clusters.at(cluster.getSecondLinkIndex());
+                eraseFromMapByClusterIndexes(clusters, child);
+                eraseFromMapByClusterIndexes(clusters, cluster);
+                cluster.mergeClildrenIndexes(cluster, child);
+                insertToMapByClusterIndexes(clusters, cluster);
+            } else {
+                clusters.insert(pair<int, Cluster>(cluster.getFirstLinkIndex(), cluster));
+                clusters.insert(pair<int, Cluster>(cluster.getSecondLinkIndex(), cluster));
+            }
         } else if (clusters.count(cluster.getFirstLinkIndex())) {
-            Cluster child = clusters.at(cluster.getFirstLinkIndex());
-            eraseFromMapByClusterIndexes(clusters, child);
-            eraseFromMapByClusterIndexes(clusters, cluster);
-            cluster.mergeClildrenIndexes(cluster, child);
-            insertToMapByClusterIndexes(clusters, cluster);
-        } else if (clusters.count(cluster.getSecondLinkIndex())) {
-            Cluster child = clusters.at(cluster.getSecondLinkIndex());
-            eraseFromMapByClusterIndexes(clusters, child);
-            eraseFromMapByClusterIndexes(clusters, cluster);
-            cluster.mergeClildrenIndexes(cluster, child);
-            insertToMapByClusterIndexes(clusters, cluster);
-        } else {
-            clusters.insert(pair<int, Cluster>(cluster.getFirstLinkIndex(), cluster));
+            cluster.getIndexList().erase(cluster.getFirstLinkIndex());
             clusters.insert(pair<int, Cluster>(cluster.getSecondLinkIndex(), cluster));
+        } else if (clusters.count(cluster.getSecondLinkIndex())) {
+            cluster.getIndexList().erase(cluster.getSecondLinkIndex());
+            clusters.insert(pair<int, Cluster>(cluster.getFirstLinkIndex(), cluster));
         }
+
     }
 
+
+
+    set<Cluster> test;
     for (auto pair : clusters) {
         output.insert(pair.second);
+        test.insert(pair.second);
     }
-
+    cout<<"asd";
 }
 
 void Clustering::getClusteredPlaneGroup(std::vector<Plane> planesVec, vector<vector<Plane>> &clusteredPlanes) {

@@ -33,7 +33,6 @@ void Cluster::setDistanceBetweenLinks(float distanceBetweenLinks) {
 }
 
 void Cluster::mergeClildrenIndexes(Cluster &cluster1, Cluster &cluster2) {
-    //indexList.clear();
     indexList.insert(cluster1.getIndexList().begin(), cluster1.getIndexList().end());
     indexList.insert(cluster2.getIndexList().begin(), cluster2.getIndexList().end());
 }
@@ -45,7 +44,6 @@ std::set<int> &Cluster::getIndexList() {
 void Cluster::setIndexList(std::set<int> &indexList) {
     Cluster::indexList = indexList;
 }
-
 
 
 
