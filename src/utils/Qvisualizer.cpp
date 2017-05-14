@@ -63,6 +63,9 @@ void QGLVisualizer::depth2cloud(cv::Mat &depthImage, cv::Mat RGB) {
     Eigen::Vector3d point;
     pointCloud.clear();
 
+    float maxX = -100, maxY = -100, maxZ = -100;
+    float minX = 1000, minY = 1000, minZ = 1000;
+
     for (unsigned int i = 0; i < depthImage.rows; i++) {
         for (unsigned int j = 0; j < depthImage.cols; j++) {
             float depthM = float(depthImage.at<uint16_t>(i, j)) / 5000.0f;
@@ -71,6 +74,14 @@ void QGLVisualizer::depth2cloud(cv::Mat &depthImage, cv::Mat RGB) {
             pointPCL.x = point(0);
             pointPCL.y = -point(1);
             pointPCL.z = -point(2);
+            if(maxX < pointPCL.x) maxX = pointPCL.x;
+            if(maxY < pointPCL.y) maxY = pointPCL.y;
+            if(maxZ < pointPCL.z) maxZ = pointPCL.z;
+
+            if(minX > pointPCL.x) minX = pointPCL.x;
+            if(minY > pointPCL.y) minY = pointPCL.y;
+            if(minZ > pointPCL.z) minZ = pointPCL.z;
+
 
             pointPCL.red = RGB.at<cv::Vec<uchar, 3>>(i, j).val[2];
             pointPCL.green = RGB.at<cv::Vec<uchar, 3>>(i, j).val[1];
@@ -79,6 +90,9 @@ void QGLVisualizer::depth2cloud(cv::Mat &depthImage, cv::Mat RGB) {
             pointCloud.push_back(pointPCL);
         }
     }
+
+    std::cout<< "minX " << minX << " minY " << minY << " minZ " << minZ << std::endl;
+    std::cout<< "maxX " << maxX << " maxY " << maxY << " maxZ " << maxZ << std::endl;
 }
 
 void QGLVisualizer::updateCloud(Registration *registration, Frame *undistorted,

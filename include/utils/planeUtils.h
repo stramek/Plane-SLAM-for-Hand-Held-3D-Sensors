@@ -33,7 +33,7 @@ namespace planeUtils {
                                 const Mat &currentImage, int limitPoints = INT_MAX);
     void filterPairsByAngle(vector<pair<Plane, Plane>> &pairs);
     void mergePlanes(vector<Plane> &planeVector);
-    void displayClusteredPlanes(ImagePair &imagePair, vector<Plane> plane);
+    void displayClusteredPlanes(ImagePair &imagePair, vector<Plane> planes);
 }
 
 #endif //PROJEKTMAGISTERSKI_PLANEUTILS_H

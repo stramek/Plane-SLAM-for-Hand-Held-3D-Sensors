@@ -17,7 +17,7 @@ int main(int argc, char **argv) {
     visualizer.setPHCPModel(PHCP_MODEL);
     visualizer.show();
 
-    while (true) {
+    //while (true) {
 
         ImageLoader imageLoader(50);
 
@@ -26,7 +26,7 @@ int main(int argc, char **argv) {
         vector<pair<Plane, Plane>> similarPlanes;
 
         const int AREA_SIZE = 21; // odd number
-        const int NUMBER_OF_POINTS = 5;
+        const int NUMBER_OF_POINTS = 10;
         if (AREA_SIZE % 2 == 0) throw runtime_error("AREA_SIZE needs to be odd number");
 
         ImagePair imagePair1 = imageLoader.getNextPair();
@@ -35,7 +35,10 @@ int main(int argc, char **argv) {
         planeUtils::fillPlaneVector(NUMBER_OF_POINTS, AREA_SIZE, imagePair2, &planeVectorCurrentFrame,
                                     &planeVectorPreviousFrame, 0.0f, true);
 
-        planeUtils::displayClusteredPlanes(imagePair2, planeVectorCurrentFrame);
+
+        Clustering clustering;
+        clustering.setCutSimilarity(5.0);
+        clustering.selectParts(planeVectorCurrentFrame);
 
 
         //planeUtils::mergePlanes(planeVectorPreviousFrame);
@@ -44,10 +47,12 @@ int main(int argc, char **argv) {
 
       //  planeUtils::filterPairsByAngle(similarPlanes);
       //  planeUtils::visualizeSimilarPlanes(similarPlanes, imagePair1.getRgb(), imagePair2.getRgb());
-        //visualizer.updateCloud(imagePair1.getRgb(), imagePair2.getDepth());
+        visualizer.updateCloud(imagePair2.getRgb(), imagePair2.getDepth());
+
+        waitKey();
 
         //utils::generateOctoMap("Dataset", visualizer.getPointCloud());
-    }
+    //}
 
 
     return application.exec();

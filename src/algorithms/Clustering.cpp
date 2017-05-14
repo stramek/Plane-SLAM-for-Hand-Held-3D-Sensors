@@ -13,7 +13,7 @@ float Clustering::getDistanceBetweenPointAndPlane(Plane plane, Vector3f point) {
 }
 
 float Clustering::getDistanceBetweenTwoPlanes(const Plane &firstPlane, const Plane &secondPlane) {
-    float distance = 0;
+/*    float distance = 0;
     vector<Vector3f> pointsVec = secondPlane.getPoints();
 
     for (int i = 0; i < 50; ++i) {
@@ -24,7 +24,13 @@ float Clustering::getDistanceBetweenTwoPlanes(const Plane &firstPlane, const Pla
         distance += getDistanceBetweenPointAndPlane(firstPlane, randomPointOnSecondPlane);
     }
 
-    return distance / 50;
+    return distance / 50;*/
+    Vector3f firstVec(firstPlane.getD()/firstPlane.getA(), firstPlane.getD()/firstPlane.getB(), firstPlane.getD()/firstPlane.getC());
+    Vector3f secondVec(secondPlane.getD()/secondPlane.getA(), secondPlane.getD()/secondPlane.getB(), secondPlane.getD()/secondPlane.getC());
+
+    Vector3f diffVec = firstVec - secondVec;
+
+    return sqrtf(powf(diffVec(0), 2.0) + powf(diffVec(1), 2.0) + powf(diffVec(2), 2.0));
 }
 
 float Clustering::getAngleBetweenTwoPlanes(const Plane &firstPlane, const Plane &secondPlane) {
@@ -44,278 +50,17 @@ float Clustering::getAngleBetweenTwoPlanes(const Plane &firstPlane, const Plane 
 
 float Clustering::getSimilarityOfTwoPlanes(const Plane &firstPlane, const Plane &secondPlane) {
     float angleBetweenTwoPlanes = firstPlane.getAngleBetweenTwoPlanes(secondPlane);
-/*    if(abs(angleBetweenTwoPlanes) < MAX_ANGLE_THRESHOLD){
+    return  angleBetweenTwoPlanes;
+    if(abs(angleBetweenTwoPlanes) < MAX_ANGLE_THRESHOLD){
         //return getDistanceBetweenTwoPlanes(firstPlane, secondPlane);
+//        std::cout<<"First plane:" << firstPlane.getA() << " " << firstPlane.getB() << " " << firstPlane.getC()
+//                 << " " << firstPlane.getD() << " vec length: " << sqrtf(powf(firstPlane.getA(), 2.0f) + powf(firstPlane.getB(), 2.0f) + powf(firstPlane.getC(), 2.0f));
+//        std::cout<<" Second plane:" << secondPlane.getA() << " " << secondPlane.getB() << " " << secondPlane.getC()
+//                 << " " << secondPlane.getD() << " vec length: " << sqrtf(powf(secondPlane.getA(), 2.0f) + powf(secondPlane.getB(), 2.0f) + powf(secondPlane.getC(), 2.0f)) << std::endl;
         return abs(firstPlane.getD() - secondPlane.getD());
     }
-    return std::numeric_limits<float>::max();*/
-    return abs(angleBetweenTwoPlanes);
-}
-
-void Clustering::createSimilarityMatrix(SimilarityItem **&similarityMatrix, unsigned long size) {
-    similarityMatrix = new SimilarityItem *[size];
-    for (int i = 0; i < size; ++i) {
-        similarityMatrix[i] = new SimilarityItem[size];
-    }
-}
-
-void Clustering::deleteSimilarityMatrix(SimilarityItem **&similarityMatrix, unsigned long size) {
-    for (int i = 0; i < size; ++i) {
-        delete[] similarityMatrix[i];
-    }
-    delete[] similarityMatrix;
-}
-
-void Clustering::createNextBestMergeMatrix(SimilarityItem *&nextBestMerge, unsigned long size) {
-    nextBestMerge = new SimilarityItem[size];
-}
-
-void Clustering::deleteNextBestMergeMatrix(SimilarityItem *&nextBestMerge) {
-    delete[] nextBestMerge;
-}
-
-void Clustering::clusteringInitializeStep(SimilarityItem **&similarityMatrix, SimilarityItem *&nextBestMerge,
-                                          unsigned int *&I, const std::vector<Plane> &planesVec) {
-    for (unsigned int i = 0; i < planesVec.size(); ++i) {
-        unsigned int indexMaxRow = 0;
-        float maxSimilarityRow = std::numeric_limits<float>::max();
-        for (unsigned int j = 0; j < planesVec.size(); ++j) {
-            similarityMatrix[i][j].similarity = getSimilarityOfTwoPlanes(planesVec.at(i), planesVec.at(j));
-            similarityMatrix[i][j].index = j;
-            if (maxSimilarityRow > similarityMatrix[i][j].similarity && i != j) {
-                maxSimilarityRow = similarityMatrix[i][j].similarity;
-                indexMaxRow = j;
-            }
-        }
-        I[i] = i;
-        nextBestMerge[i] = similarityMatrix[i][indexMaxRow];
-    }
-}
-
-void Clustering::computeIndexOfTwoPlanesToMerge(SimilarityItem *&nextBestMerge, unsigned int *&I,
-                                                unsigned int &firstPlaneIndexToMerge,
-                                                unsigned int &secondPlaneIndexToMerge, unsigned long size) {
-    float maxNBM_Sim = std::numeric_limits<float>::max();
-
-    for (unsigned int j = 0; j < size; ++j) {
-        if (nextBestMerge[j].similarity < maxNBM_Sim && I[j] == j) {
-            maxNBM_Sim = nextBestMerge[j].similarity;
-            firstPlaneIndexToMerge = j;
-        }
-    }
-
-    secondPlaneIndexToMerge = I[nextBestMerge[firstPlaneIndexToMerge].index];
-}
-
-void Clustering::addNewClusterToVec(std::vector<Cluster> &clustersVec, SimilarityItem **&similarityMatrix,
-                                    const unsigned int &firstPlaneIndexToMerge,
-                                    const unsigned int &secondPlaneIndexToMerge) {
-    Cluster cluster;
-    cluster.setFirstLinkIndex(firstPlaneIndexToMerge);
-    cluster.setSecondLinkIndex(secondPlaneIndexToMerge);
-    cluster.setDistanceBetweenLinks(similarityMatrix[firstPlaneIndexToMerge][secondPlaneIndexToMerge].similarity);
-    clustersVec.push_back(cluster);
-}
-
-void Clustering::updateSimilarityMatrixState(SimilarityItem **&similarityMatrix, unsigned int *&I,
-                                             const unsigned int &firstPlaneIndexToMerge,
-                                             const unsigned int &secondPlaneIndexToMerge, unsigned long size) {
-    for (int j = 0; j < size; ++j) {
-        if (I[j] == j && j != firstPlaneIndexToMerge && j != secondPlaneIndexToMerge) {
-            if (similarityMatrix[firstPlaneIndexToMerge][j].similarity <
-                similarityMatrix[secondPlaneIndexToMerge][j].similarity) {
-                similarityMatrix[firstPlaneIndexToMerge][j].similarity = similarityMatrix[firstPlaneIndexToMerge][j].similarity;
-                similarityMatrix[j][firstPlaneIndexToMerge].similarity = similarityMatrix[firstPlaneIndexToMerge][j].similarity;
-            } else {
-                similarityMatrix[firstPlaneIndexToMerge][j].similarity = similarityMatrix[secondPlaneIndexToMerge][j].similarity;
-                similarityMatrix[j][firstPlaneIndexToMerge].similarity = similarityMatrix[secondPlaneIndexToMerge][j].similarity;
-            }
-        }
-        if (I[j] == secondPlaneIndexToMerge) {
-            I[j] = firstPlaneIndexToMerge;
-        }
-    }
-
-}
-
-void
-Clustering::updateNextBestMerge(SimilarityItem **&similarityMatrix, SimilarityItem *&nextBestMerge, unsigned int *&I,
-                                unsigned int firstPlaneIndexToMerge, unsigned long size) {
-    SimilarityItem similarityMatrixItem_MaxSim;
-    similarityMatrixItem_MaxSim.similarity = std::numeric_limits<float>::max();;
-    for (int j = 0; j < size; ++j) {
-        if (similarityMatrix[firstPlaneIndexToMerge][j].similarity < similarityMatrixItem_MaxSim.similarity &&
-            I[j] == j && j != firstPlaneIndexToMerge) {
-            similarityMatrixItem_MaxSim = similarityMatrix[firstPlaneIndexToMerge][j];
-        }
-    }
-    nextBestMerge[firstPlaneIndexToMerge] = similarityMatrixItem_MaxSim;
-}
-
-void Clustering::computeClusters(std::vector<Plane> planesVec, std::vector<Cluster> &clustersVec) {
-    clustersVec.clear();
-    if (planesVec.size() == 1) {
-        Cluster cluster;
-        cluster.setDistanceBetweenLinks(std::numeric_limits<float>::max());
-        cluster.setFirstLinkIndex(0);
-        cluster.setSecondLinkIndex(0);
-        clustersVec.push_back(cluster);
-    }
-    std::vector<std::vector<float>> similarityMatrix;
-    std::vector<bool> isClustered;
-    for (unsigned long rowNumber = 0; rowNumber < planesVec.size(); ++rowNumber) {
-        std::vector<float> similarityVector;
-        for (unsigned long columnNumber = 0; columnNumber < planesVec.size(); ++columnNumber) {
-            float planeSimilarity = getSimilarityOfTwoPlanes(planesVec.at(rowNumber), planesVec.at(columnNumber));
-            similarityVector.push_back(planeSimilarity);
-        }
-        similarityMatrix.push_back(similarityVector);
-        isClustered.push_back(false);
-    }
-
-    for (unsigned int clusteringStepNum = 0; clusteringStepNum < planesVec.size() - 1; ++clusteringStepNum) {
-        float maxSimilarity = std::numeric_limits<float>::max(); // most similar if value is smaller
-        unsigned int firstPlaneToClusterIndex = 0;
-        unsigned int secondPlaneToClusterIndex = 0;
-        for (unsigned int rowNumber = 0; rowNumber < planesVec.size(); ++rowNumber) {
-            for (unsigned int columnNumber = 0; columnNumber < planesVec.size(); ++columnNumber) {
-                if (rowNumber != columnNumber && !isClustered.at(rowNumber) && !isClustered.at(columnNumber)) {
-                    if (maxSimilarity >= similarityMatrix.at(rowNumber).at(columnNumber)) {
-                        maxSimilarity = similarityMatrix.at(rowNumber).at(columnNumber);
-                        firstPlaneToClusterIndex = rowNumber;
-                        secondPlaneToClusterIndex = columnNumber;
-                    }
-                }
-            }
-        }
-        Cluster cluster;
-        cluster.setFirstLinkIndex(firstPlaneToClusterIndex);
-        cluster.setSecondLinkIndex(secondPlaneToClusterIndex);
-        cluster.setDistanceBetweenLinks(maxSimilarity);
-        clustersVec.push_back(cluster);
-
-        for (unsigned int columnNumber = 0; columnNumber < planesVec.size(); ++columnNumber) {
-            if (similarityMatrix.at(firstPlaneToClusterIndex).at(columnNumber) <
-                similarityMatrix.at(secondPlaneToClusterIndex).at(columnNumber)) {
-                similarityMatrix.at(firstPlaneToClusterIndex).at(columnNumber) = similarityMatrix.at(
-                        firstPlaneToClusterIndex).at(columnNumber);
-                similarityMatrix.at(columnNumber).at(firstPlaneToClusterIndex) = similarityMatrix.at(
-                        firstPlaneToClusterIndex).at(columnNumber);
-            } else {
-                similarityMatrix.at(secondPlaneToClusterIndex).at(columnNumber) = similarityMatrix.at(
-                        secondPlaneToClusterIndex).at(columnNumber);
-                similarityMatrix.at(columnNumber).at(secondPlaneToClusterIndex) = similarityMatrix.at(
-                        secondPlaneToClusterIndex).at(columnNumber);
-            }
-        }
-        isClustered.at(secondPlaneToClusterIndex) = true;
-    }
-}
-
-float Clustering::getDistanceBetweenTwoPoints(cv::Point_<float> point1, cv::Point_<float> point2) {
-    return sqrtf(powf(point1.x - point2.x, 2) + powf(point1.y - point2.y, 2));
-}
-
-void eraseFromMapByClusterIndexes(unordered_map<int, Cluster> &clusters, Cluster &cluster) {
-    for (auto &index : cluster.getIndexList()) {
-        clusters.erase(index);
-    }
-}
-
-void insertToMapByClusterIndexes(unordered_map<int, Cluster> &clusters, Cluster &cluster) {
-    for (auto &index : cluster.getIndexList()) {
-        clusters.insert(pair<int, Cluster>(index, cluster));
-    }
-}
-
-void setIndexToSet(set<int> &set, int value) {
-    set.clear();
-    set.insert(value);
-}
-
-void Clustering::getClustersAfterThreshold(float cutThreshold, vector<Plane> planesVec,
-                                           set<Cluster> &output) {
-    output.clear();
-    vector<Cluster> clustersVec;
-    computeClusters(planesVec, clustersVec);
-    sort(clustersVec.begin(), clustersVec.end());
-    unordered_map<int, Cluster> clusters;
-
-    cout<<endl<<endl<<endl<<endl;
-    int i = 0;
-    for (Cluster cluster : clustersVec) {
-        i++;
-        cout<<"Cluster nr. "<<i<<" index 1: "<<cluster.getFirstLinkIndex()<<" index 2: "<<cluster.getSecondLinkIndex()<<" distance: "<<cluster.getDistanceBetweenLinks()<<endl;
-    }
-
-    for (Cluster &cluster : clustersVec) {
-        if (cluster.getDistanceBetweenLinks() <= cutThreshold) {
-            if (clusters.count(cluster.getFirstLinkIndex()) && clusters.count(cluster.getSecondLinkIndex())) {
-                Cluster child1 = clusters.at(cluster.getFirstLinkIndex());
-                Cluster child2 = clusters.at(cluster.getSecondLinkIndex());
-                eraseFromMapByClusterIndexes(clusters, child1);
-                eraseFromMapByClusterIndexes(clusters, child2);
-                cluster.mergeClildrenIndexes(child1, child2);
-                insertToMapByClusterIndexes(clusters, cluster);
-            } else if (clusters.count(cluster.getFirstLinkIndex())) {
-                Cluster child = clusters.at(cluster.getFirstLinkIndex());
-                eraseFromMapByClusterIndexes(clusters, child);
-                eraseFromMapByClusterIndexes(clusters, cluster);
-                cluster.mergeClildrenIndexes(cluster, child);
-                insertToMapByClusterIndexes(clusters, cluster);
-            } else if (clusters.count(cluster.getSecondLinkIndex())) {
-                Cluster child = clusters.at(cluster.getSecondLinkIndex());
-                eraseFromMapByClusterIndexes(clusters, child);
-                eraseFromMapByClusterIndexes(clusters, cluster);
-                cluster.mergeClildrenIndexes(cluster, child);
-                insertToMapByClusterIndexes(clusters, cluster);
-            } else {
-                clusters.insert(pair<int, Cluster>(cluster.getFirstLinkIndex(), cluster));
-                clusters.insert(pair<int, Cluster>(cluster.getSecondLinkIndex(), cluster));
-            }
-        } else if (clusters.count(cluster.getFirstLinkIndex())) {
-            cluster.getIndexList().erase(cluster.getFirstLinkIndex());
-            clusters.insert(pair<int, Cluster>(cluster.getSecondLinkIndex(), cluster));
-        } else if (clusters.count(cluster.getSecondLinkIndex())) {
-            cluster.getIndexList().erase(cluster.getSecondLinkIndex());
-            clusters.insert(pair<int, Cluster>(cluster.getFirstLinkIndex(), cluster));
-        } else {
-            setIndexToSet(cluster.getIndexList(), cluster.getFirstLinkIndex());
-            clusters.insert(pair<int, Cluster>(cluster.getFirstLinkIndex(), cluster));
-            setIndexToSet(cluster.getIndexList(), cluster.getSecondLinkIndex());
-            cluster.setDistanceBetweenLinks(cluster.getDistanceBetweenLinks() * 0.9999999f); // TODO: REMOVE THIS HAX
-            clusters.insert(pair<int, Cluster>(cluster.getSecondLinkIndex(), cluster));
-            cout<<"asd"<<endl;
-        }
-    }
-
-    for (auto pair : clusters) {
-        output.insert(pair.second);
-    }
-
-    cout<<endl<<endl;
-    int j = 0;
-    for (auto cluster : output) {
-        j++;
-        cout<<"Cluster nr. "<<j<<": ";
-        for (int number : cluster.getIndexList()) {
-            cout<<number<<", ";
-        }
-        cout<<endl;
-    }
-}
-
-void Clustering::getClusteredPlaneGroup(std::vector<Plane> planesVec, vector<vector<Plane>> &clusteredPlanes) {
-    set<Cluster> vecEachClusterPlanes;
-    getClustersAfterThreshold(15, planesVec, vecEachClusterPlanes);
-    for (auto planesIndexesInOneCluster : vecEachClusterPlanes) {
-        vector<Plane> singleCluster;
-        for (auto &index : planesIndexesInOneCluster.getIndexList()) {
-            Plane singleClusterPlane = planesVec.at(index);
-            singleCluster.push_back(singleClusterPlane);
-        }
-        clusteredPlanes.push_back(singleCluster);
-    }
+    return std::numeric_limits<float>::max() / 2.0f;
+    //return abs(angleBetweenTwoPlanes);
 }
 
 vector<Plane> Clustering::getAveragedPlanes(vector<vector<Plane>> &clusteredPlanes) {
@@ -351,4 +96,141 @@ vector<Plane> Clustering::getAveragedPlanes(vector<vector<Plane>> &clusteredPlan
         averagedPlanesVec.push_back(averagedPlane);
     }
     return averagedPlanesVec;
+}
+
+
+////////////////////////////
+
+void Clustering::selectParts(std::vector<Plane> planesVec){
+    std::vector<std::vector<double>> distanceMatrix(planesVec.size(), std::vector<double>(planesVec.size()));
+    std::cout << "compute distance matrix...\n";
+    //computeDistanceMatrix(dictionary, hierarchy, distanceMatrix, transformMatrix);
+    computeDistanceMatrix(planesVec, distanceMatrix);
+
+
+    std::vector<std::vector<int>> clusters(planesVec.size());
+    for (size_t i=0;i<clusters.size();i++){
+        clusters[i].push_back((int)i);
+    }
+
+    for (size_t i=0;i<planesVec.size()*planesVec.size();i++){
+
+        std::pair<int,int> pairedIds;
+        double minDist = findMinDistance(pairedIds);
+
+        if (minDist>=cutSimilarity)
+            break;
+
+        //merge two centroids
+        std::pair<int,int> clustersIds;
+        findPartsInClusters(clusters, pairedIds, clustersIds);
+
+        if (clustersIds.first!=clustersIds.second){
+            mergeTwoClusters(clusters, clustersIds, distanceMatrix);
+        }
+    }
+
+    for(auto singleCluster : clusters){
+        for(auto planeIndex : singleCluster){
+            std::cout<< planeIndex << " ";
+        }
+        std::cout<< std::endl;
+    }
+    std::cout<< std::endl;
+    std::cout<< std::endl;
+}
+
+void Clustering::computeDistanceMatrix(const std::vector<Plane> &planesVec, std::vector<std::vector<double>>& distanceMatrix){
+    while( !priorityQueueDistance.empty() ) priorityQueueDistance.pop();
+    size_t startId(0), endId(planesVec.size());
+    for (size_t idA=startId;idA<endId;idA++){
+        for (size_t idB=idA;idB<endId;idB++){
+            double dist(0);
+            if (idA==idB){
+                distanceMatrix[idB][idA]=0;
+            }
+            else{
+
+                dist = getSimilarityOfTwoPlanes(planesVec.at(idA), planesVec.at(idB));
+                distanceMatrix[idA][idB]=dist;
+                distanceMatrix[idB][idA]=dist;
+                Cluster cluster;
+                cluster.setDistanceBetweenLinks(dist);
+                cluster.setLinkedIndexes(std::make_pair(idA,idB));
+                priorityQueueDistance.push(cluster);
+            }
+        }
+    }
+}
+
+/// find min distance int the distance matrix
+double Clustering::findMinDistance(std::pair<int,int>& pairedIds){
+    Cluster cluster = priorityQueueDistance.top();
+    double minDist = cluster.getDistanceBetweenLinks();
+    pairedIds = cluster.getLinkedIndexes();
+    priorityQueueDistance.pop();
+
+    return minDist;
+}
+
+void Clustering::setCutSimilarity(float cutSimilarity){
+    Clustering::cutSimilarity = cutSimilarity;
+}
+
+/// find clusters ids to which contain specyfic parts (pairedIds)
+void Clustering::findPartsInClusters(const std::vector<std::vector<int>>& clusters, const std::pair<int,int>& pairedIds, std::pair<int,int>& clustersIds) const{
+    bool found[2]={false, false};
+    for (size_t i=0;i<clusters.size();i++){
+        for (auto &id : clusters[i]){
+            if (id==pairedIds.first){
+                clustersIds.first = (int)i;
+                found[0]=true;
+            }
+            if (id==pairedIds.second){
+                clustersIds.second = (int)i;
+                found[1]=true;
+            }
+            if (found[0]&&found[1]) break;
+        }
+        if (found[0]&&found[1]) break;
+    }
+}
+
+/// merge two clusters
+bool Clustering::mergeTwoClusters(std::vector<std::vector<int>>& clusters, const std::pair<int,int>& clustersIds, const std::vector<std::vector<double>>& distanceMatrix) const{
+    double maxDist = computeMaxDist(clusters, clustersIds, distanceMatrix);
+    if (maxDist<cutSimilarity){
+        if (clustersIds.first<clustersIds.second){
+            // merge clusters
+            clusters[clustersIds.first].insert(clusters[clustersIds.first].end(), clusters[clustersIds.second].begin(), clusters[clustersIds.second].end());
+            // remove second cluster
+            clusters.erase(clusters.begin()+clustersIds.second);
+        }
+        else{
+            // merge clusters
+            clusters[clustersIds.second].insert(clusters[clustersIds.second].end(), clusters[clustersIds.first].begin(), clusters[clustersIds.first].end());
+            // remove second cluster
+            clusters.erase(clusters.begin()+clustersIds.first);
+        }
+        return true;
+    }
+    else
+        return false;
+}
+
+/// compute max distance between centroid of the first cluster and all parts in the second cluster
+double Clustering::computeMaxDist(const std::vector<std::vector<int>>& clusters, const std::pair<int,int>& clustersIds, const std::vector<std::vector<double>>& distanceMatrix) const{
+    int partIdA = clustersIds.first;
+    double maxDist = std::numeric_limits<double>::min();
+    for (const auto &partIdB : clusters[clustersIds.second]){
+        double dist;
+        if (partIdA>partIdB)//because up-triangle elements in distance matrix are cleaned
+            dist = distanceMatrix[partIdA][partIdB];
+        else
+            dist = distanceMatrix[partIdB][partIdA];
+        if (dist>maxDist){
+            maxDist = dist;
+        }
+    }
+    return maxDist;
 }

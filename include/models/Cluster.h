@@ -11,44 +11,20 @@ using namespace std;
 
 class Cluster {
 private:
-    int firstLinkIndex;
-    int secondLinkIndex;
+    std::pair<int , int> linkedIndexes;
     float distanceBetweenLinks;
-    set<int> indexList;
 public:
-    void setFirstLinkIndex(int firstLinkIndex);
-
-    void setSecondLinkIndex(int secondLinkIndex);
+    void setLinkedIndexes(const pair<int, int> &linkedIndexes);
 
     void setDistanceBetweenLinks(float distanceBetweenLinks);
 
-    int getFirstLinkIndex() const;
-
-    int getSecondLinkIndex() const;
-
-    float getDistanceBetweenLinks() const;
-
-    void mergeClildrenIndexes(Cluster &cluster1, Cluster &cluster2);
-
-    set<int> &getIndexList();
-
-    void setIndexList(set<int> &indexList);
-
-    bool operator<(const Cluster &cluster) const {
-        return (distanceBetweenLinks < cluster.distanceBetweenLinks);
+    bool operator<(const Cluster &cluster) const{
+        return this->distanceBetweenLinks > cluster.getDistanceBetweenLinks();
     }
 
-//    struct ClusterCompare {
-//        bool operator() (const Cluster& lhs, const Cluster& rhs) const{
-//            return lhs.firstLinkIndex == rhs.secondLinkIndex &&
-//                lhs.secondLinkIndex == rhs.secondLinkIndex &&
-//                lhs.distanceBetweenLinks == rhs.distanceBetweenLinks &&
-//                lhs.indexList.size() == rhs.indexList.size() &&
-//                    lhs.indexList == rhs.indexList;
-//        }
-//    };
-//TODO: ASK ABOUT SET COMPARATOR AND REMOVE HAX
-};
+    const pair<int, int> &getLinkedIndexes() const;
 
+    float getDistanceBetweenLinks() const;
+};
 
 #endif //PROJEKTMAGISTERSKI_CLASTER_H

@@ -68,8 +68,9 @@ namespace planeUtils {
                     pointsVector.push_back(Vector3f(i, j, imagePair.getDepthAt(i, j)));
                 }
             }
-
+            std::cout << "fillPlaneVector1" << std::endl;
             Plane plane = PlanePca::getPlane(pointsVector, croppedImage, imageCoords);
+            std::cout << "fillPlaneVector2" << std::endl;
             if (colorPlanes) {
                 Vec3b color = plane.isValid() ? Vec3b(0, 255, 0) : Vec3b(0, 0, 255);
                 for (Vector3f vector : pointsVector) {
@@ -139,14 +140,16 @@ namespace planeUtils {
     void mergePlanes(vector<Plane> &planeVector) {
         if (planeVector.size() == 0) return;
         vector<vector<Plane>> clusteredPLanes;
-        Clustering::getClusteredPlaneGroup(planeVector, clusteredPLanes);
+        //Clustering::getClusteredPlaneGroup(planeVector, clusteredPLanes);
         planeVector = Clustering::getAveragedPlanes(clusteredPLanes);
     }
 
-    void displayClusteredPlanes(ImagePair &imagePair, vector<Plane> plane) {
-        if (plane.size() == 0) return;
+    void displayClusteredPlanes(ImagePair &imagePair, vector<Plane> planes) {
+        if (planes.size() == 0) return;
         vector<vector<Plane>> clusteredPLanes;
-        Clustering::getClusteredPlaneGroup(plane, clusteredPLanes);
+        Clustering clustering;
+        clustering.selectParts(planes);
+        //Clustering::getClusteredPlaneGroup(plane, clusteredPLanes);
         int i = 0;
         for (auto singleCluster : clusteredPLanes) {
             ++i;
@@ -157,6 +160,6 @@ namespace planeUtils {
             }
         }
         imshow("Clustered planes", imagePair.getRgb());
-        waitKey();
+        //waitKey();
     }
 }

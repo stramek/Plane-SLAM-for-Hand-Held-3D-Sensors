@@ -188,9 +188,9 @@ float Plane::getAngleBetweenTwoPlanes(const Plane &plane) const {
     if(angleCos < -1) angleCos = -1.0f;
     if(angleCos > 1) angleCos = 1.0f;
     float angle = acosf(angleCos)*180.0f/(float)M_PI;
-    if(angle > 90.0f){
+/*    if(angle > 90.0f){
         angle = 180.0f - angle;
-    }
+    }*/
     return angle;
 }
 
