@@ -101,7 +101,7 @@ vector<Plane> Clustering::getAveragedPlanes(vector<vector<Plane>> &clusteredPlan
 
 ////////////////////////////
 
-void Clustering::selectParts(std::vector<Plane> planesVec){
+void Clustering::selectParts(const std::vector<Plane> &planesVec, std::vector<std::vector<Plane>> &clusteredPlanes){
     std::vector<std::vector<double>> distanceMatrix(planesVec.size(), std::vector<double>(planesVec.size()));
     std::cout << "compute distance matrix...\n";
     //computeDistanceMatrix(dictionary, hierarchy, distanceMatrix, transformMatrix);
@@ -138,6 +138,8 @@ void Clustering::selectParts(std::vector<Plane> planesVec){
     }
     std::cout<< std::endl;
     std::cout<< std::endl;
+
+    getClusteredPlaneGroup(clusters, planesVec, clusteredPlanes);
 }
 
 void Clustering::computeDistanceMatrix(const std::vector<Plane> &planesVec, std::vector<std::vector<double>>& distanceMatrix){
@@ -233,4 +235,15 @@ double Clustering::computeMaxDist(const std::vector<std::vector<int>>& clusters,
         }
     }
     return maxDist;
+}
+
+void Clustering::getClusteredPlaneGroup(const std::vector<std::vector<int>> clusters, const std::vector<Plane> &planesVec, vector<vector<Plane>> &clusteredPlanes) {
+    for (auto planesIndexesInOneCluster : clusters) {
+        vector<Plane> singleCluster;
+        for (auto &index : planesIndexesInOneCluster) {
+            Plane singleClusterPlane = planesVec.at(index);
+            singleCluster.push_back(singleClusterPlane);
+        }
+        clusteredPlanes.push_back(singleCluster);
+    }
 }

@@ -148,7 +148,8 @@ namespace planeUtils {
         if (planes.size() == 0) return;
         vector<vector<Plane>> clusteredPLanes;
         Clustering clustering;
-        clustering.selectParts(planes);
+        clustering.setCutSimilarity(5.0);
+        clustering.selectParts(planes, clusteredPLanes);
         //Clustering::getClusteredPlaneGroup(plane, clusteredPLanes);
         int i = 0;
         for (auto singleCluster : clusteredPLanes) {

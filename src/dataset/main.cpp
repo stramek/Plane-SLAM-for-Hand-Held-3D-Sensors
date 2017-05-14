@@ -36,9 +36,7 @@ int main(int argc, char **argv) {
                                     &planeVectorPreviousFrame, 0.0f, true);
 
 
-        Clustering clustering;
-        clustering.setCutSimilarity(5.0);
-        clustering.selectParts(planeVectorCurrentFrame);
+        planeUtils::displayClusteredPlanes(imagePair2, planeVectorCurrentFrame);
 
 
         //planeUtils::mergePlanes(planeVectorPreviousFrame);
