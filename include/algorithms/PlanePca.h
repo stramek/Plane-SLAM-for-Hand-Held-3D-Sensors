@@ -24,6 +24,10 @@ private:
 
     static Plane computePlane(const vector<Vector3f> &pointsVector, const Mat& colorImage, const ImageCoords& imageCoords);
 
+    static MatrixXf computeCovMatrix2(const vector<Vector3f> &pointsVector, const Vector3f &mean);
+
+    static Vector3f computeMean(const vector<Vector3f> &pointsVector);
+
 public:
     static Plane getPlane(const vector<Vector3f> &pointsVector, const Mat& colorImage, const ImageCoords& imageCoords);
 };
