@@ -13,11 +13,20 @@ QGLVisualizer::~QGLVisualizer(void) {}
 void QGLVisualizer::draw() {
     glPushMatrix();
     glBegin(GL_POINTS);
-    for (Point3D i : pointCloud) {
+    std::vector<Point3D> points = pointCloud.getPoints3D();
+    for (Point3D i : points) {
         glColor3f(i.red / 255.0f, i.green / 255.0f, i.blue / 255.0f);
         glVertex3f(i.x, i.y, i.z);
     }
     glEnd();
+
+    // Drawing normals
+    glBegin(GL_LINES);
+    glColor3f(0.0, 0.0, 1.0);
+    glVertex3f(points.at(1000).x, points.at(1000).y, points.at(1000).z);
+    glVertex3f(points.at(1000).x, points.at(1000).y, points.at(1000).z + 1.0f);
+    glEnd();
+
     glPopMatrix();
 }
 
@@ -55,44 +64,12 @@ void QGLVisualizer::getPoint(unsigned int u, unsigned int v, float depth, Eigen:
 }
 
 void QGLVisualizer::setPHCPModel(Eigen::Matrix<double, 3, 3> model) {
-    this->PHCPModel = model;
+    pointCloud.setPHCPModel(model);
 }
 
 /// Convert disparity image to point cloud
 void QGLVisualizer::depth2cloud(cv::Mat &depthImage, cv::Mat RGB) {
-    Eigen::Vector3d point;
-    pointCloud.clear();
-
-    float maxX = -100, maxY = -100, maxZ = -100;
-    float minX = 1000, minY = 1000, minZ = 1000;
-
-    for (unsigned int i = 0; i < depthImage.rows; i++) {
-        for (unsigned int j = 0; j < depthImage.cols; j++) {
-            float depthM = float(depthImage.at<uint16_t>(i, j)) / 5000.0f;
-            getPoint(j, i, depthM, point);
-            Point3D pointPCL;
-            pointPCL.x = point(0);
-            pointPCL.y = -point(1);
-            pointPCL.z = -point(2);
-            if(maxX < pointPCL.x) maxX = pointPCL.x;
-            if(maxY < pointPCL.y) maxY = pointPCL.y;
-            if(maxZ < pointPCL.z) maxZ = pointPCL.z;
-
-            if(minX > pointPCL.x) minX = pointPCL.x;
-            if(minY > pointPCL.y) minY = pointPCL.y;
-            if(minZ > pointPCL.z) minZ = pointPCL.z;
-
-
-            pointPCL.red = RGB.at<cv::Vec<uchar, 3>>(i, j).val[2];
-            pointPCL.green = RGB.at<cv::Vec<uchar, 3>>(i, j).val[1];
-            pointPCL.blue = RGB.at<cv::Vec<uchar, 3>>(i, j).val[0];
-
-            pointCloud.push_back(pointPCL);
-        }
-    }
-
-    std::cout<< "minX " << minX << " minY " << minY << " minZ " << minZ << std::endl;
-    std::cout<< "maxX " << maxX << " maxY " << maxY << " maxZ " << maxZ << std::endl;
+    pointCloud.depth2cloud(depthImage, RGB);
 }
 
 void QGLVisualizer::updateCloud(Registration *registration, Frame *undistorted,
@@ -125,7 +102,7 @@ void QGLVisualizer::keyPressEvent(QKeyEvent *event) {
     }
 }
 
-const std::vector<Point3D> &QGLVisualizer::getPointCloud() const {
+const PointCloud &QGLVisualizer::getPointCloud() const {
     return pointCloud;
 }
 

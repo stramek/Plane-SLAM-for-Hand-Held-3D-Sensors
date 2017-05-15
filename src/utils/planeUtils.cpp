@@ -1,3 +1,4 @@
+#include <include/models/PointCloud.h>
 #include "include/utils/planeUtils.h"
 
 namespace planeUtils {
@@ -57,19 +58,25 @@ namespace planeUtils {
             }
 
             Mat rgb = imagePair.getRgb();
-            Mat croppedImage = rgb(Rect(imageCoords.getUpLeftX(),
+            Mat depth = imagePair.getDepth();
+            Mat croppedRgbImage = rgb(Rect(imageCoords.getUpLeftX(),
                                         imageCoords.getUpLeftY(),
                                         imageCoords.getAreaSize(),
                                         imageCoords.getAreaSize()));
 
-            vector<Vector3f> pointsVector;
-            for (int i = imageCoords.getUpLeftY(); i <= imageCoords.getDownRightY(); ++i) {
-                for (int j = imageCoords.getUpLeftX(); j <= imageCoords.getDownRightX(); ++j) {
-                    pointsVector.push_back(Vector3f(i, j, imagePair.getDepthAt(i, j)));
-                }
-            }
+            Mat croppedDepthImage = depth(Rect(imageCoords.getUpLeftX(),
+                                           imageCoords.getUpLeftY(),
+                                           imageCoords.getAreaSize(),
+                                           imageCoords.getAreaSize()));
+
+            PointCloud pointCloud;
+
+            pointCloud.depth2cloud(croppedDepthImage, croppedRgbImage, imageCoords.getUpLeftX(), imageCoords.getUpLeftY());
+
+            vector<Vector3f> pointsVector = pointCloud.getPoints();
+
             std::cout << "fillPlaneVector1" << std::endl;
-            Plane plane = PlanePca::getPlane(pointsVector, croppedImage, imageCoords);
+            Plane plane = PlanePca::getPlane(pointsVector, croppedRgbImage, imageCoords);
             std::cout << "fillPlaneVector2" << std::endl;
             if (colorPlanes) {
                 Vec3b color = plane.isValid() ? Vec3b(0, 255, 0) : Vec3b(0, 0, 255);
