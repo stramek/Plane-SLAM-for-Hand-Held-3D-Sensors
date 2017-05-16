@@ -217,3 +217,7 @@ const vector<ImageCoords> &Plane::getImageCoordsVec() const {
     return imageCoordsVec;
 }
 
+Vector3f Plane::getCentralPoint() const {
+    return points[(points.size() - 1) / 2];
+}
+

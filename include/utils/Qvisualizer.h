@@ -36,6 +36,8 @@ public:
     /// Updates cloud
     void updateCloud(cv::Mat RGB, cv::Mat D);
 
+    void updatePlanes(std::vector<Plane> &planes);
+
     void updateCloud(Registration *registration, Frame *undistorted, Frame *registered);
 
     void getPoint(unsigned int u, unsigned int v, float depth, Eigen::Vector3d &point3D);
@@ -81,6 +83,8 @@ private:
     std::mutex mtxCamera;
 
     PointCloud pointCloud;
+
+    std::vector<Plane> planes;
 };
 
 #endif // QVISUALIZER_H_INCLUDED

@@ -80,9 +80,7 @@ namespace planeUtils {
             std::cout << "fillPlaneVector2" << std::endl;
             if (colorPlanes) {
                 Vec3b color = plane.isValid() ? Vec3b(0, 255, 0) : Vec3b(0, 0, 255);
-                for (Vector3f vector : pointsVector) {
-                    utils::paintPixel((Mat &) imagePair.getRgb(), vector, color);
-                }
+                croppedRgbImage.setTo(color);
             }
             if (plane.isValid()) {
                 planeVector->push_back(plane);

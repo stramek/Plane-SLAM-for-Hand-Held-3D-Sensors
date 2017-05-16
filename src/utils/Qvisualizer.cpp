@@ -21,11 +21,17 @@ void QGLVisualizer::draw() {
     glEnd();
 
     // Drawing normals
-    glBegin(GL_LINES);
-    glColor3f(0.0, 0.0, 1.0);
-    glVertex3f(points.at(1000).x, points.at(1000).y, points.at(1000).z);
-    glVertex3f(points.at(1000).x, points.at(1000).y, points.at(1000).z + 1.0f);
-    glEnd();
+    float normalScaleFactor = 10.0f;
+    for (auto plane : planes){
+        Vector3f point = plane.getCentralPoint();
+        Vector3f normalVec = plane.getPlaneNormalVec() / normalScaleFactor;
+        glLineWidth(2);
+        glBegin(GL_LINES);
+        glColor3f(0.0, 0.0, 1.0);
+        glVertex3f(point(0), point(1), point(2));
+        glVertex3f(point(0) + normalVec(0), point(1) + normalVec(1), point(2) + normalVec(2));
+        glEnd();
+    }
 
     glPopMatrix();
 }
@@ -112,4 +118,8 @@ bool QGLVisualizer::isProgramFinished() const {
 
 void QGLVisualizer::setProgramFinished(bool programFinished) {
     QGLVisualizer::programFinished = programFinished;
+}
+
+void QGLVisualizer::updatePlanes(std::vector<Plane> &planes){
+    this->planes = planes;
 }

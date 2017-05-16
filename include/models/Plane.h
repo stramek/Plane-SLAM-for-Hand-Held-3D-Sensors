@@ -49,6 +49,7 @@ public:
     void insertPoints(vector<Vector3f> points);
     void mergePlane(Plane plane);
     void insertImageCoords(vector<ImageCoords> imageCoordsVec);
+    Vector3f getCentralPoint() const;
 
 private:
     float A, B, D, C;

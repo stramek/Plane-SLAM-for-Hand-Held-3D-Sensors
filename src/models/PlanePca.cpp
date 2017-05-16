@@ -31,9 +31,8 @@ Plane PlanePca::computePlane(const vector<Vector3f> &pointsVector, const Mat& co
         MatrixXf eigenVectors = eigenSolver.eigenvectors();
         normalVec = eigenVectors.col(minIndex);
         normalVec.normalize();
-        Vector3f cameraPointOnPlaneVec = pointsVector.at(0);
-        cameraPointOnPlaneVec.normalize();
-        float anglePlaneVecCameraVec = acosf(normalVec.dot(cameraPointOnPlaneVec))*180.0f/(float)M_PI;
+        Vector3f cameraAxis(0.0f, 0.0f, -1.0f);
+        float anglePlaneVecCameraVec = acosf(normalVec.dot(cameraAxis))*180.0f/(float)M_PI;
         if(anglePlaneVecCameraVec > 90.0f){
             normalVec = -normalVec;
         }
