@@ -8,7 +8,8 @@
 
 using namespace Eigen;
 
-const static float PCA_MAX_ACCEPTED_DISTANCE = 0.00002f;
+const static float PCA_MAX_ACCEPTED_DISTANCE = 500.0f;
+const static float CLUSTERING_MAX_ANGLE_THRESHOLD = 5.0; //TODO:
 
 const double FOCAL_LENGTH_X = 525;
 const double FOCAL_LENGTH_Y = 525;
@@ -16,7 +17,7 @@ const double OPTICAL_CENTER_X = 319.5;
 const double OPTICAL_CENTER_Y = 239.5;
 
 const int MAX_SIMILARITY_VALUE = 5;
-const int MAX_ANGLE_BETWEEN_PLANES = 15;
+const int MAX_ANGLE_BETWEEN_PLANES = 45;
 
 const Matrix<double, 3, 3> PHCP_MODEL = [] {
     Matrix<double, 3, 3> matrix;

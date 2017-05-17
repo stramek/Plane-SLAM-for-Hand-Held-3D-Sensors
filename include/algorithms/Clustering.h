@@ -11,6 +11,7 @@
 #include "include/models/Cluster.h"
 #include <unordered_set>
 #include "include/models/Plane.h"
+#include <include/utils/constants.h>
 
 class Clustering {
 private:
