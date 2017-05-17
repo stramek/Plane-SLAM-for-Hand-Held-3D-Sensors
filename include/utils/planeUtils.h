@@ -28,7 +28,7 @@ namespace planeUtils {
     vector<pair<Plane, Plane>> getSimilarPlanes(const vector<Plane> &previousFrame, const vector<Plane> &currentFrame);
     void fillPlaneVector(int numberOfPoints, int areaSize, ImagePair &imagePair,
                          vector<Plane> *planeVector, vector<Plane> *previousPlaneVector = nullptr,
-                         float previousPlanePercent = 0.5, bool colorPlanes = true);
+                         float previousPlanePercent = 0.5, bool colorPlanes = false);
     void visualizeSimilarPlanes(vector<pair<Plane, Plane>> &similarPlanes, const Mat &previousImage,
                                 const Mat &currentImage, int limitPoints = INT_MAX);
     void filterPairsByAngle(vector<pair<Plane, Plane>> &pairs);

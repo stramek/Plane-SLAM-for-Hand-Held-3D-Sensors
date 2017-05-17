@@ -4,8 +4,6 @@
 
 #include "include/algorithms/Clustering.h"
 
-const float Clustering::MAX_ANGLE_THRESHOLD = 5.0;
-
 float Clustering::getDistanceBetweenPointAndPlane(Plane plane, Vector3f point) {
     float distance = abs(plane.getA() * point(0) + plane.getB() * point(1) + plane.getC() * point(2) + plane.getD()) /
                      sqrtf(powf(plane.getA(), 2) + powf(plane.getB(), 2) + powf(plane.getC(), 2));
@@ -307,7 +305,7 @@ void Clustering::getClustersAfterThreshold(float cutThreshold, vector<Plane> pla
 
 void Clustering::getClusteredPlaneGroup(std::vector<Plane> planesVec, vector<vector<Plane>> &clusteredPlanes) {
     set<Cluster> vecEachClusterPlanes;
-    getClustersAfterThreshold(25, planesVec, vecEachClusterPlanes);
+    getClustersAfterThreshold(CLUSTERING_MAX_ANGLE_THRESHOLD, planesVec, vecEachClusterPlanes);
     for (auto planesIndexesInOneCluster : vecEachClusterPlanes) {
         vector<Plane> singleCluster;
         for (auto &index : planesIndexesInOneCluster.getIndexList()) {

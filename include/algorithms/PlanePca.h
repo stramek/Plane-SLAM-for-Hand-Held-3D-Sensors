@@ -21,9 +21,7 @@ class PlanePca {
 private:
     static void pointsVectorToMatrix(const vector<Vector3f> &pointsVector, MatrixXf &matrix);
 
-    static MatrixXf computeCovMatrix(const MatrixXf &matrix);
-
-    static Mat33 computeCovMatrix2(const vector<Vector3f> &pointsVector, const Vector3f &mean);
+    static Mat33 computeCovMatrix(const vector<Vector3f> &pointsVector, const Vector3f &mean);
 
     static Vector3f computeMean(const vector<Vector3f> &pointsVector);
 
