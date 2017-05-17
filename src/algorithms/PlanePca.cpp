@@ -42,9 +42,15 @@ Plane PlanePca::computePlane(const vector<Vector3f> &pointsVector, const Mat &co
 
     if (abs(cov.eigenvalues()(minIndex)) < PCA_MAX_ACCEPTED_DISTANCE) {
         auto eigenVectors = eigenSolver.eigenvectors();
-        Vector3f normalVec = Vector3f(real(eigenVectors(1, minIndex)),
-                                      real(eigenVectors(0, minIndex)), real(eigenVectors(2, minIndex)));
-        if (normalVec(2) < 0) normalVec = -normalVec;
+        Vector3f normalVec = Vector3f(real(eigenVectors(0, minIndex)),
+                                      real(eigenVectors(1, minIndex)), real(eigenVectors(2, minIndex)));
+
+        Vector3f cameraAxisVec(0.0f, 0.0f, 1.0f);
+        normalVec.normalize();
+        float normalVecCameraAxisAngle = acosf(normalVec.dot(cameraAxisVec)) * 180.0f / M_PI;
+        std::cout << "Vector: " << normalVec(0) << " " << normalVec(1) << " " << normalVec(2) << " angle: " << normalVecCameraAxisAngle << std::endl;
+
+        if (normalVec(0) < 0) normalVec = -normalVec;
 
         return Plane(normalVec, pointsVector.at(0), colorImage, pointsVector, imageCoords);
     }

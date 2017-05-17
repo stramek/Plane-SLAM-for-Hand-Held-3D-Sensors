@@ -75,9 +75,8 @@ namespace planeUtils {
 
             vector<Vector3f> pointsVector = pointCloud.getPoints();
 
-            std::cout << "fillPlaneVector1" << std::endl;
             Plane plane = PlanePca::getPlane(pointsVector, croppedRgbImage, imageCoords);
-            std::cout << "fillPlaneVector2" << std::endl;
+
             if (colorPlanes) {
                 Vec3b color = plane.isValid() ? Vec3b(0, 255, 0) : Vec3b(0, 0, 255);
                 croppedRgbImage.setTo(color);
