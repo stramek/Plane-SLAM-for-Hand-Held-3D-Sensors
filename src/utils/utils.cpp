@@ -31,5 +31,4 @@ namespace utils {
             cout<<filename<<".ot generation failed!"<<endl;
         }
     }
-
 }

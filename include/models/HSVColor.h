@@ -23,9 +23,11 @@ public:
     HSVColor();
 
     HSVColor(const Mat& colorImage);
+    HSVColor(uint8_t hue, uint8_t saturation, uint8_t value);
     uint8_t getHue() const;
     uint8_t getSaturation() const;
     uint8_t getValue() const;
+    void setHue(uint8_t hue);
 private:
     uint8_t hue = 0;
     uint8_t saturation = 0;

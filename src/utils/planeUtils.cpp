@@ -1,3 +1,4 @@
+#include <include/models/PointCloud.h>
 #include "include/utils/planeUtils.h"
 
 namespace planeUtils {
@@ -17,7 +18,8 @@ namespace planeUtils {
         for (PlaneSimilarity &outerPlaneSimilarity : planeSimilarityVec) {
             if (!outerPlaneSimilarity.isAnyOfFramesTaken()) {
                 if (outerPlaneSimilarity.isSimilarityValid()) {
-                    toReturn.push_back(pair<Plane, Plane>(outerPlaneSimilarity.getLastFrame(), outerPlaneSimilarity.getCurrentFrame()));
+                    toReturn.push_back(pair<Plane, Plane>(outerPlaneSimilarity.getLastFrame(),
+                                                          outerPlaneSimilarity.getCurrentFrame()));
 
                     for (PlaneSimilarity &innerPlaneSimilarity : planeSimilarityVec) {
                         if (innerPlaneSimilarity.isOneOfIndexesEqual(outerPlaneSimilarity)) {
@@ -47,7 +49,7 @@ namespace planeUtils {
             ImageCoords imageCoords;
 
             pair<int, int> position;
-            if (previousPlaneVector != nullptr && iteration <= numberOfPoints * previousPlanePercent
+            if (previousPlaneVector != nullptr && iteration < numberOfPoints * previousPlanePercent
                 && iteration < previousPlaneVector->size()) {
                 imageCoords = previousPlaneVector->at(iteration).getImageCoords();
             } else {
@@ -56,24 +58,28 @@ namespace planeUtils {
             }
 
             Mat rgb = imagePair.getRgb();
-            Mat croppedImage = rgb(Rect(imageCoords.getUpLeftX(),
+            Mat depth = imagePair.getDepth();
+            Mat croppedRgbImage = rgb(Rect(imageCoords.getUpLeftX(),
                                         imageCoords.getUpLeftY(),
                                         imageCoords.getAreaSize(),
                                         imageCoords.getAreaSize()));
 
-            vector<Vector3f> pointsVector;
-            for (int i = imageCoords.getUpLeftY(); i <= imageCoords.getDownRightY(); ++i) {
-                for (int j = imageCoords.getUpLeftX(); j <= imageCoords.getDownRightX(); ++j) {
-                    pointsVector.push_back(Vector3f(i, j, imagePair.getDepthAt(i, j)));
-                }
-            }
+            Mat croppedDepthImage = depth(Rect(imageCoords.getUpLeftX(),
+                                           imageCoords.getUpLeftY(),
+                                           imageCoords.getAreaSize(),
+                                           imageCoords.getAreaSize()));
 
-            Plane plane = PlanePca::getPlane(pointsVector, croppedImage, imageCoords);
+            PointCloud pointCloud;
+
+            pointCloud.depth2cloud(croppedDepthImage, croppedRgbImage, imageCoords.getUpLeftX(), imageCoords.getUpLeftY());
+
+            vector<Vector3f> pointsVector = pointCloud.getPoints();
+
+            Plane plane = PlanePca::getPlane(pointsVector, croppedRgbImage, imageCoords);
+
             if (colorPlanes) {
                 Vec3b color = plane.isValid() ? Vec3b(0, 255, 0) : Vec3b(0, 0, 255);
-                for (Vector3f vector : pointsVector) {
-                    utils::paintPixel((Mat &) imagePair.getRgb(), vector, color);
-                }
+                croppedRgbImage.setTo(color);
             }
             if (plane.isValid()) {
                 planeVector->push_back(plane);
@@ -99,7 +105,8 @@ namespace planeUtils {
             ImageCoords currentImageCoords = pair.second.getImageCoords();
 
             Point previousPlanePoint = Point(previousImageCoords.getCenterX(), previousImageCoords.getCenterY());
-            Point currentPlanePoint = Point(previousImageSize.width + currentImageCoords.getCenterX(), currentImageCoords.getCenterY());
+            Point currentPlanePoint = Point(previousImageSize.width + currentImageCoords.getCenterX(),
+                                            currentImageCoords.getCenterY());
 
             int size = previousImageCoords.getAreaSize() / 2;
             Scalar color = Scalar(rng.uniform(100, 255), rng.uniform(100, 255), rng.uniform(100, 255));
@@ -113,17 +120,51 @@ namespace planeUtils {
         }
 
         imshow("Merged", merged);
+
+        imwrite( "../images/similar.png", merged );
+
         waitKey();
     }
 
     void filterPairsByAngle(vector<pair<Plane, Plane>> &pairs) {
-        for (auto it = pairs.begin(); it != pairs.end(); ) {
-            if (/**it->first.getAngleBetween(*it->second) > MAX_ANGLE_BETWEEN_PLANES*/ true) {
-                it = pairs.erase(it);
-            }
-            else {
+        cout<<endl<<endl<<endl;
+        for (auto it = pairs.begin(); it != pairs.end();) {
+            cout<<"Angle is: "<<it->first.getAngleBetweenTwoPlanes(it->second)<<"... ";
+            if (it->first.getAngleBetweenTwoPlanes(it->second) > MAX_ANGLE_BETWEEN_PLANES) {
+                cout<<"deleteing."<<endl;
+                it = pairs.erase(it++);
+            } else {
+                cout<<"it's fine."<<endl;
                 ++it;
             }
         }
+        // TODO: WTF
+    }
+
+    void mergePlanes(vector<Plane> &planeVector) {
+        if (planeVector.size() == 0) return;
+        vector<vector<Plane>> clusteredPLanes;
+        //Clustering::getClusteredPlaneGroup(planeVector, clusteredPLanes);
+        planeVector = Clustering::getAveragedPlanes(clusteredPLanes);
+    }
+
+    void displayClusteredPlanes(ImagePair &imagePair, vector<Plane> planes) {
+        if (planes.size() == 0) return;
+        vector<vector<Plane>> clusteredPLanes;
+        Clustering clustering;
+        clustering.setCutSimilarity(5.0);
+        clustering.selectParts(planes, clusteredPLanes);
+        //Clustering::getClusteredPlaneGroup(plane, clusteredPLanes);
+        int i = 0;
+        for (auto singleCluster : clusteredPLanes) {
+            ++i;
+            for (auto planeInCluster : singleCluster) {
+                putText(imagePair.getRgb(), to_string(i), Point(planeInCluster.getImageCoords().getCenterX(),
+                                                                planeInCluster.getImageCoords().getCenterY()),
+                        FONT_HERSHEY_SIMPLEX, 0.8, cv::Scalar(0, 0, 255), 2);
+            }
+        }
+        imshow("Clustered planes", imagePair.getRgb());
+        //waitKey();
     }
 }

@@ -13,11 +13,26 @@ QGLVisualizer::~QGLVisualizer(void) {}
 void QGLVisualizer::draw() {
     glPushMatrix();
     glBegin(GL_POINTS);
-    for (Point3D i : pointCloud) {
+    std::vector<Point3D> points = pointCloud.getPoints3D();
+    for (Point3D i : points) {
         glColor3f(i.red / 255.0f, i.green / 255.0f, i.blue / 255.0f);
         glVertex3f(i.x, i.y, i.z);
     }
     glEnd();
+
+    // Drawing normals
+    float normalScaleFactor = 10.0f;
+    for (auto plane : planes){
+        Vector3f point = plane.getCentralPoint();
+        Vector3f normalVec = plane.getPlaneNormalVec() / normalScaleFactor;
+        glLineWidth(2);
+        glBegin(GL_LINES);
+        glColor3f(0.0, 0.0, 1.0);
+        glVertex3f(point(0), point(1), point(2));
+        glVertex3f(point(0) + normalVec(0), point(1) + normalVec(1), point(2) + normalVec(2));
+        glEnd();
+    }
+
     glPopMatrix();
 }
 
@@ -55,30 +70,12 @@ void QGLVisualizer::getPoint(unsigned int u, unsigned int v, float depth, Eigen:
 }
 
 void QGLVisualizer::setPHCPModel(Eigen::Matrix<double, 3, 3> model) {
-    this->PHCPModel = model;
+    pointCloud.setPHCPModel(model);
 }
 
 /// Convert disparity image to point cloud
 void QGLVisualizer::depth2cloud(cv::Mat &depthImage, cv::Mat RGB) {
-    Eigen::Vector3d point;
-    pointCloud.clear();
-
-    for (unsigned int i = 0; i < depthImage.rows; i++) {
-        for (unsigned int j = 0; j < depthImage.cols; j++) {
-            float depthM = float(depthImage.at<uint16_t>(i, j)) / 5000.0f;
-            getPoint(j, i, depthM, point);
-            Point3D pointPCL;
-            pointPCL.x = point(0);
-            pointPCL.y = -point(1);
-            pointPCL.z = -point(2);
-
-            pointPCL.red = RGB.at<cv::Vec<uchar, 3>>(i, j).val[2];
-            pointPCL.green = RGB.at<cv::Vec<uchar, 3>>(i, j).val[1];
-            pointPCL.blue = RGB.at<cv::Vec<uchar, 3>>(i, j).val[0];
-
-            pointCloud.push_back(pointPCL);
-        }
-    }
+    pointCloud.depth2cloud(depthImage, RGB);
 }
 
 void QGLVisualizer::updateCloud(Registration *registration, Frame *undistorted,
@@ -111,7 +108,7 @@ void QGLVisualizer::keyPressEvent(QKeyEvent *event) {
     }
 }
 
-const std::vector<Point3D> &QGLVisualizer::getPointCloud() const {
+const PointCloud &QGLVisualizer::getPointCloud() const {
     return pointCloud;
 }
 
@@ -121,4 +118,8 @@ bool QGLVisualizer::isProgramFinished() const {
 
 void QGLVisualizer::setProgramFinished(bool programFinished) {
     QGLVisualizer::programFinished = programFinished;
+}
+
+void QGLVisualizer::updatePlanes(std::vector<Plane> &planes){
+    this->planes = planes;
 }

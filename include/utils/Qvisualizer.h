@@ -20,6 +20,7 @@
 #include <cstdint>
 #include <stdint-gcc.h>
 #include "include/kinect/main.h"
+#include "include/models/PointCloud.h"
 
 using namespace libfreenect2;
 
@@ -35,6 +36,8 @@ public:
     /// Updates cloud
     void updateCloud(cv::Mat RGB, cv::Mat D);
 
+    void updatePlanes(std::vector<Plane> &planes);
+
     void updateCloud(Registration *registration, Frame *undistorted, Frame *registered);
 
     void getPoint(unsigned int u, unsigned int v, float depth, Eigen::Vector3d &point3D);
@@ -43,7 +46,7 @@ public:
 
     void setPHCPModel(Eigen::Matrix<double, 3, 3> model);
 
-    const std::vector<Point3D> &getPointCloud() const;
+    const PointCloud &getPointCloud() const;
 
     bool isProgramFinished() const;
 
@@ -79,7 +82,9 @@ private:
 
     std::mutex mtxCamera;
 
-    std::vector<Point3D> pointCloud;
+    PointCloud pointCloud;
+
+    std::vector<Plane> planes;
 };
 
 #endif // QVISUALIZER_H_INCLUDED

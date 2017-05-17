@@ -6,51 +6,115 @@
 //
 //
 
-#include "../../include/models/Plane.h"
+#include "include/models/Plane.h"
 
 Plane::Plane() {}
 
+Plane::Plane(Vector3f point1, Vector3f point2, Vector3f point3, const Mat& colorImage) {
+    color = HSVColor(colorImage);
+}
+
+Plane::Plane(std::array<Vector3d, 3>, const Mat& colorImage) {
+    color = HSVColor(colorImage);
+}
+
 Plane::Plane(Vector3f normalVec, Vector3f point, const Mat& colorImage, const vector<Vector3f> &points, const ImageCoords &imageCoords) {
+    planeNormalVec = normalVec;
+    planeNormalVec.normalize();
     A = normalVec(0);
     B = normalVec(1);
     C = normalVec(2);
     D = A * point(0) + B * point(1) + C * point(2);
+/*    if(this->D < 0){
+        planeNormalVec = - planeNormalVec;
+        this->A = -this->A;
+        this->B = -this->B;
+        this->C = -this->C;
+        this->D = -this->D;
+    }*/
     color = HSVColor(colorImage);
     this->points = points;
-    this->imageCoords = imageCoords;
+    this->imageCoordsVec.push_back(imageCoords);
     valid = true;
 }
 
-double Plane::getA() {
+Plane::Plane(Vector3f normalVec, float D, vector<Vector3f> points, vector<ImageCoords> imageCoordsVec, HSVColor color){
+    this->planeNormalVec = normalVec;
+    this->D = D;
+    this->A = normalVec(0);
+    this->B = normalVec(1);
+    this->C = normalVec(2);
+/*    if(this->D < 0){
+        planeNormalVec = - planeNormalVec;
+        this->A = -this->A;
+        this->B = -this->B;
+        this->C = -this->C;
+        this->D = -this->D;
+    }*/
+    this->points = points;
+    this->imageCoordsVec = imageCoordsVec;
+    this->color = color;
+    valid = true;
+}
+
+Plane::Plane(Vector3f normalVec, float D){
+    planeNormalVec = normalVec;
+    planeNormalVec.normalize();
+    A = normalVec(0);
+    B = normalVec(1);
+    C = normalVec(2);
+    this->D = D;
+/*    if(this->D < 0){
+        planeNormalVec = - planeNormalVec;
+        this->A = -this->A;
+        this->B = -this->B;
+        this->C = -this->C;
+        this->D = -this->D;
+    }*/
+    valid = true;
+}
+
+float Plane::getA() const {
     return A;
 }
 
-double Plane::getB() {
+float Plane::getB() const {
     return B;
 }
 
-double Plane::getC() {
+float Plane::getC() const {
     return C;
 }
 
-double Plane::getD() {
+float Plane::getD() const {
     return D;
 }
 
-double Plane::getDistanceFromPoint(Eigen::Vector3d point) {
+float Plane::getDistanceFromPoint(Vector3f point) {
     return std::abs(A * point(0) + B * point(1) + C * point(2) + D)
-           / sqrt(pow(A, 2) + pow(B, 2) + pow(C, 2));
+           / sqrtf(powf(A, 2) + powf(B, 2) + powf(C, 2));
 }
 
-void Plane::computePlaneEquation(Eigen::Vector3d point1, Eigen::Vector3d point2, Eigen::Vector3d point3) {
-    Eigen::Vector3d v = point1 - point2;
-    Eigen::Vector3d w = point1 - point3;
-    Eigen::Vector3d planeParameters = v.cross(w);
+void Plane::computePlaneEquation(Vector3f point1, Vector3f point2, Vector3f point3) {
+    Eigen::Vector3f v = point1 - point2;
+    Eigen::Vector3f w = point1 - point3;
+    Eigen::Vector3f planeParameters = v.cross(w);
+    planeParameters.normalize();
     A = planeParameters(0);
     B = planeParameters(1);
     C = planeParameters(2);
     D = A * point1(0) + B * point1(1) + C * point1(2);
     valid = true;
+    planeNormalVec(0) = A;
+    planeNormalVec(1) = B;
+    planeNormalVec(2) = C;
+/*    if(this->D < 0){
+        planeNormalVec = - planeNormalVec;
+        this->A = -this->A;
+        this->B = -this->B;
+        this->C = -this->C;
+        this->D = -this->D;
+    }*/
 }
 
 bool Plane::isValid() const {
@@ -61,12 +125,48 @@ const HSVColor &Plane::getColor() const {
     return color;
 }
 
+Vector3f Plane::computePointOnPlaneFromTwoCoordinate(float firstCoordinate, float secondCoordinate) const {
+    Vector3f pointToReturn;
+    if(A == 0 && B == 0 && C == 0){
+        throw std::runtime_error("Plane equation error!");
+    } else if( A == 0 && B == 0){
+        float z = D / B;
+        pointToReturn(0) = firstCoordinate;
+        pointToReturn(1) = secondCoordinate;
+        pointToReturn(2) = z;
+    } else if(A == 0 && C == 0){
+        float y = D / B;
+        pointToReturn(0) = firstCoordinate;
+        pointToReturn(1) = y;
+        pointToReturn(2) = secondCoordinate;
+    } else if(B==0 && C==0){
+        float x = D / A;
+        pointToReturn(0) = x;
+        pointToReturn(1) = firstCoordinate;
+    } else if(C == 0){
+        float y = (D - A * firstCoordinate) / B;
+        pointToReturn(0) = firstCoordinate;
+        pointToReturn(1) = y;
+        pointToReturn(2) = secondCoordinate;
+    } else{
+        float z = (D - A * firstCoordinate - B * secondCoordinate) / C;
+        pointToReturn(0) = firstCoordinate;
+        pointToReturn(1) = secondCoordinate;
+        pointToReturn(2) = z;
+    }
+    return  pointToReturn;
+}
+
+Vector3f Plane::getPlaneNormalVec() const{
+    return planeNormalVec;
+}
+
 const ImageCoords &Plane::getImageCoords() const {
-    return imageCoords;
+    return imageCoordsVec[0];
 }
 
 void Plane::setImageCoords(const ImageCoords &imageCoords) {
-    Plane::imageCoords = imageCoords;
+    Plane::imageCoordsVec.push_back(imageCoords);
 }
 
 const vector<Vector3f> &Plane::getPoints() const {
@@ -76,3 +176,48 @@ const vector<Vector3f> &Plane::getPoints() const {
 void Plane::setPoints(const vector<Vector3f> &points) {
     Plane::points = points;
 }
+
+unsigned int Plane::getNumberOfPoints() const {
+    return (unsigned int)points.size();
+}
+
+float Plane::getAngleBetweenTwoPlanes(const Plane &plane) const {
+    Eigen::Vector3f planeNormalVec = plane.getPlaneNormalVec();
+
+    float angleCos = this->planeNormalVec.dot(planeNormalVec) / this->planeNormalVec.norm() / planeNormalVec.norm();
+    if(angleCos < -1) angleCos = -1.0f;
+    if(angleCos > 1) angleCos = 1.0f;
+    float angle = acosf(angleCos)*180.0f/(float)M_PI;
+/*    if(angle > 90.0f){
+        angle = 180.0f - angle;
+    }*/
+    return angle;
+}
+
+void Plane::setColor(const HSVColor &color) {
+    Plane::color = color;
+}
+
+void Plane::insertPoints(vector<Vector3f> points){
+    this->points.insert(this->points.end(), points.begin(), points.end());
+}
+
+void Plane::insertImageCoords(vector<ImageCoords> imageCoordsVec){
+    this->imageCoordsVec.insert(this->imageCoordsVec.end(), imageCoordsVec.begin(), imageCoordsVec.end());
+}
+
+void Plane::mergePlane(Plane plane){
+    int colorSum = color.getHue() + plane.getColor().getHue();
+    color.setHue((uint8_t)(colorSum / 2));
+    insertPoints(plane.getPoints());
+    insertImageCoords(plane.getImageCoordsVec());
+}
+
+const vector<ImageCoords> &Plane::getImageCoordsVec() const {
+    return imageCoordsVec;
+}
+
+Vector3f Plane::getCentralPoint() const {
+    return points[(points.size() - 1) / 2];
+}
+
