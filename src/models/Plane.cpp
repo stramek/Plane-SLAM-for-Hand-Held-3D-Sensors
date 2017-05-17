@@ -25,13 +25,13 @@ Plane::Plane(Vector3f normalVec, Vector3f point, const Mat& colorImage, const ve
     B = normalVec(1);
     C = normalVec(2);
     D = A * point(0) + B * point(1) + C * point(2);
-    if(this->D < 0){
+/*    if(this->D < 0){
         planeNormalVec = - planeNormalVec;
         this->A = -this->A;
         this->B = -this->B;
         this->C = -this->C;
         this->D = -this->D;
-    }
+    }*/
     color = HSVColor(colorImage);
     this->points = points;
     this->imageCoordsVec.push_back(imageCoords);
@@ -44,13 +44,13 @@ Plane::Plane(Vector3f normalVec, float D, vector<Vector3f> points, vector<ImageC
     this->A = normalVec(0);
     this->B = normalVec(1);
     this->C = normalVec(2);
-    if(this->D < 0){
+/*    if(this->D < 0){
         planeNormalVec = - planeNormalVec;
         this->A = -this->A;
         this->B = -this->B;
         this->C = -this->C;
         this->D = -this->D;
-    }
+    }*/
     this->points = points;
     this->imageCoordsVec = imageCoordsVec;
     this->color = color;
@@ -64,13 +64,13 @@ Plane::Plane(Vector3f normalVec, float D){
     B = normalVec(1);
     C = normalVec(2);
     this->D = D;
-    if(this->D < 0){
+/*    if(this->D < 0){
         planeNormalVec = - planeNormalVec;
         this->A = -this->A;
         this->B = -this->B;
         this->C = -this->C;
         this->D = -this->D;
-    }
+    }*/
     valid = true;
 }
 
@@ -108,13 +108,13 @@ void Plane::computePlaneEquation(Vector3f point1, Vector3f point2, Vector3f poin
     planeNormalVec(0) = A;
     planeNormalVec(1) = B;
     planeNormalVec(2) = C;
-    if(this->D < 0){
+/*    if(this->D < 0){
         planeNormalVec = - planeNormalVec;
         this->A = -this->A;
         this->B = -this->B;
         this->C = -this->C;
         this->D = -this->D;
-    }
+    }*/
 }
 
 bool Plane::isValid() const {

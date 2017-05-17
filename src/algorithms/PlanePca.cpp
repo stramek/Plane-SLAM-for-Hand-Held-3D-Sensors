@@ -27,12 +27,22 @@ Plane PlanePca::computePlane(const vector<Vector3f> &pointsVector, const Mat& co
     eigenSolver.eigenvalues().minCoeff(&minIndex);
     if (abs(eigenSolver.eigenvalues()(minIndex)) < PCA_MAX_ACCEPTED_DISTANCE) {
         Vector3f normalVec;
+        Vector3f cameraAxisVec(0.0f, 0.0f, -1.0f);
         MatrixXf eigenVectors = eigenSolver.eigenvectors();
         normalVec = eigenVectors.col(minIndex);
+        normalVec.normalize();
+        float cameraAxisPlaneNormalAngle = acosf(normalVec.dot(cameraAxisVec)) * 180.0f / M_PI;
+
+        if(cameraAxisPlaneNormalAngle > 90.0f){
+            normalVec = -normalVec;
+        }
+
         return Plane(normalVec, pointsVector.at(0), colorImage, pointsVector, imageCoords);
     }
     return Plane();
 }
+
+
 
 Plane PlanePca::getPlane(const vector<Vector3f> &pointsVector, const Mat& colorImage, const ImageCoords& imageCoords) {
     return computePlane(pointsVector, colorImage, imageCoords);
