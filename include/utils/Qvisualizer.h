@@ -21,6 +21,7 @@
 #include <stdint-gcc.h>
 #include "include/kinect/main.h"
 #include "include/models/PointCloud.h"
+#include "include/models/Plane.h"
 
 using namespace libfreenect2;
 
