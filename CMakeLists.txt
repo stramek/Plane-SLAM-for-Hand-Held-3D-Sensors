@@ -33,6 +33,11 @@ include_directories(${QGLVIEWER_INCLUDE_DIR})
 include_directories(${QT_INCLUDES})
 link_directories(${QGLVIEWER_LIBRARY})
 
+#G2O library
+find_package(G2O REQUIRED)
+include_directories(${G2O_INCLUDE_DIR})
+link_directories(${G2O_LIBRARY_DIRS})
+
 #octomap library
 find_package(octomap REQUIRED)
 include_directories(${OCTOMAP_INCLUDE_DIRS})
