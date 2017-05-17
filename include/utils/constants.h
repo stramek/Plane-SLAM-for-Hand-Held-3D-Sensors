@@ -8,7 +8,7 @@
 
 using namespace Eigen;
 
-const static float PCA_MAX_ACCEPTED_DISTANCE = 2.0f;
+const static float PCA_MAX_ACCEPTED_DISTANCE = 500.0f;
 
 const double FOCAL_LENGTH_X = 525;
 const double FOCAL_LENGTH_Y = 525;

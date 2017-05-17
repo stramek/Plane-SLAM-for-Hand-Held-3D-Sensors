@@ -42,9 +42,9 @@ int main(int argc, char **argv) {
         //planeUtils::mergePlanes(planeVectorCurrentFrame);
         similarPlanes = planeUtils::getSimilarPlanes(planeVectorPreviousFrame, planeVectorCurrentFrame);
 
+        visualizer.updateCloud(imagePair1.getRgb(), imagePair2.getDepth());
         planeUtils::filterPairsByAngle(similarPlanes);
         planeUtils::visualizeSimilarPlanes(similarPlanes, imagePair1.getRgb(), imagePair2.getRgb());
-        //visualizer.updateCloud(imagePair1.getRgb(), imagePair2.getDepth());
 
         //utils::generateOctoMap("Dataset", visualizer.getPointCloud());
     }

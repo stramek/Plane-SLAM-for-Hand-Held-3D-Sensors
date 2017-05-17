@@ -15,6 +15,7 @@
 using namespace Eigen;
 using namespace std;
 
+typedef Matrix<float, 3, 3> Mat33;
 
 class PlanePca {
 private:
@@ -22,11 +23,11 @@ private:
 
     static MatrixXf computeCovMatrix(const MatrixXf &matrix);
 
-    static Plane computePlane(const vector<Vector3f> &pointsVector, const Mat& colorImage, const ImageCoords& imageCoords);
-
-    static MatrixXf computeCovMatrix2(const vector<Vector3f> &pointsVector, const Vector3f &mean);
+    static Mat33 computeCovMatrix2(const vector<Vector3f> &pointsVector, const Vector3f &mean);
 
     static Vector3f computeMean(const vector<Vector3f> &pointsVector);
+
+    static Plane computePlane(const vector<Vector3f> &pointsVector, const Mat& colorImage, const ImageCoords& imageCoords);
 
 public:
     static Plane getPlane(const vector<Vector3f> &pointsVector, const Mat& colorImage, const ImageCoords& imageCoords);

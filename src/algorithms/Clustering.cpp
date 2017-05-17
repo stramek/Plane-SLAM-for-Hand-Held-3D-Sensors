@@ -307,7 +307,7 @@ void Clustering::getClustersAfterThreshold(float cutThreshold, vector<Plane> pla
 
 void Clustering::getClusteredPlaneGroup(std::vector<Plane> planesVec, vector<vector<Plane>> &clusteredPlanes) {
     set<Cluster> vecEachClusterPlanes;
-    getClustersAfterThreshold(15, planesVec, vecEachClusterPlanes);
+    getClustersAfterThreshold(25, planesVec, vecEachClusterPlanes);
     for (auto planesIndexesInOneCluster : vecEachClusterPlanes) {
         vector<Plane> singleCluster;
         for (auto &index : planesIndexesInOneCluster.getIndexList()) {
