@@ -21,10 +21,10 @@ void QGLVisualizer::draw() {
     glEnd();
 
     // Drawing normals
-    float normalScaleFactor = 10.0f;
+    double normalScaleFactor = 10.0f;
     for (auto plane : planes){
-        Vector3f point = plane.getCentralPoint();
-        Vector3f normalVec = plane.getPlaneNormalVec() / normalScaleFactor;
+        Vector3d point = plane.getCentralPoint();
+        Vector3d normalVec = plane.getPlaneNormalVec() / normalScaleFactor;
         glLineWidth(2);
         glBegin(GL_LINES);
         glColor3f(0.0, 0.0, 1.0);
@@ -64,7 +64,7 @@ void QGLVisualizer::updateCloud(cv::Mat RGB, cv::Mat D) {
     depth2cloud(D, RGB);
 }
 
-void QGLVisualizer::getPoint(unsigned int u, unsigned int v, float depth, Eigen::Vector3d &point3D) {
+void QGLVisualizer::getPoint(unsigned int u, unsigned int v, double depth, Eigen::Vector3d &point3D) {
     Eigen::Vector3d point(u, v, 1);
     point3D = depth * PHCPModel * point;
 }

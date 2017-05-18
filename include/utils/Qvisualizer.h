@@ -41,7 +41,7 @@ public:
 
     void updateCloud(Registration *registration, Frame *undistorted, Frame *registered);
 
-    void getPoint(unsigned int u, unsigned int v, float depth, Eigen::Vector3d &point3D);
+    void getPoint(unsigned int u, unsigned int v, double depth, Eigen::Vector3d &point3D);
 
     void depth2cloud(cv::Mat &depthImage, cv::Mat RGB);
 

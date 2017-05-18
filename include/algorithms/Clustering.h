@@ -17,16 +17,16 @@ class Clustering {
 private:
 
     std::priority_queue<Cluster> priorityQueueDistance;
-    float cutSimilarity = 0;
+    double cutSimilarity = 0;
 
-    const static float MAX_ANGLE_THRESHOLD;
+    const static double MAX_ANGLE_THRESHOLD;
 
-    static float getDistanceBetweenTwoPoints(cv::Point_<float> point1, cv::Point_<float> point2);
-    static float getDistanceBetweenTwoPlanes(const Plane &firstPlane, const Plane &secondPlane);
-    static float getAngleBetweenTwoPlanes(const Plane &firstPlane, const Plane &secondPlane);
-    static float getSimilarityOfTwoPlanes(const Plane &firstPlane, const Plane &secondPlane);
+    static double getDistanceBetweenTwoPoints(cv::Point_<double> point1, cv::Point_<double> point2);
+    static double getDistanceBetweenTwoPlanes(const Plane &firstPlane, const Plane &secondPlane);
+    static double getAngleBetweenTwoPlanes(const Plane &firstPlane, const Plane &secondPlane);
+    static double getSimilarityOfTwoPlanes(const Plane &firstPlane, const Plane &secondPlane);
 
-    static float getDistanceBetweenPointAndPlane(Plane plane, Vector3f point);
+    static double getDistanceBetweenPointAndPlane(Plane plane, Vector3d point);
 
 
     double findMinDistance(std::pair<int,int>& pairedIds);
@@ -41,7 +41,7 @@ public:
 
     static vector<Plane> getAveragedPlanes(vector<vector<Plane>>& clusteredPlanes);
 
-    void setCutSimilarity(float cutSimilarity);
+    void setCutSimilarity(double cutSimilarity);
 };
 
 

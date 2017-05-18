@@ -15,13 +15,13 @@
 
 struct Point3D {
     Point3D() {}
-    Point3D(float x, float y, float z, unsigned char red, unsigned char green, unsigned char blue) : x(x), y(y), z(z),
+    Point3D(double x, double y, double z, unsigned char red, unsigned char green, unsigned char blue) : x(x), y(y), z(z),
                                                                                                      red(red),
                                                                                                      green(green),
                                                                                                      blue(blue) {}
-    float x;
-    float y;
-    float z;
+    double x;
+    double y;
+    double z;
     unsigned char red;
     unsigned char green;
     unsigned char blue;

@@ -25,48 +25,48 @@ using namespace Eigen;
 class Plane {
 public:
     Plane();
-    Plane(Vector3f point1, Vector3f  point2, Vector3f  point3, const Mat& colorImage);
+    Plane(Vector3d point1, Vector3d  point2, Vector3d  point3, const Mat& colorImage);
     Plane(std::array<Eigen::Vector3d , 3>, const Mat& colorImage);
-    Plane(Vector3f normalVec, Vector3f point, const Mat& colorImage, const vector<Vector3f> &points, const ImageCoords &imageCoords);
-    Plane(Vector3f normalVec, float D, vector<Vector3f> points, vector<ImageCoords> imageCoordsVec, HSVColor color);
-    Plane(Vector3f normalVec, float D); // added for testing, TODO remove after testing
-    float getA() const;
-    float getB() const;
-    float getC() const;
-    float getD() const;
+    Plane(Vector3d normalVec, Vector3d point, const Mat& colorImage, const vector<Vector3d> &points, const ImageCoords &imageCoords);
+    Plane(Vector3d normalVec, double D, vector<Vector3d> points, vector<ImageCoords> imageCoordsVec, HSVColor color);
+    Plane(Vector3d normalVec, double D); // added for testing, TODO remove after testing
+    double getA() const;
+    double getB() const;
+    double getC() const;
+    double getD() const;
     bool isValid() const;
-    float getDistanceFromPoint(Eigen::Vector3f  point);
-    Vector3f getPlaneNormalVec() const;
-    Vector3f computePointOnPlaneFromTwoCoordinate(float firstCoordinate = 0, float secondCoordinate = 0) const;
+    double getDistanceFromPoint(Eigen::Vector3d  point);
+    Vector3d getPlaneNormalVec() const;
+    Vector3d computePointOnPlaneFromTwoCoordinate(double firstCoordinate = 0, double secondCoordinate = 0) const;
 
     const ImageCoords &getImageCoords() const;
     void setImageCoords(const ImageCoords &imageCoords);
     const HSVColor &getColor() const;
-    const vector<Vector3f> &getPoints() const;
-    void setPoints(const vector<Vector3f> &points);
+    const vector<Vector3d> &getPoints() const;
+    void setPoints(const vector<Vector3d> &points);
     unsigned int getNumberOfPoints() const;
-    float getAngleBetweenTwoPlanes(const Plane &plane) const;
-    void insertPoints(vector<Vector3f> points);
+    double getAngleBetweenTwoPlanes(const Plane &plane) const;
+    void insertPoints(vector<Vector3d> points);
     void mergePlane(Plane plane);
     void insertImageCoords(vector<ImageCoords> imageCoordsVec);
-    Vector3f getCentralPoint() const;
+    Vector3d getCentralPoint() const;
 
 private:
-    float A, B, D, C;
-    vector<Vector3f> points;
+    double A, B, D, C;
+    vector<Vector3d> points;
     vector<ImageCoords> imageCoordsVec;
 public:
     const vector<ImageCoords> &getImageCoordsVec() const;
 
 private:
-    Vector3f planeNormalVec;
+    Vector3d planeNormalVec;
     HSVColor color = HSVColor();
 public:
     void setColor(const HSVColor &color);
 
 private:
     bool valid = false;
-    void computePlaneEquation(Vector3f  point1, Vector3f  point2, Vector3f  point3);
+    void computePlaneEquation(Vector3d  point1, Vector3d  point2, Vector3d  point3);
 };
 
 #endif /* Plane_h */

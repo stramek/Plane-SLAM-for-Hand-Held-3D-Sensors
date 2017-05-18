@@ -36,7 +36,7 @@ namespace planeUtils {
     };
 
     void fillPlaneVector(int numberOfPoints, int areaSize, ImagePair &imagePair, vector<Plane> *planeVector,
-                         vector<Plane> *previousPlaneVector, float previousPlanePercent, bool colorPlanes) {
+                         vector<Plane> *previousPlaneVector, double previousPlanePercent, bool colorPlanes) {
         planeVector->clear();
 
         if (previousPlaneVector != nullptr) {
@@ -73,7 +73,7 @@ namespace planeUtils {
 
             pointCloud.depth2cloud(croppedDepthImage, croppedRgbImage, imageCoords.getUpLeftX(), imageCoords.getUpLeftY());
 
-            vector<Vector3f> pointsVector = pointCloud.getPoints();
+            vector<Vector3d> pointsVector = pointCloud.getPoints();
 
             Plane plane = PlanePca::getPlane(pointsVector, croppedRgbImage, imageCoords);
 
