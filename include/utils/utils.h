@@ -25,6 +25,7 @@ using namespace octomap;
 namespace utils {
     void paintPixel(Mat &rgb, const Vector3f &vector, Vec3b color);
     pair<int, int> getRandomPosition(const Mat &mat, int areaSize);
+    pair<int, int> getRandomPosition(const int cols, const int rows, int areaSize);
     void generateOctoMap(const string fileName, const vector<Point3D> pointCloud, const float resolution = 0.05);
 }
 

@@ -1,4 +1,3 @@
-#include <include/models/PointCloud.h>
 #include "include/utils/planeUtils.h"
 
 namespace planeUtils {
@@ -85,6 +84,40 @@ namespace planeUtils {
                 planeVector->push_back(plane);
             }
         }
+    }
+
+    void fillPlaneVector(int numberOfPoints, int areaSize, vector<Plane> *planeVector, vector<Plane> *previousPlaneVector, double previousPlanePercent,
+            libfreenect2::Registration *registration, libfreenect2::Frame *undistorted, libfreenect2::Frame *registered) {
+
+        planeVector->clear();
+
+        if (previousPlaneVector != nullptr) {
+            auto engine = default_random_engine{};
+            shuffle(previousPlaneVector->begin(), previousPlaneVector->end(), engine);
+        }
+
+        for (int iteration = 0; iteration < numberOfPoints; ++iteration) {
+            ImageCoords imageCoords;
+            pair<int, int> position;
+            if (previousPlaneVector != nullptr && iteration < numberOfPoints * previousPlanePercent
+                && iteration < previousPlaneVector->size()) {
+                imageCoords = previousPlaneVector->at(iteration).getImageCoords();
+            } else {
+                //position = utils::getRandomPosition(imagePair.getDepth(), areaSize);
+                imageCoords = ImageCoords(position, areaSize);
+            }
+        }
+
+        /*for (int row = 0; row < undistorted->height; ++row) {
+            for (int col = 0; col < undistorted->width; ++col) {
+                float x, y, z, color;
+                registration->getPointXYZRGB(undistorted, registered, row, col, x, y, z, color);
+                const uint8_t *p = reinterpret_cast<uint8_t *>(&color);
+                if (!isnanf(z)) {
+                    Point3D point3D(-x, -y, -z, p[2], p[1], p[0]);
+                }
+            }
+        }*/
     }
 
     void visualizeSimilarPlanes(vector<pair<Plane, Plane>> &similarPlanes, const Mat &previousImage,
