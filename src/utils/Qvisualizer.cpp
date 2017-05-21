@@ -21,13 +21,13 @@ void QGLVisualizer::draw() {
     glEnd();
 
     // Drawing normals
-    float normalScaleFactor = 10.0f;
+    float normalScaleFactor = 5.0f;
     for (auto plane : planes){
         Vector3f point = plane.getCentralPoint();
         Vector3f normalVec = plane.getPlaneNormalVec() / normalScaleFactor;
-        glLineWidth(2);
+        glLineWidth(3);
         glBegin(GL_LINES);
-        glColor3f(0.0, 0.0, 1.0);
+        glColor3f(1.0, 1.0, 1.0);
         glVertex3f(point(0), point(1), point(2));
         glVertex3f(point(0) + normalVec(0), point(1) + normalVec(1), point(2) + normalVec(2));
         glEnd();

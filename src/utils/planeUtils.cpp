@@ -36,7 +36,7 @@ namespace planeUtils {
     };
 
     void fillPlaneVector(int numberOfPoints, int areaSize, ImagePair &imagePair, vector<Plane> *planeVector,
-                         vector<Plane> *previousPlaneVector, float previousPlanePercent, bool colorPlanes) {
+                         vector<Plane> *previousPlaneVector, float previousPlanePercent, bool colorPlanes, bool reverseNormal) {
         planeVector->clear();
 
         if (previousPlaneVector != nullptr) {
@@ -75,7 +75,7 @@ namespace planeUtils {
 
             vector<Vector3f> pointsVector = pointCloud.getPoints();
 
-            Plane plane = PlanePca::getPlane(pointsVector, croppedRgbImage, imageCoords);
+            Plane plane = PlanePca::getPlane(pointsVector, croppedRgbImage, imageCoords, reverseNormal);
 
             if (colorPlanes) {
                 Vec3b color = plane.isValid() ? Vec3b(0, 255, 0) : Vec3b(0, 0, 255);
@@ -152,7 +152,7 @@ namespace planeUtils {
         if (planes.size() == 0) return;
         vector<vector<Plane>> clusteredPLanes;
         Clustering clustering;
-        clustering.setCutSimilarity(5.0);
+        clustering.setCutSimilarity(15.0);
         clustering.selectParts(planes, clusteredPLanes);
         //Clustering::getClusteredPlaneGroup(plane, clusteredPLanes);
         int i = 0;

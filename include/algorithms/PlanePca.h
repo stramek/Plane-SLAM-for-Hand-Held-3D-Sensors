@@ -25,10 +25,10 @@ private:
 
     static Vector3f computeMean(const vector<Vector3f> &pointsVector);
 
-    static Plane computePlane(const vector<Vector3f> &pointsVector, const Mat& colorImage, const ImageCoords& imageCoords);
+    static Plane computePlane(const vector<Vector3f> &pointsVector, const Mat& colorImage, const ImageCoords& imageCoords, bool reverseNormal);
 
 public:
-    static Plane getPlane(const vector<Vector3f> &pointsVector, const Mat& colorImage, const ImageCoords& imageCoords);
+    static Plane getPlane(const vector<Vector3f> &pointsVector, const Mat& colorImage, const ImageCoords& imageCoords, bool reverseNormal);
 };
 
 

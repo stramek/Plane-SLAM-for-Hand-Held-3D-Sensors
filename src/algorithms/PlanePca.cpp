@@ -23,7 +23,8 @@ Mat33 PlanePca::computeCovMatrix(const vector<Vector3f> &pointsVector, const Vec
     return cov;
 }
 
-Plane PlanePca::computePlane(const vector<Vector3f> &pointsVector, const Mat &colorImage, const ImageCoords &imageCoords) {
+Plane PlanePca::computePlane(const vector<Vector3f> &pointsVector, const Mat &colorImage, const ImageCoords &imageCoords,
+                             bool reverseNormal) {
     Vector3f mean = computeMean(pointsVector);
     Mat33 cov = computeCovMatrix(pointsVector, mean);
     EigenSolver<Mat33> eigenSolver(cov);
@@ -48,15 +49,26 @@ Plane PlanePca::computePlane(const vector<Vector3f> &pointsVector, const Mat &co
         Vector3f cameraAxisVec(0.0f, 0.0f, 1.0f);
         normalVec.normalize();
         float normalVecCameraAxisAngle = acosf(normalVec.dot(cameraAxisVec)) * 180.0f / M_PI;
-        std::cout << "Vector: " << normalVec(0) << " " << normalVec(1) << " " << normalVec(2) << " angle: " << normalVecCameraAxisAngle << std::endl;
 
-        if (normalVec(0) < 0) normalVec = -normalVec;
+        if(!(normalVecCameraAxisAngle > 85 && normalVecCameraAxisAngle < 95)){
+            if (normalVecCameraAxisAngle > 90 && reverseNormal) {
+                normalVec = -normalVec;
+            }
+        } else {
+            if(reverseNormal){
+                Vector3f cameraToPlaneVec = pointsVector.at((pointsVector.size() - 1) / 2);
+                cameraToPlaneVec.normalize();
+                float angle = acosf(normalVec.dot(cameraToPlaneVec)) * 180.0f / M_PI;
+                if(angle < 90) normalVec = -normalVec;
+            }
+        }
+
 
         return Plane(normalVec, pointsVector.at(0), colorImage, pointsVector, imageCoords);
     }
     return Plane();
 }
 
-Plane PlanePca::getPlane(const vector<Vector3f> &pointsVector, const Mat &colorImage, const ImageCoords &imageCoords) {
-    return computePlane(pointsVector, colorImage, imageCoords);
+Plane PlanePca::getPlane(const vector<Vector3f> &pointsVector, const Mat &colorImage, const ImageCoords &imageCoords, bool reverseNormal) {
+    return computePlane(pointsVector, colorImage, imageCoords, reverseNormal);
 }
