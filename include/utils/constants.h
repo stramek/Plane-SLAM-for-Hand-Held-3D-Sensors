@@ -19,6 +19,8 @@ const double OPTICAL_CENTER_Y = 239.5;
 const int MAX_SIMILARITY_VALUE = 5;
 const int MAX_ANGLE_BETWEEN_PLANES = 45;
 
+const bool DEBUG = false;
+
 const Matrix<double, 3, 3> PHCP_MODEL = [] {
     Matrix<double, 3, 3> matrix;
     matrix << 1 / FOCAL_LENGTH_X, 0, -OPTICAL_CENTER_X / FOCAL_LENGTH_X,

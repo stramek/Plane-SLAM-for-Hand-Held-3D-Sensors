@@ -47,10 +47,22 @@ Plane PlanePca::computePlane(const vector<Vector3d> &pointsVector, const Mat &co
 
         Vector3d cameraAxisVec(0.0f, 0.0f, 1.0f);
         normalVec.normalize();
-        double normalVecCameraAxisAngle = acosf(normalVec.dot(cameraAxisVec)) * 180.0f / M_PI;
-        std::cout << "Vector: " << normalVec(0) << " " << normalVec(1) << " " << normalVec(2) << " angle: " << normalVecCameraAxisAngle << std::endl;
+        double normalVecCameraAxisAngle = acos(normalVec.dot(cameraAxisVec)) * 180.0 / M_PI;
+        if(DEBUG){
+            std::cout << "Vector: " << normalVec(0) << " " << normalVec(1) << " " << normalVec(2) << " angle: " << normalVecCameraAxisAngle << std::endl;
+        }
 
-        if (normalVec(0) < 0) normalVec = -normalVec;
+        if(!(normalVecCameraAxisAngle > 85 && normalVecCameraAxisAngle < 95)){
+            if (normalVecCameraAxisAngle > 90) {
+                normalVec = -normalVec;
+            }
+        } else {
+            Vector3d cameraToPlaneVec = pointsVector.at((pointsVector.size() - 1) / 2);
+            cameraToPlaneVec.normalize();
+            double angle = acos(normalVec.dot(cameraToPlaneVec)) * 180.0 / M_PI;
+            if(angle < 90) normalVec = -normalVec;
+        }
+
 
         return Plane(normalVec, pointsVector.at(0), colorImage, pointsVector, imageCoords);
     }
