@@ -16,7 +16,7 @@ void PointCloud::depth2cloud(cv::Mat &depthImage, cv::Mat RGB, unsigned int imgS
 
     for (unsigned int i = 0; i < depthImage.rows; i++) {
         for (unsigned int j = 0; j < depthImage.cols; j++) {
-            float depthM = float(depthImage.at<uint16_t>(i, j)) / 5000.0f;
+            double depthM = double(depthImage.at<uint16_t>(i, j)) / 5000.0f;
             getPoint(j + imgStartX, i + imgStartY, depthM, point);
             Point3D pointPCL;
             pointPCL.x = point(0);
@@ -29,12 +29,12 @@ void PointCloud::depth2cloud(cv::Mat &depthImage, cv::Mat RGB, unsigned int imgS
 
             points3D.push_back(pointPCL);
 
-            points.push_back(Eigen::Vector3f(pointPCL.x, pointPCL.y, pointPCL.z));
+            points.push_back(Eigen::Vector3d(pointPCL.x, pointPCL.y, pointPCL.z));
         }
     }
 }
 
-void PointCloud::getPoint(unsigned int u, unsigned int v, float depth, Eigen::Vector3d &point3D) {
+void PointCloud::getPoint(unsigned int u, unsigned int v, double depth, Eigen::Vector3d &point3D) {
     Eigen::Vector3d point(u, v, 1);
     point3D = depth * PHCPModel * point;
 }
@@ -49,7 +49,7 @@ void PointCloud::clear(){
 
 void PointCloud::push_back(Point3D point3D){
     points3D.push_back(point3D);
-    Vector3f point(point3D.x, point3D.y, point3D.z);
+    Vector3d point(point3D.x, point3D.y, point3D.z);
     points.push_back(point);
 }
 
@@ -57,6 +57,6 @@ const std::vector<Point3D> &PointCloud::getPoints3D() const {
     return points3D;
 }
 
-const std::vector<Eigen::Vector3f> &PointCloud::getPoints() const {
+const std::vector<Eigen::Vector3d> &PointCloud::getPoints() const {
     return points;
 }

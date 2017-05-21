@@ -4,8 +4,8 @@
 
 #include "include/algorithms/PlanePca.h"
 
-Vector3f PlanePca::computeMean(const vector<Vector3f> &pointsVector) {
-    Vector3f mean(0, 0, 0);
+Vector3d PlanePca::computeMean(const vector<Vector3d> &pointsVector) {
+    Vector3d mean(0, 0, 0);
     for (auto &vector : pointsVector) {
         mean += vector;
     }
@@ -13,7 +13,7 @@ Vector3f PlanePca::computeMean(const vector<Vector3f> &pointsVector) {
     return mean;
 }
 
-Mat33 PlanePca::computeCovMatrix(const vector<Vector3f> &pointsVector, const Vector3f &mean) {
+Mat33 PlanePca::computeCovMatrix(const vector<Vector3d> &pointsVector, const Vector3d &mean) {
     Mat33 cov(Mat33::Zero());
 
     for (auto &point : pointsVector) {
@@ -23,9 +23,8 @@ Mat33 PlanePca::computeCovMatrix(const vector<Vector3f> &pointsVector, const Vec
     return cov;
 }
 
-Plane PlanePca::computePlane(const vector<Vector3f> &pointsVector, const Mat &colorImage, const ImageCoords &imageCoords,
-                             bool reverseNormal) {
-    Vector3f mean = computeMean(pointsVector);
+Plane PlanePca::computePlane(const vector<Vector3d> &pointsVector, const Mat &colorImage, const ImageCoords &imageCoords) {
+    Vector3d mean = computeMean(pointsVector);
     Mat33 cov = computeCovMatrix(pointsVector, mean);
     EigenSolver<Mat33> eigenSolver(cov);
 
@@ -43,12 +42,13 @@ Plane PlanePca::computePlane(const vector<Vector3f> &pointsVector, const Mat &co
 
     if (abs(cov.eigenvalues()(minIndex)) < PCA_MAX_ACCEPTED_DISTANCE) {
         auto eigenVectors = eigenSolver.eigenvectors();
-        Vector3f normalVec = Vector3f(real(eigenVectors(0, minIndex)),
+        Vector3d normalVec = Vector3d(real(eigenVectors(0, minIndex)),
                                       real(eigenVectors(1, minIndex)), real(eigenVectors(2, minIndex)));
 
-        Vector3f cameraAxisVec(0.0f, 0.0f, 1.0f);
+        Vector3d cameraAxisVec(0.0f, 0.0f, 1.0f);
         normalVec.normalize();
-        float normalVecCameraAxisAngle = acosf(normalVec.dot(cameraAxisVec)) * 180.0f / M_PI;
+        double normalVecCameraAxisAngle = acosf(normalVec.dot(cameraAxisVec)) * 180.0f / M_PI;
+        std::cout << "Vector: " << normalVec(0) << " " << normalVec(1) << " " << normalVec(2) << " angle: " << normalVecCameraAxisAngle << std::endl;
 
         if(!(normalVecCameraAxisAngle > 85 && normalVecCameraAxisAngle < 95)){
             if (normalVecCameraAxisAngle > 90 && reverseNormal) {
@@ -69,6 +69,6 @@ Plane PlanePca::computePlane(const vector<Vector3f> &pointsVector, const Mat &co
     return Plane();
 }
 
-Plane PlanePca::getPlane(const vector<Vector3f> &pointsVector, const Mat &colorImage, const ImageCoords &imageCoords, bool reverseNormal) {
-    return computePlane(pointsVector, colorImage, imageCoords, reverseNormal);
+Plane PlanePca::getPlane(const vector<Vector3d> &pointsVector, const Mat &colorImage, const ImageCoords &imageCoords) {
+    return computePlane(pointsVector, colorImage, imageCoords);
 }

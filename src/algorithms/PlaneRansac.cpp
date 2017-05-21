@@ -4,13 +4,13 @@
 
 #include "include/algorithms/PlaneRansac.h"
 
-Plane PlaneRansac::computePlane(const vector<Vector3f> &pointsVector, const Mat &colorImage ) {
+Plane PlaneRansac::computePlane(const vector<Vector3d> &pointsVector, const Mat &colorImage ) {
     for (int i = 0; i < MAX_ITERATIONS_NUM; ++i) {
-        Vector3f random3Points[3];
+        Vector3d random3Points[3];
         getRandom3Points(pointsVector, random3Points);
         Plane plane(random3Points[0], random3Points[1], random3Points[2], colorImage);
         int inlairesNumber = 0;
-        for(Vector3f point : pointsVector){
+        for(Vector3d point : pointsVector){
             if(plane.getDistanceFromPoint(point) < MAX_INLARIES_POINT_PLANE_DISTANCE)
                 ++inlairesNumber;
         }
@@ -20,7 +20,7 @@ Plane PlaneRansac::computePlane(const vector<Vector3f> &pointsVector, const Mat 
     return Plane();
 }
 
-void PlaneRansac::getRandom3Points(const vector<Vector3f> &pointsVector, Vector3f *random3Points) {
+void PlaneRansac::getRandom3Points(const vector<Vector3d> &pointsVector, Vector3d *random3Points) {
     random_device rd;
     mt19937 rng(rd());
     uniform_int_distribution<unsigned int> distribution(0, static_cast<unsigned int>(pointsVector.size() - 1));
@@ -40,6 +40,6 @@ void PlaneRansac::getRandom3Points(const vector<Vector3f> &pointsVector, Vector3
     }
 }
 
-Plane PlaneRansac::getPlane(const vector<Vector3f> &pointsVector, const Mat &colorImage ) {
+Plane PlaneRansac::getPlane(const vector<Vector3d> &pointsVector, const Mat &colorImage ) {
     return computePlane(pointsVector, colorImage );
 }
