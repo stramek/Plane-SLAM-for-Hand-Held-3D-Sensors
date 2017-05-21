@@ -130,6 +130,23 @@ namespace planeUtils {
         }
     }
 
+    Mat getRGBFrameMat(libfreenect2::Registration *registration, libfreenect2::Frame *undistorted, libfreenect2::Frame *registered) {
+        Mat toReturn(Size(registered->width, registered->height), CV_8UC3);
+        toReturn = 0;
+        for (int row = 0; row < registered->height; ++row) {
+            for (int col = 0; col < registered->width; ++col) {
+                float x, y, z, color;
+                registration->getPointXYZRGB(undistorted, registered, row, col, x, y, z, color);
+                const uint8_t *p = reinterpret_cast<uint8_t *>(&color);
+                if (!isnanf(z)) {
+                    Vec3b color1(p[0], p[1], p[2]);
+                    toReturn.at<Vec3b>(Point(col, row)) = color1;
+                }
+            }
+        }
+        return toReturn;
+    }
+
     void visualizeSimilarPlanes(vector<pair<Plane, Plane>> &similarPlanes, const Mat &previousImage,
                                 const Mat &currentImage, int limitPoints) {
         Size previousImageSize = previousImage.size();
@@ -154,9 +171,9 @@ namespace planeUtils {
             int size = previousImageCoords.getAreaSize() / 2;
             Scalar color = Scalar(rng.uniform(100, 255), rng.uniform(100, 255), rng.uniform(100, 255));
 
-            circle(merged, previousPlanePoint, size, color, 1);
-            circle(merged, currentPlanePoint, size, color, 1);
-            line(merged, previousPlanePoint, currentPlanePoint, color, 1);
+            circle(merged, previousPlanePoint, size, color, 2);
+            circle(merged, currentPlanePoint, size, color, 2);
+            line(merged, previousPlanePoint, currentPlanePoint, color, 2);
 
             pointNumber++;
             if (pointNumber >= limitPoints) break;
@@ -166,7 +183,7 @@ namespace planeUtils {
 
         imwrite( "../images/similar.png", merged );
 
-        waitKey();
+        waitKey(1);
     }
 
     void filterPairsByAngle(vector<pair<Plane, Plane>> &pairs) {
@@ -188,7 +205,7 @@ namespace planeUtils {
         if (planeVector.size() == 0) return;
         vector<vector<Plane>> clusteredPLanes;
         Clustering clustering;
-        clustering.setCutSimilarity(5.0);
+        clustering.setCutSimilarity(CLUSTERING_MAX_ANGLE_THRESHOLD);
         clustering.selectParts(planeVector, clusteredPLanes);
         planeVector = Clustering::getAveragedPlanes(clusteredPLanes);
     }
@@ -197,7 +214,7 @@ namespace planeUtils {
         if (planes.size() == 0) return;
         vector<vector<Plane>> clusteredPLanes;
         Clustering clustering;
-        clustering.setCutSimilarity(5.0);
+        clustering.setCutSimilarity(CLUSTERING_MAX_ANGLE_THRESHOLD);
         clustering.selectParts(planes, clusteredPLanes);
         //Clustering::getClusteredPlaneGroup(plane, clusteredPLanes);
         int i = 0;

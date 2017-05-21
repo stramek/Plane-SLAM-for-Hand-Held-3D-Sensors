@@ -21,6 +21,7 @@ namespace utils {
     }
 
     void generateOctoMap(const string filename, const vector<Point3D> pointCloud, const float resolution) {
+        if (pointCloud.empty()) throw runtime_error("Passed pointcloud is empty! Did you forget to call updateCloud() method?");
         ColorOcTree tree(resolution);
         for (Point3D p : pointCloud) {
             tree.updateNode(point3d(p.x, p.y, p.z), true);
@@ -35,22 +36,4 @@ namespace utils {
             cout << filename << ".ot generation failed!" << endl;
         }
     }
-
-    /*typedef struct {
-        double r;       // a fraction between 0 and 1
-        double g;       // a fraction between 0 and 1
-        double b;       // a fraction between 0 and 1
-    } rgb;
-
-    typedef struct {
-        double h;       // angle in degrees
-        double s;       // a fraction between 0 and 1
-        double v;       // a fraction between 0 and 1
-    } hsv;*/
-
-    //static hsv   rgb2hsv(rgb in);
-    //static rgb   hsv2rgb(hsv in);
-
-
-
 }
