@@ -15,7 +15,7 @@
 class PointCloud {
 private:
     std::vector<Point3D> points3D;
-    std::vector<Eigen::Vector3d> points;
+    std::vector<Eigen::Vector3d> points; //TODO: Merge theese two collections!!!
     Eigen::Matrix<double, 3, 3> PHCPModel;
 
     void getPoint(unsigned int u, unsigned int v, double depth, Eigen::Vector3d &point3D);

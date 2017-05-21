@@ -23,7 +23,9 @@ Mat33 PlanePca::computeCovMatrix(const vector<Vector3d> &pointsVector, const Vec
     return cov;
 }
 
-Plane PlanePca::computePlane(const vector<Vector3d> &pointsVector, const Mat &colorImage, const ImageCoords &imageCoords) {
+Plane PlanePca::computePlane(const vector<Vector3d> &pointsVector, const ImageCoords &imageCoords) {
+    if (pointsVector.size() < 3)
+        return Plane();
     Vector3d mean = computeMean(pointsVector);
     Mat33 cov = computeCovMatrix(pointsVector, mean);
     EigenSolver<Mat33> eigenSolver(cov);
@@ -64,11 +66,20 @@ Plane PlanePca::computePlane(const vector<Vector3d> &pointsVector, const Mat &co
         }
 
 
-        return Plane(normalVec, pointsVector.at(0), colorImage, pointsVector, imageCoords);
+        return Plane(normalVec, pointsVector.at(0), pointsVector, imageCoords);
+        //return Plane();
     }
     return Plane();
 }
 
 Plane PlanePca::getPlane(const vector<Vector3d> &pointsVector, const Mat &colorImage, const ImageCoords &imageCoords) {
-    return computePlane(pointsVector, colorImage, imageCoords);
+    Plane plane = computePlane(pointsVector, imageCoords);
+    if (plane.isValid()) plane.setColor(HSVColor(colorImage));
+    return plane;
+}
+
+Plane PlanePca::getPlane(const vector<Vector3d> &pointsVector, const vector<Point3D> &points, const ImageCoords &imageCoords) {
+    Plane plane = computePlane(pointsVector, imageCoords);
+    if (plane.isValid()) plane.setColor(HSVColor(points));
+    return plane;
 }

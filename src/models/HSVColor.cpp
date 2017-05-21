@@ -27,16 +27,13 @@ HSVColor::HSVColor(const Mat &colorImage) {
     long valueSum = 0;
 
     for (int r = 0; r < colorImage.rows; ++r) {
-        const Pixel* ptr = colorImage.ptr<Pixel>(r, 0);
-        const Pixel* ptr_end = ptr + colorImage.cols;
+        const Pixel *ptr = colorImage.ptr<Pixel>(r, 0);
+        const Pixel *ptr_end = ptr + colorImage.cols;
         for (; ptr != ptr_end; ++ptr) {
             hueSum += ptr->val[0];
             saturationSum += ptr->val[1];
             valueSum += ptr->val[2];
         }
-//        delete(ptr);
-//        delete(ptr_end);
-        //TODO: Ask about deleting garbage
     }
 
     hue = (uint8_t) (hueSum / numberOfPixels);
@@ -44,7 +41,7 @@ HSVColor::HSVColor(const Mat &colorImage) {
     value = (uint8_t) (valueSum / numberOfPixels);
 }
 
-HSVColor::HSVColor(uint8_t hue, uint8_t saturation, uint8_t value){
+HSVColor::HSVColor(uint8_t hue, uint8_t saturation, uint8_t value) {
     this->hue = hue;
     this->saturation = saturation;
     this->value = value;
@@ -75,3 +72,31 @@ uint8_t HSVColor::getValue() const {
 void HSVColor::setHue(uint8_t hue) {
     HSVColor::hue = hue;
 }
+
+Vec3b HSVColor::convertBgr2Hsv(Vec3b src) {
+    Mat srcMat(1, 1, CV_8UC3);
+    *srcMat.ptr<Vec3b>(0) = src;
+    Mat resMat;
+    cvtColor(srcMat, resMat, CV_BGR2HSV);
+    return *resMat.ptr<Vec3b>(0);
+}
+
+HSVColor::HSVColor(const vector<Point3D> &points) {
+
+    long saturationSum = 0;
+    long hueSum = 0;
+    long valueSum = 0;
+
+    for (Point3D point : points) {
+        Vec3b hsv = convertBgr2Hsv(Vec3b(point.blue, point.green, point.red));
+        hueSum += hsv[0];
+        saturationSum += hsv[1];
+        valueSum += hsv[2];
+    }
+
+    hue = (uint8_t) (hueSum / points.size());
+    saturation = (uint8_t) (saturationSum / points.size());
+    value = (uint8_t) (valueSum / points.size());
+}
+
+

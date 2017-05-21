@@ -27,9 +27,10 @@ public:
     Plane();
     Plane(Vector3d point1, Vector3d  point2, Vector3d  point3, const Mat& colorImage);
     Plane(std::array<Eigen::Vector3d , 3>, const Mat& colorImage);
-    Plane(Vector3d normalVec, Vector3d point, const Mat& colorImage, const vector<Vector3d> &points, const ImageCoords &imageCoords);
+    Plane(Vector3d normalVec, Vector3d point, const vector<Vector3d> &points, const ImageCoords &imageCoords);
     Plane(Vector3d normalVec, double D, vector<Vector3d> points, vector<ImageCoords> imageCoordsVec, HSVColor color);
     Plane(Vector3d normalVec, double D); // added for testing, TODO remove after testing
+
     double getA() const;
     double getB() const;
     double getC() const;
@@ -50,21 +51,15 @@ public:
     void mergePlane(Plane plane);
     void insertImageCoords(vector<ImageCoords> imageCoordsVec);
     Vector3d getCentralPoint() const;
+    void setColor(const HSVColor &color);
+    const vector<ImageCoords> &getImageCoordsVec() const;
 
 private:
     double A, B, D, C;
     vector<Vector3d> points;
     vector<ImageCoords> imageCoordsVec;
-public:
-    const vector<ImageCoords> &getImageCoordsVec() const;
-
-private:
     Vector3d planeNormalVec;
     HSVColor color = HSVColor();
-public:
-    void setColor(const HSVColor &color);
-
-private:
     bool valid = false;
     void computePlaneEquation(Vector3d  point1, Vector3d  point2, Vector3d  point3);
 };

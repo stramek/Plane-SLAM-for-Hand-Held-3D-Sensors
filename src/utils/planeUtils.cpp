@@ -103,21 +103,31 @@ namespace planeUtils {
                 && iteration < previousPlaneVector->size()) {
                 imageCoords = previousPlaneVector->at(iteration).getImageCoords();
             } else {
-                //position = utils::getRandomPosition(imagePair.getDepth(), areaSize);
+                position = utils::getRandomPosition((int) undistorted->width, (int) undistorted->height, areaSize);
                 imageCoords = ImageCoords(position, areaSize);
             }
-        }
 
-        /*for (int row = 0; row < undistorted->height; ++row) {
-            for (int col = 0; col < undistorted->width; ++col) {
-                float x, y, z, color;
-                registration->getPointXYZRGB(undistorted, registered, row, col, x, y, z, color);
-                const uint8_t *p = reinterpret_cast<uint8_t *>(&color);
-                if (!isnanf(z)) {
-                    Point3D point3D(-x, -y, -z, p[2], p[1], p[0]);
+            PointCloud pointCloud;
+            for (int row = imageCoords.getUpLeftY(); row < imageCoords.getDownRightY(); ++row) {
+                for (int col = imageCoords.getUpLeftX(); col < imageCoords.getDownRightX(); ++col) {
+                    float x, y, z, color;
+                    registration->getPointXYZRGB(undistorted, registered, row, col, x, y, z, color);
+                    const uint8_t *p = reinterpret_cast<uint8_t *>(&color);
+                    if (!isnanf(z)) {
+                        Point3D point3D(-x, -y, -z, p[2], p[1], p[0]);
+                        pointCloud.push_back(point3D);
+                    }
                 }
+
             }
-        }*/
+            vector<Vector3d> pointsVector = pointCloud.getPoints();
+            vector<Point3D> points = pointCloud.getPoints3D();
+            Plane plane = PlanePca::getPlane(pointsVector, points, imageCoords);
+            if (plane.isValid()) {
+                planeVector->push_back(plane);
+            }
+
+        }
     }
 
     void visualizeSimilarPlanes(vector<pair<Plane, Plane>> &similarPlanes, const Mat &previousImage,
@@ -160,14 +170,14 @@ namespace planeUtils {
     }
 
     void filterPairsByAngle(vector<pair<Plane, Plane>> &pairs) {
-        cout<<endl<<endl<<endl;
+        if (DEBUG) cout<<endl<<endl<<endl;
         for (auto it = pairs.begin(); it != pairs.end();) {
-            cout<<"Angle is: "<<it->first.getAngleBetweenTwoPlanes(it->second)<<"... ";
+            if (DEBUG) cout<<"Angle is: "<<it->first.getAngleBetweenTwoPlanes(it->second)<<"... ";
             if (it->first.getAngleBetweenTwoPlanes(it->second) > MAX_ANGLE_BETWEEN_PLANES) {
-                cout<<"deleteing."<<endl;
+                if (DEBUG) cout<<"deleteing."<<endl;
                 it = pairs.erase(it++);
             } else {
-                cout<<"it's fine."<<endl;
+                if (DEBUG) cout<<"it's fine."<<endl;
                 ++it;
             }
         }
@@ -177,7 +187,9 @@ namespace planeUtils {
     void mergePlanes(vector<Plane> &planeVector) {
         if (planeVector.size() == 0) return;
         vector<vector<Plane>> clusteredPLanes;
-        //Clustering::getClusteredPlaneGroup(planeVector, clusteredPLanes);
+        Clustering clustering;
+        clustering.setCutSimilarity(5.0);
+        clustering.selectParts(planeVector, clusteredPLanes);
         planeVector = Clustering::getAveragedPlanes(clusteredPLanes);
     }
 

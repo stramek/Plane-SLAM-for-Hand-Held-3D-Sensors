@@ -34,6 +34,7 @@
 #include "include/utils/Qvisualizer.h"
 #include <QApplication>
 #include <include/utils/utils.h>
+#include "include/utils/planeUtils.h"
 
 namespace Rx {
     using namespace rxcpp;

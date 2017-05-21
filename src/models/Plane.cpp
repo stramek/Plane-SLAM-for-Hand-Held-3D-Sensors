@@ -18,7 +18,7 @@ Plane::Plane(std::array<Vector3d, 3>, const Mat& colorImage) {
     color = HSVColor(colorImage);
 }
 
-Plane::Plane(Vector3d normalVec, Vector3d point, const Mat& colorImage, const vector<Vector3d> &points, const ImageCoords &imageCoords) {
+Plane::Plane(Vector3d normalVec, Vector3d point, const vector<Vector3d> &points, const ImageCoords &imageCoords) {
     planeNormalVec = normalVec;
     planeNormalVec.normalize();
     A = normalVec(0);
@@ -32,7 +32,6 @@ Plane::Plane(Vector3d normalVec, Vector3d point, const Mat& colorImage, const ve
         this->C = -this->C;
         this->D = -this->D;
     }*/
-    color = HSVColor(colorImage);
     this->points = points;
     this->imageCoordsVec.push_back(imageCoords);
     valid = true;

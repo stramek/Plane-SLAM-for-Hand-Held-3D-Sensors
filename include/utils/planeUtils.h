@@ -35,6 +35,8 @@ namespace planeUtils {
     void fillPlaneVector(int numberOfPoints, int areaSize, ImagePair &imagePair,
                          vector<Plane> *planeVector, vector<Plane> *previousPlaneVector = nullptr,
                          double previousPlanePercent = 0.5, bool colorPlanes = true);
+    void fillPlaneVector(int numberOfPoints, int areaSize, vector<Plane> *planeVector, vector<Plane> *previousPlaneVector, double previousPlanePercent,
+                         libfreenect2::Registration *registration, libfreenect2::Frame *undistorted, libfreenect2::Frame *registered);
     void visualizeSimilarPlanes(vector<pair<Plane, Plane>> &similarPlanes, const Mat &previousImage,
                                 const Mat &currentImage, int limitPoints = INT_MAX);
     void filterPairsByAngle(vector<pair<Plane, Plane>> &pairs);

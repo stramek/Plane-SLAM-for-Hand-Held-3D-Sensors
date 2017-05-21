@@ -123,7 +123,7 @@ void Clustering::selectParts(const std::vector<Plane> &planesVec, std::vector<st
         clusters[i].push_back((int)i);
     }
 
-    for (size_t i=0;i<planesVec.size()*planesVec.size();i++){
+    for (size_t i=0;i<(planesVec.size()-1)*planesVec.size()/2;i++){
 
         std::pair<int,int> pairedIds;
         double minDist = findMinDistance(pairedIds);

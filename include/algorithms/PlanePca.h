@@ -25,9 +25,11 @@ private:
 
     static Vector3d computeMean(const vector<Vector3d> &pointsVector);
 
-    static Plane computePlane(const vector<Vector3d> &pointsVector, const Mat& colorImage, const ImageCoords& imageCoords);
+    static Plane computePlane(const vector<Vector3d> &pointsVector, const ImageCoords &imageCoords);
 
 public:
+    static Plane getPlane(const vector<Vector3d> &pointsVector, const vector<Point3D> &points, const ImageCoords &imageCoords);
+
     static Plane getPlane(const vector<Vector3d> &pointsVector, const Mat& colorImage, const ImageCoords& imageCoords);
 };
 
