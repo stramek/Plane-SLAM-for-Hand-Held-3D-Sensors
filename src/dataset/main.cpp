@@ -17,10 +17,6 @@ int main(int argc, char **argv) {
     visualizer.setPHCPModel(PHCP_MODEL);
     visualizer.show();
 
-    QGLVisualizer visualizerT;
-    visualizerT.setWindowTitle("Dataset viewer reverse normal");
-    visualizerT.setPHCPModel(PHCP_MODEL);
-    visualizerT.show();
 
     //while (true) {
 
@@ -39,7 +35,7 @@ int main(int argc, char **argv) {
         std::cout<<std::endl;
         ImagePair imagePair2(imagePair1.getRgb().clone(), imagePair1.getDepth().clone());
         planeUtils::fillPlaneVector(NUMBER_OF_POINTS, AREA_SIZE, imagePair2, &planeVectorCurrentFrame,
-                                    &planeVectorPreviousFrame, 2.0f, true, true);
+                                    &planeVectorPreviousFrame, 2.0f, true);
 
 
         planeUtils::displayClusteredPlanes(imagePair2, planeVectorCurrentFrame);
@@ -51,11 +47,8 @@ int main(int argc, char **argv) {
 
       //  planeUtils::filterPairsByAngle(similarPlanes);
       //  planeUtils::visualizeSimilarPlanes(similarPlanes, imagePair1.getRgb(), imagePair2.getRgb());
-        visualizer.updateCloud(imagePair1.getRgb(), imagePair1.getDepth());
-        visualizer.updatePlanes(planeVectorPreviousFrame);
-
-        visualizerT.updateCloud(imagePair2.getRgb(), imagePair2.getDepth());
-        visualizerT.updatePlanes(planeVectorCurrentFrame);
+        visualizer.updateCloud(imagePair2.getRgb(), imagePair2.getDepth());
+        visualizer.updatePlanes(planeVectorCurrentFrame);
 
         waitKey();
 

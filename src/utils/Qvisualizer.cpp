@@ -21,7 +21,7 @@ void QGLVisualizer::draw() {
     glEnd();
 
     // Drawing normals
-    double normalScaleFactor = 10.0f;
+    double normalScaleFactor = 5.0f;
     for (auto plane : planes){
         Vector3d point = plane.getCentralPoint();
         Vector3d normalVec = plane.getPlaneNormalVec() / normalScaleFactor;

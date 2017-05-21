@@ -103,20 +103,20 @@ vector<Plane> Clustering::getAveragedPlanes(vector<vector<Plane>> &clusteredPlan
 
 void Clustering::selectParts(const std::vector<Plane> &planesVec, std::vector<std::vector<Plane>> &clusteredPlanes){
     std::vector<std::vector<double>> distanceMatrix(planesVec.size(), std::vector<double>(planesVec.size()));
-    std::cout << "compute distance matrix...\n";
     //computeDistanceMatrix(dictionary, hierarchy, distanceMatrix, transformMatrix);
     computeDistanceMatrix(planesVec, distanceMatrix);
 
-    std::cout << std::setprecision(1) << std::fixed;
-    for(auto row : distanceMatrix){
-        for(auto element : row){
-            std::cout<<element << "  ";
+    if(DEBUG){
+        std::cout << std::setprecision(1) << std::fixed;
+        for(auto row : distanceMatrix){
+            for(auto element : row){
+                std::cout<<element << "  ";
+            }
+            std::cout<<std::endl;
         }
+
         std::cout<<std::endl;
     }
-
-    std::cout<<std::endl;
-
 
     std::vector<std::vector<int>> clusters(planesVec.size());
     for (size_t i=0;i<clusters.size();i++){
@@ -127,7 +127,9 @@ void Clustering::selectParts(const std::vector<Plane> &planesVec, std::vector<st
 
         std::pair<int,int> pairedIds;
         double minDist = findMinDistance(pairedIds);
-        std::cout<<"PairedIds with min distance: " << pairedIds.first << " " << pairedIds.second << " distance: " << minDist <<std::endl;
+        if(DEBUG){
+            std::cout<<"PairedIds with min distance: " << pairedIds.first << " " << pairedIds.second << " distance: " << minDist <<std::endl;
+        }
 
         if (minDist>=cutSimilarity)
             break;
@@ -135,32 +137,38 @@ void Clustering::selectParts(const std::vector<Plane> &planesVec, std::vector<st
         //merge two centroids
         std::pair<int,int> clustersIds;
         findPartsInClusters(clusters, pairedIds, clustersIds);
-        std::cout<<"ClustersIds: " << clustersIds.first << " " << clustersIds.second <<std::endl;
+        if(DEBUG){
+            std::cout<<"ClustersIds: " << clustersIds.first << " " << clustersIds.second <<std::endl;
+        }
 
         if (clustersIds.first!=clustersIds.second){
             mergeTwoClusters(clusters, clustersIds, distanceMatrix);
         }
     }
 
-    for(auto singleCluster : clusters){
-        for(auto planeIndex : singleCluster){
-            std::cout<< planeIndex << " ";
+    if(DEBUG){
+        for(auto singleCluster : clusters){
+            for(auto planeIndex : singleCluster){
+                std::cout<< planeIndex << " ";
+            }
+            std::cout<< std::endl;
         }
         std::cout<< std::endl;
+        std::cout<< std::endl;
     }
-    std::cout<< std::endl;
-    std::cout<< std::endl;
 
     getClusteredPlaneGroup(clusters, planesVec, clusteredPlanes);
 
-    for(auto row : distanceMatrix){
-        for(auto element : row){
-            std::cout<<element << "  ";
+    if(DEBUG){
+        for(auto row : distanceMatrix){
+            for(auto element : row){
+                std::cout<<element << "  ";
+            }
+            std::cout<<std::endl;
         }
+
         std::cout<<std::endl;
     }
-
-    std::cout<<std::endl;
 }
 
 void Clustering::computeDistanceMatrix(const std::vector<Plane> &planesVec, std::vector<std::vector<double>>& distanceMatrix){
@@ -222,7 +230,6 @@ void Clustering::findPartsInClusters(const std::vector<std::vector<int>>& cluste
 /// merge two clusters
 bool Clustering::mergeTwoClusters(std::vector<std::vector<int>>& clusters, const std::pair<int,int>& clustersIds, const std::vector<std::vector<double>>& distanceMatrix) const{
     double maxDist = computeMaxDist(clusters, clustersIds, distanceMatrix);
-    std::cout<<maxDist<<std::endl;
     if (maxDist<cutSimilarity){
         if (clustersIds.first<clustersIds.second){
             // merge clusters
