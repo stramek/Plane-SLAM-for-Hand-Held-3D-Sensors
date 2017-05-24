@@ -4,11 +4,11 @@
 
 #include "include/algorithms/PlaneRansac.h"
 
-Plane PlaneRansac::computePlane(const vector<Vector3d> &pointsVector, const Mat &colorImage ) {
+Plane PlaneRansac::computePlane(const vector<Vector3d> &pointsVector, const ImageCoords &imageCoords ) {
     for (int i = 0; i < MAX_ITERATIONS_NUM; ++i) {
         Vector3d random3Points[3];
         getRandom3Points(pointsVector, random3Points);
-        Plane plane(random3Points[0], random3Points[1], random3Points[2], colorImage);
+        Plane plane(random3Points[0], random3Points[1], random3Points[2], imageCoords);
         int inlairesNumber = 0;
         for(Vector3d point : pointsVector){
             if(plane.getDistanceFromPoint(point) < MAX_INLARIES_POINT_PLANE_DISTANCE)
@@ -40,6 +40,14 @@ void PlaneRansac::getRandom3Points(const vector<Vector3d> &pointsVector, Vector3
     }
 }
 
-Plane PlaneRansac::getPlane(const vector<Vector3d> &pointsVector, const Mat &colorImage ) {
-    return computePlane(pointsVector, colorImage );
+Plane PlaneRansac::getPlane(const vector<Vector3d> &pointsVector, const Mat &colorImage, const ImageCoords &imageCoords) {
+    Plane plane = computePlane(pointsVector, imageCoords);
+    if (plane.isValid()) plane.setColor(HSVColor(colorImage));
+    return plane;
+}
+
+Plane PlaneRansac::getPlane(const vector<Vector3d> &pointsVector, const vector<Point3D> &points, const ImageCoords &imageCoords) {
+    Plane plane = computePlane(pointsVector, imageCoords);
+    if (plane.isValid()) plane.setColor(HSVColor(points));
+    return plane;
 }

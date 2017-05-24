@@ -20,9 +20,10 @@ private:
     static constexpr double INLAIERS_PERCENT_CONSENSUS = 0.8f;
     static constexpr double MAX_INLARIES_POINT_PLANE_DISTANCE = 1.0f;
     static void getRandom3Points(const vector<Vector3d> &pointsVector, Vector3d *random3Points);
-    static Plane computePlane(const vector<Vector3d> &pointsVector, const Mat &colorImage );
+    static Plane computePlane(const vector<Vector3d> &pointsVector, const ImageCoords &imageCoords);
 public:
-    static Plane getPlane(const vector<Vector3d> &pointsVector, const Mat &colorImage );
+    static Plane getPlane(const vector<Vector3d> &pointsVector, const Mat &colorImage, const ImageCoords &imageCoords);
+    static Plane getPlane(const vector<Vector3d> &pointsVector, const vector<Point3D> &points, const ImageCoords &imageCoords);
 };
 
 

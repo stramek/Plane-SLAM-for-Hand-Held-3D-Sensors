@@ -10,8 +10,8 @@
 
 Plane::Plane() {}
 
-Plane::Plane(Vector3d point1, Vector3d point2, Vector3d point3, const Mat& colorImage) {
-    color = HSVColor(colorImage);
+Plane::Plane(Vector3d point1, Vector3d point2, Vector3d point3, const ImageCoords &imageCoords) {
+    this->imageCoordsVec.push_back(imageCoords);
 }
 
 Plane::Plane(std::array<Vector3d, 3>, const Mat& colorImage) {

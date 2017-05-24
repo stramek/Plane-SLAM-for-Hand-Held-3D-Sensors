@@ -9,15 +9,15 @@
 using namespace Eigen;
 
 const static float PCA_MAX_ACCEPTED_DISTANCE = 0.010f;
-const static float CLUSTERING_MAX_ANGLE_THRESHOLD = 15.0; //TODO:
+const static float CLUSTERING_MAX_ANGLE_THRESHOLD = 15.0;
+const int MAX_SIMILARITY_VALUE = 10;
+const int MAX_ANGLE_BETWEEN_PLANES = 20;
 
 const double FOCAL_LENGTH_X = 525;
 const double FOCAL_LENGTH_Y = 525;
 const double OPTICAL_CENTER_X = 319.5;
-const double OPTICAL_CENTER_Y = 239.5;
 
-const int MAX_SIMILARITY_VALUE = 5;
-const int MAX_ANGLE_BETWEEN_PLANES = 45;
+const double OPTICAL_CENTER_Y = 239.5;
 
 const bool DEBUG = false;
 

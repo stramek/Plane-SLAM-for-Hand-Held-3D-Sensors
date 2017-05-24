@@ -56,3 +56,11 @@ bool PlaneSimilarity::isOneOfIndexesEqual(PlaneSimilarity planeSimilarity) const
 bool PlaneSimilarity::isSimilarityValid() const {
     return similarity <= MAX_SIMILARITY_VALUE;
 }
+
+bool PlaneSimilarity::isLastFrameTaken() const {
+    return lastFrameTaken;
+}
+
+bool PlaneSimilarity::isCurrentFrameTaken() const {
+    return currentFrameTaken;
+}

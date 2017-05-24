@@ -15,6 +15,7 @@ namespace planeUtils {
         sort(planeSimilarityVec.begin(), planeSimilarityVec.end());
 
         for (PlaneSimilarity &outerPlaneSimilarity : planeSimilarityVec) {
+
             if (!outerPlaneSimilarity.isAnyOfFramesTaken()) {
                 if (outerPlaneSimilarity.isSimilarityValid()) {
                     toReturn.push_back(pair<Plane, Plane>(outerPlaneSimilarity.getLastFrame(),
@@ -30,12 +31,13 @@ namespace planeUtils {
                 }
             }
         }
-
         return toReturn;
     };
 
     void fillPlaneVector(int numberOfPoints, int areaSize, ImagePair &imagePair, vector<Plane> *planeVector,
                          vector<Plane> *previousPlaneVector, double previousPlanePercent, bool colorPlanes) {
+        if (previousPlanePercent > 1.0 || previousPlanePercent < 0.0)
+            throw runtime_error("previousPlanePercent value must be between <0.0 ; 1.0>");
         planeVector->clear();
 
         if (previousPlaneVector != nullptr) {
@@ -74,6 +76,7 @@ namespace planeUtils {
 
             vector<Vector3d> pointsVector = pointCloud.getPoints();
 
+            //cout<<"Getting plane: "<<iteration + 1<<" of "<<numberOfPoints<<endl;
             Plane plane = PlanePca::getPlane(pointsVector, croppedRgbImage, imageCoords);
 
             if (colorPlanes) {
@@ -223,7 +226,7 @@ namespace planeUtils {
             for (auto planeInCluster : singleCluster) {
                 putText(imagePair.getRgb(), to_string(i), Point(planeInCluster.getImageCoords().getCenterX(),
                                                                 planeInCluster.getImageCoords().getCenterY()),
-                        FONT_HERSHEY_SIMPLEX, 0.8, cv::Scalar(0, 0, 255), 2);
+                        FONT_HERSHEY_SIMPLEX, 0.8, cv::Scalar(0, 0, 255), 1);
             }
         }
         imshow("Clustered planes", imagePair.getRgb());

@@ -33,6 +33,10 @@ public:
     bool isOneOfIndexesEqual(PlaneSimilarity planeSimilarity) const;
     bool isSimilarityValid() const;
 
+    bool isLastFrameTaken() const;
+
+    bool isCurrentFrameTaken() const;
+
     bool operator < (const PlaneSimilarity& plane) const {
         return (similarity < plane.similarity);
     }

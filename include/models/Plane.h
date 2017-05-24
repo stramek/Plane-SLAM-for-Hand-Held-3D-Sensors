@@ -25,7 +25,7 @@ using namespace Eigen;
 class Plane {
 public:
     Plane();
-    Plane(Vector3d point1, Vector3d  point2, Vector3d  point3, const Mat& colorImage);
+    Plane(Vector3d point1, Vector3d  point2, Vector3d  point3, const ImageCoords& imageCoords);
     Plane(std::array<Eigen::Vector3d , 3>, const Mat& colorImage);
     Plane(Vector3d normalVec, Vector3d point, const vector<Vector3d> &points, const ImageCoords &imageCoords);
     Plane(Vector3d normalVec, double D, vector<Vector3d> points, vector<ImageCoords> imageCoordsVec, HSVColor color);
