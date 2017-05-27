@@ -5,9 +5,10 @@ namespace planeUtils {
 
         vector<pair<Plane, Plane>> toReturn;
         vector<PlaneSimilarity> planeSimilarityVec;
+        planeSimilarityVec.resize(previousFrame.size() * currentFrame.size());
 
         for (unsigned int i = 0; i < previousFrame.size(); ++i) {
-            for (unsigned int j = 0; j < currentFrame.size(); ++j) {
+            for (unsigned int j = i; j < currentFrame.size(); ++j) {
                 planeSimilarityVec.push_back(PlaneSimilarity(previousFrame.at(i), currentFrame.at(j), i, j));
             }
         }
@@ -15,15 +16,16 @@ namespace planeUtils {
         sort(planeSimilarityVec.begin(), planeSimilarityVec.end());
 
         for (PlaneSimilarity &outerPlaneSimilarity : planeSimilarityVec) {
-
             if (!outerPlaneSimilarity.isAnyOfFramesTaken()) {
                 if (outerPlaneSimilarity.isSimilarityValid()) {
-                    toReturn.push_back(pair<Plane, Plane>(outerPlaneSimilarity.getLastFrame(),
-                                                          outerPlaneSimilarity.getCurrentFrame()));
+                    if (outerPlaneSimilarity.isAngleBetweenPlanedValid()) {
+                        toReturn.push_back(pair<Plane, Plane>(outerPlaneSimilarity.getLastFrame(),
+                                                              outerPlaneSimilarity.getCurrentFrame()));
 
-                    for (PlaneSimilarity &innerPlaneSimilarity : planeSimilarityVec) {
-                        if (innerPlaneSimilarity.isOneOfIndexesEqual(outerPlaneSimilarity)) {
-                            innerPlaneSimilarity.setFramesAsTaken();
+                        for (PlaneSimilarity &innerPlaneSimilarity : planeSimilarityVec) {
+                            if (innerPlaneSimilarity.isOneOfIndexesEqual(outerPlaneSimilarity)) {
+                                innerPlaneSimilarity.setFramesAsTaken();
+                            }
                         }
                     }
                 } else {
@@ -187,21 +189,6 @@ namespace planeUtils {
         imwrite( "../images/similar.png", merged );
 
         waitKey(1);
-    }
-
-    void filterPairsByAngle(vector<pair<Plane, Plane>> &pairs) {
-        if (DEBUG) cout<<endl<<endl<<endl;
-        for (auto it = pairs.begin(); it != pairs.end();) {
-            if (DEBUG) cout<<"Angle is: "<<it->first.getAngleBetweenTwoPlanes(it->second)<<"... ";
-            if (it->first.getAngleBetweenTwoPlanes(it->second) > MAX_ANGLE_BETWEEN_PLANES) {
-                if (DEBUG) cout<<"deleteing."<<endl;
-                it = pairs.erase(it++);
-            } else {
-                if (DEBUG) cout<<"it's fine."<<endl;
-                ++it;
-            }
-        }
-        // TODO: WTF
     }
 
     void mergePlanes(vector<Plane> &planeVector) {

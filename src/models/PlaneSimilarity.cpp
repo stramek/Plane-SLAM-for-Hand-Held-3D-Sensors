@@ -48,13 +48,17 @@ void PlaneSimilarity::setFramesAsTaken() {
     PlaneSimilarity::lastFrameTaken = true;
 }
 
-bool PlaneSimilarity::isOneOfIndexesEqual(PlaneSimilarity planeSimilarity) const {
+bool PlaneSimilarity::isOneOfIndexesEqual(PlaneSimilarity &planeSimilarity) const {
     return lastFrameIndex == planeSimilarity.getLastFrameIndex() ||
            currentFrameIndex == planeSimilarity.getCurrentFrameIndex();
 }
 
 bool PlaneSimilarity::isSimilarityValid() const {
     return similarity <= MAX_SIMILARITY_VALUE;
+}
+
+bool PlaneSimilarity::isAngleBetweenPlanedValid() const {
+    return getLastFrame().getAngleBetweenTwoPlanes(getCurrentFrame()) < MAX_ANGLE_BETWEEN_PLANES;
 }
 
 bool PlaneSimilarity::isLastFrameTaken() const {
@@ -64,3 +68,5 @@ bool PlaneSimilarity::isLastFrameTaken() const {
 bool PlaneSimilarity::isCurrentFrameTaken() const {
     return currentFrameTaken;
 }
+
+PlaneSimilarity::PlaneSimilarity() {}
