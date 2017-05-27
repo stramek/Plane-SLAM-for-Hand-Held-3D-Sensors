@@ -1,5 +1,6 @@
 //
 
+#include <include/utils/constants.h>
 #include "include/models/ImageCoords.h"
 
 //
@@ -25,6 +26,15 @@ ImageCoords::ImageCoords(const pair<int, int> &position, const int areaSize) {
     centerX = (upLeftX + downRightX) / 2;
     centerY = (upLeftY + downRightY) / 2;
     this->areaSize = areaSize;
+}
+
+bool ImageCoords::hasTooMuchNanPixels(long nanPixelsCount) {
+    float percent = nanPixelsCount / (float) getNumberOfPixels() * 100;
+    return percent > MAX_PERCENT_OF_NAN_PIXELS_INSIDE_PLAIN;
+}
+
+int ImageCoords::getNumberOfPixels() const {
+    return areaSize * areaSize;
 }
 
 /**

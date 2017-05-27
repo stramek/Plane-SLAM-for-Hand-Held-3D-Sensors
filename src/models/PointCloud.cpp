@@ -45,6 +45,7 @@ void PointCloud::setPHCPModel(Eigen::Matrix<double, 3, 3> model) {
 
 void PointCloud::clear(){
     points3D.clear();
+    points.clear();
 }
 
 void PointCloud::push_back(Point3D point3D){

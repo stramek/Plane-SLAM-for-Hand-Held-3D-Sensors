@@ -5,10 +5,9 @@ namespace planeUtils {
 
         vector<pair<Plane, Plane>> toReturn;
         vector<PlaneSimilarity> planeSimilarityVec;
-        planeSimilarityVec.resize(previousFrame.size() * currentFrame.size());
 
         for (unsigned int i = 0; i < previousFrame.size(); ++i) {
-            for (unsigned int j = i; j < currentFrame.size(); ++j) {
+            for (unsigned int j = 0; j < currentFrame.size(); ++j) {
                 planeSimilarityVec.push_back(PlaneSimilarity(previousFrame.at(i), currentFrame.at(j), i, j));
             }
         }
@@ -33,6 +32,9 @@ namespace planeUtils {
                 }
             }
         }
+
+
+
         return toReturn;
     };
 
@@ -63,18 +65,19 @@ namespace planeUtils {
             Mat rgb = imagePair.getRgb();
             Mat depth = imagePair.getDepth();
             Mat croppedRgbImage = rgb(Rect(imageCoords.getUpLeftX(),
-                                        imageCoords.getUpLeftY(),
-                                        imageCoords.getAreaSize(),
-                                        imageCoords.getAreaSize()));
-
-            Mat croppedDepthImage = depth(Rect(imageCoords.getUpLeftX(),
                                            imageCoords.getUpLeftY(),
                                            imageCoords.getAreaSize(),
                                            imageCoords.getAreaSize()));
 
+            Mat croppedDepthImage = depth(Rect(imageCoords.getUpLeftX(),
+                                               imageCoords.getUpLeftY(),
+                                               imageCoords.getAreaSize(),
+                                               imageCoords.getAreaSize()));
+
             PointCloud pointCloud;
 
-            pointCloud.depth2cloud(croppedDepthImage, croppedRgbImage, imageCoords.getUpLeftX(), imageCoords.getUpLeftY());
+            pointCloud.depth2cloud(croppedDepthImage, croppedRgbImage, imageCoords.getUpLeftX(),
+                                   imageCoords.getUpLeftY());
 
             vector<Vector3d> pointsVector = pointCloud.getPoints();
 
@@ -91,8 +94,11 @@ namespace planeUtils {
         }
     }
 
-    void fillPlaneVector(int numberOfPoints, int areaSize, vector<Plane> *planeVector, vector<Plane> *previousPlaneVector, double previousPlanePercent,
-            libfreenect2::Registration *registration, libfreenect2::Frame *undistorted, libfreenect2::Frame *registered) {
+    void
+    fillPlaneVector(int numberOfPoints, int areaSize, vector<Plane> *planeVector, vector<Plane> *previousPlaneVector,
+                    double previousPlanePercent,
+                    libfreenect2::Registration *registration, libfreenect2::Frame *undistorted,
+                    libfreenect2::Frame *registered) {
 
         planeVector->clear();
 
@@ -112,30 +118,38 @@ namespace planeUtils {
                 imageCoords = ImageCoords(position, areaSize);
             }
 
+            bool shouldBreak = false;
+            long nanPixelsCount = 0;
             PointCloud pointCloud;
-            for (int row = imageCoords.getUpLeftY(); row < imageCoords.getDownRightY(); ++row) {
-                for (int col = imageCoords.getUpLeftX(); col < imageCoords.getDownRightX(); ++col) {
+            for (int row = imageCoords.getUpLeftY(); row < imageCoords.getDownRightY() && !shouldBreak; ++row) {
+                for (int col = imageCoords.getUpLeftX(); col < imageCoords.getDownRightX() && !shouldBreak; ++col) {
                     float x, y, z, color;
                     registration->getPointXYZRGB(undistorted, registered, row, col, x, y, z, color);
                     const uint8_t *p = reinterpret_cast<uint8_t *>(&color);
-                    if (!isnanf(z)) {
+
+                    if (!isnanf(z) && color != 0) {
                         Point3D point3D(-x, -y, -z, p[2], p[1], p[0]);
                         pointCloud.push_back(point3D);
+                    } else if (imageCoords.hasTooMuchNanPixels(++nanPixelsCount)) {
+                        pointCloud.clear();
+                        shouldBreak = true;
                     }
                 }
-
             }
+
+            //cout<< shouldBreak << " points: "<<pointCloud.getPoints3D().size()<<endl;
+
             vector<Vector3d> pointsVector = pointCloud.getPoints();
             vector<Point3D> points = pointCloud.getPoints3D();
             Plane plane = PlanePca::getPlane(pointsVector, points, imageCoords);
             if (plane.isValid()) {
                 planeVector->push_back(plane);
             }
-
         }
     }
 
-    Mat getRGBFrameMat(libfreenect2::Registration *registration, libfreenect2::Frame *undistorted, libfreenect2::Frame *registered) {
+    Mat getRGBFrameMat(libfreenect2::Registration *registration, libfreenect2::Frame *undistorted,
+                       libfreenect2::Frame *registered) {
         Mat toReturn(Size(registered->width, registered->height), CV_8UC3);
         toReturn = 0;
         for (int row = 0; row < registered->height; ++row) {
@@ -174,11 +188,19 @@ namespace planeUtils {
                                             currentImageCoords.getCenterY());
 
             int size = previousImageCoords.getAreaSize() / 2;
-            Scalar color = Scalar(rng.uniform(100, 255), rng.uniform(100, 255), rng.uniform(100, 255));
+            Scalar color = Scalar(rng.uniform(180, 255), rng.uniform(180, 255), rng.uniform(180, 255));
 
             circle(merged, previousPlanePoint, size, color, 2);
             circle(merged, currentPlanePoint, size, color, 2);
             line(merged, previousPlanePoint, currentPlanePoint, color, 2);
+
+            double angle = pair.first.getAngleBetweenTwoPlanes(pair.second);
+            int colorDiff = abs(pair.first.getColor().getHue() - pair.second.getColor().getHue());
+            stringstream stream;
+            stream << fixed << setprecision(1) << angle;
+            Point centerPoint = ((previousPlanePoint + currentPlanePoint) / 2);
+            centerPoint.x = centerPoint.x - 50;
+            putText(merged, "Angle: " + stream.str() + " Color diff: " + to_string(colorDiff), centerPoint, FONT_HERSHEY_SIMPLEX, 0.5, color, 2);
 
             pointNumber++;
             if (pointNumber >= limitPoints) break;
@@ -186,9 +208,9 @@ namespace planeUtils {
 
         imshow("Merged", merged);
 
-        imwrite( "../images/similar.png", merged );
+        //imwrite("../images/similar" + to_string(SCREENSHOT_HELPER++) +".png", merged);
 
-        waitKey(100);
+        waitKey(1);
     }
 
     void mergePlanes(vector<Plane> &planeVector) {
@@ -216,7 +238,7 @@ namespace planeUtils {
                         FONT_HERSHEY_SIMPLEX, 0.8, cv::Scalar(0, 0, 255), 2);
             }
         }
-        imshow("Clustered planes", imagePair.getRgb());
+        //imshow("Clustered planes", imagePair.getRgb());
         //waitKey();
     }
 }

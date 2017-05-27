@@ -29,6 +29,8 @@ public:
     int getCenterX() const;
     int getCenterY() const;
     int getAreaSize() const;
+    bool hasTooMuchNanPixels(long nanPixelsCount);
+    int getNumberOfPixels() const;
 private:
     int upLeftX = -1;
     int upLeftY = -1;
@@ -36,6 +38,7 @@ private:
     int downRightY = -1;
     int centerX = -1;
     int centerY = -1;
+
     int areaSize = -1;
 };
 
