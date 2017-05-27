@@ -25,6 +25,8 @@
 #include <libfreenect2/packet_pipeline.h>
 #include <libfreenect2/logger.h>
 #include <include/algorithms/PlaneRansac.h>
+#include <iomanip>
+#include <sstream>
 
 using namespace cv;
 using namespace std;

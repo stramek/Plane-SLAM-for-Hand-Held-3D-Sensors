@@ -37,8 +37,8 @@ int main(int argc, char **argv) {
     vector<Plane> planeVectorPreviousFrame;
     vector<Plane> planeVectorCurrentFrame;
     vector<pair<Plane, Plane>> similarPlanes;
-    const int AREA_SIZE = 21; // odd number
-    const int NUMBER_OF_POINTS = 50;
+    const int AREA_SIZE = 31; // odd number
+    const int NUMBER_OF_POINTS = 200;
     if (AREA_SIZE % 2 == 0) throw runtime_error("AREA_SIZE needs to be odd number");
 
     Mat previousFrame;
@@ -66,9 +66,13 @@ int main(int argc, char **argv) {
 
         planeUtils::mergePlanes(planeVectorCurrentFrame);
         similarPlanes = planeUtils::getSimilarPlanes(planeVectorPreviousFrame, planeVectorCurrentFrame);
-        planeUtils::filterPairsByAngle(similarPlanes);
 
-        cout << "Similar planes: " << similarPlanes.size() << endl;
+        cout << "Similar planes: " << similarPlanes.size();
+        if (similarPlanes.size() >= 3) {
+            cout<<" OK!"<<endl;
+        } else {
+            cout<<" ZA MALO PLASZCZYZN!"<<endl;
+        }
 
         if (KINECT_MODE == VISUALIZE_SIMILAR_PLANES) {
             previousFrame = currentFrame.clone();
