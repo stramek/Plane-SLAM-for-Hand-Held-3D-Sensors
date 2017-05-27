@@ -184,9 +184,9 @@ double Plane::getAngleBetweenTwoPlanes(const Plane &plane) const {
     Eigen::Vector3d planeNormalVec = plane.getPlaneNormalVec();
 
     double angleCos = this->planeNormalVec.dot(planeNormalVec) / this->planeNormalVec.norm() / planeNormalVec.norm();
-    if(angleCos < -1) angleCos = -1.0f;
-    if(angleCos > 1) angleCos = 1.0f;
-    double angle = acosf(angleCos)*180.0f/(double)M_PI;
+    if(angleCos < -1) angleCos = -1.0;
+    if(angleCos > 1) angleCos = 1.0;
+    double angle = acos(angleCos)*180.0/(double)M_PI;
 
     return angle;
 }

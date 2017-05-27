@@ -45,11 +45,11 @@ int main(int argc, char **argv) {
         cout<<"Merging planes..."<<endl;
         planeUtils::mergePlanes(planeVectorPreviousFrame);
         planeUtils::mergePlanes(planeVectorCurrentFrame);
-
+//
         cout<<"Finding similar planes..."<<endl;
         similarPlanes = planeUtils::getSimilarPlanes(planeVectorPreviousFrame, planeVectorCurrentFrame);
 
-        //cout<<"Filtering pairs by angle..."<<endl;
+        cout<<"Filtering pairs by angle..."<<endl;
         cout<<"Finished!"<<endl;
         planeUtils::visualizeSimilarPlanes(similarPlanes, imagePair1.getRgb(), imagePair2.getRgb());
         //visualizer.updateCloud(imagePair2.getRgb(), imagePair2.getDepth());

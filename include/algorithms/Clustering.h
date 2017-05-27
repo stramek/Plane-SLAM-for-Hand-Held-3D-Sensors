@@ -15,19 +15,18 @@
 
 class Clustering {
 private:
+    mt19937 rng;
 
     std::priority_queue<Cluster> priorityQueueDistance;
     double cutSimilarity = 0;
 
     const static double MAX_ANGLE_THRESHOLD;
 
-    static double getDistanceBetweenTwoPoints(cv::Point_<double> point1, cv::Point_<double> point2);
-    static double getDistanceBetweenTwoPlanes(const Plane &firstPlane, const Plane &secondPlane);
-    static double getAngleBetweenTwoPlanes(const Plane &firstPlane, const Plane &secondPlane);
-    static double getSimilarityOfTwoPlanes(const Plane &firstPlane, const Plane &secondPlane);
+    double getDistanceBetweenTwoPlanes(const Plane &firstPlane, const Plane &secondPlane);
+    double getAngleBetweenTwoPlanes(const Plane &firstPlane, const Plane &secondPlane);
+    double getSimilarityOfTwoPlanes(const Plane &firstPlane, const Plane &secondPlane);
 
     static double getDistanceBetweenPointAndPlane(Plane plane, Vector3d point);
-
 
     double findMinDistance(std::pair<int,int>& pairedIds);
     void findPartsInClusters(const std::vector<std::vector<int>>& clusters, const std::pair<int,int>& pairedIds, std::pair<int,int>& clustersIds) const;
@@ -37,6 +36,11 @@ private:
     void getClusteredPlaneGroup(const std::vector<std::vector<int>> clusters, const std::vector<Plane> &planesVec, vector<vector<Plane>> &clusteredPlanes);
 
 public:
+    Clustering(){
+        random_device rd;
+        mt19937 rng(rd());
+    }
+
     void selectParts(const std::vector<Plane> &planesVec, std::vector<std::vector<Plane>> &clusteredPlanes);
 
     static vector<Plane> getAveragedPlanes(vector<vector<Plane>>& clusteredPlanes);

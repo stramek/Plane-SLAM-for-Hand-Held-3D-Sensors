@@ -7,7 +7,7 @@
 const double Clustering::MAX_ANGLE_THRESHOLD = 5.0;
 
 double Clustering::getDistanceBetweenPointAndPlane(Plane plane, Vector3d point) {
-    double distance = abs(plane.getA() * point(0) + plane.getB() * point(1) + plane.getC() * point(2) + plane.getD()) /
+    double distance = abs(plane.getA() * point(0) + plane.getB() * point(1) + plane.getC() * point(2) - plane.getD()) /
                       sqrt(pow(plane.getA(), 2.0) + pow(plane.getB(), 2.0) + pow(plane.getC(), 2.0));
     return distance;
 }
@@ -16,39 +16,19 @@ double Clustering::getDistanceBetweenTwoPlanes(const Plane &firstPlane, const Pl
     double distance = 0;
     vector<Vector3d> pointsVec = secondPlane.getPoints();
 
-/*    for (int i = 0; i < 50; ++i) {
-        random_device rd;
-        mt19937 rng(rd());
-        uniform_int_distribution<unsigned int> pointIndex(0, secondPlane.getNumberOfPoints() - 1);
+    uniform_int_distribution<unsigned int> pointIndex(0, secondPlane.getNumberOfPoints() - 1);
+    for (int i = 0; i < 50; ++i) {
         Vector3d randomPointOnSecondPlane = pointsVec[pointIndex(rng)];
         distance += getDistanceBetweenPointAndPlane(firstPlane, randomPointOnSecondPlane);
-    }*/
-
-
-    return abs(firstPlane.getD() - secondPlane.getD());
-    //return distance / 50;
-
-/*    Vector3d firstVec(firstPlane.getD()/firstPlane.getA(), firstPlane.getD()/firstPlane.getB(), firstPlane.getD()/firstPlane.getC());
-    Vector3d secondVec(secondPlane.getD()/secondPlane.getA(), secondPlane.getD()/secondPlane.getB(), secondPlane.getD()/secondPlane.getC());
-
-    Vector3d diffVec = firstVec - secondVec;
-
-    return sqrtf(powf(diffVec(0), 2.0) + powf(diffVec(1), 2.0) + powf(diffVec(2), 2.0));*/
-}
-
-double Clustering::getAngleBetweenTwoPlanes(const Plane &firstPlane, const Plane &secondPlane) {
-    Eigen::Vector3d firstPlaneNormalVec = firstPlane.getPlaneNormalVec();
-    Eigen::Vector3d secondPlaneNormalVec = secondPlane.getPlaneNormalVec();
-
-    double angleCos =
-            firstPlaneNormalVec.dot(secondPlaneNormalVec) / firstPlaneNormalVec.norm() / secondPlaneNormalVec.norm();
-    if (angleCos < -1) angleCos = -1.0f;
-    if (angleCos > 1) angleCos = 1.0f;
-    double angle = acosf(angleCos) * 180.0f / (double) M_PI;
-    if (angle > 90.0f) {
-        angle = 180.0f - angle;
     }
-    return angle;
+
+//    std::cout << "First plane: " << firstPlane << std::endl;
+//    std::cout << "Second plane: " << secondPlane << std::endl;
+//    std::cout << "Angle: " << firstPlane.getAngleBetweenTwoPlanes(secondPlane) << std::endl;
+//    std::cout << "Distance: " << distance / 100.0 << std::endl;
+
+    //return abs(firstPlane.getD() - secondPlane.getD());
+    return distance / 50.0;
 }
 
 double Clustering::getSimilarityOfTwoPlanes(const Plane &firstPlane, const Plane &secondPlane) {
@@ -211,18 +191,7 @@ bool Clustering::mergeTwoClusters(std::vector<std::vector<int>> &clusters, const
 /// compute max distance between centroid of the first cluster and all parts in the second cluster
 double Clustering::computeMaxDist(const std::vector<std::vector<int>> &clusters, const std::pair<int, int> &clustersIds,
                                   const std::vector<std::vector<double>> &distanceMatrix) const {
-    int partIdA = clustersIds.first;
     double maxDist = std::numeric_limits<double>::min();
-/*    for (const auto &partIdB : clusters[clustersIds.second]){
-        double dist;
-        if (partIdA>partIdB)//because up-triangle elements in distance matrix are cleaned
-            dist = distanceMatrix[partIdA][partIdB];
-        else
-            dist = distanceMatrix[partIdB][partIdA];
-        if (dist>maxDist){
-            maxDist = dist;
-        }
-    }*/
 
     for (const auto &partIdA : clusters[clustersIds.first]) {
         for (const auto &partIdB : clusters[clustersIds.second]) {
