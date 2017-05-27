@@ -8,12 +8,12 @@ const double Clustering::MAX_ANGLE_THRESHOLD = 5.0;
 
 double Clustering::getDistanceBetweenPointAndPlane(Plane plane, Vector3d point) {
     double distance = abs(plane.getA() * point(0) + plane.getB() * point(1) + plane.getC() * point(2) + plane.getD()) /
-                     sqrtf(powf(plane.getA(), 2) + powf(plane.getB(), 2) + powf(plane.getC(), 2));
+                     sqrt(pow(plane.getA(), 2.0) + pow(plane.getB(), 2.0) + pow(plane.getC(), 2.0));
     return distance;
 }
 
 double Clustering::getDistanceBetweenTwoPlanes(const Plane &firstPlane, const Plane &secondPlane) {
-/*    double distance = 0;
+    double distance = 0;
     vector<Vector3d> pointsVec = secondPlane.getPoints();
 
     for (int i = 0; i < 50; ++i) {
@@ -24,13 +24,16 @@ double Clustering::getDistanceBetweenTwoPlanes(const Plane &firstPlane, const Pl
         distance += getDistanceBetweenPointAndPlane(firstPlane, randomPointOnSecondPlane);
     }
 
-    return distance / 50;*/
-    Vector3d firstVec(firstPlane.getD()/firstPlane.getA(), firstPlane.getD()/firstPlane.getB(), firstPlane.getD()/firstPlane.getC());
+
+    return abs(firstPlane.getD() - secondPlane.getD());
+    //return distance / 50;
+
+/*    Vector3d firstVec(firstPlane.getD()/firstPlane.getA(), firstPlane.getD()/firstPlane.getB(), firstPlane.getD()/firstPlane.getC());
     Vector3d secondVec(secondPlane.getD()/secondPlane.getA(), secondPlane.getD()/secondPlane.getB(), secondPlane.getD()/secondPlane.getC());
 
     Vector3d diffVec = firstVec - secondVec;
 
-    return sqrtf(powf(diffVec(0), 2.0) + powf(diffVec(1), 2.0) + powf(diffVec(2), 2.0));
+    return sqrtf(powf(diffVec(0), 2.0) + powf(diffVec(1), 2.0) + powf(diffVec(2), 2.0));*/
 }
 
 double Clustering::getAngleBetweenTwoPlanes(const Plane &firstPlane, const Plane &secondPlane) {
@@ -50,17 +53,10 @@ double Clustering::getAngleBetweenTwoPlanes(const Plane &firstPlane, const Plane
 
 double Clustering::getSimilarityOfTwoPlanes(const Plane &firstPlane, const Plane &secondPlane) {
     double angleBetweenTwoPlanes = firstPlane.getAngleBetweenTwoPlanes(secondPlane);
-    return  angleBetweenTwoPlanes;
-    //if(abs(angleBetweenTwoPlanes) < MAX_ANGLE_THRESHOLD){
-        //return getDistanceBetweenTwoPlanes(firstPlane, secondPlane);
-//        std::cout<<"First plane:" << firstPlane.getA() << " " << firstPlane.getB() << " " << firstPlane.getC()
-//                 << " " << firstPlane.getD() << " vec length: " << sqrtf(powf(firstPlane.getA(), 2.0f) + powf(firstPlane.getB(), 2.0f) + powf(firstPlane.getC(), 2.0f));
-//        std::cout<<" Second plane:" << secondPlane.getA() << " " << secondPlane.getB() << " " << secondPlane.getC()
-//                 << " " << secondPlane.getD() << " vec length: " << sqrtf(powf(secondPlane.getA(), 2.0f) + powf(secondPlane.getB(), 2.0f) + powf(secondPlane.getC(), 2.0f)) << std::endl;
-    //    return abs(firstPlane.getD() - secondPlane.getD());
-   // }
-    //return std::numeric_limits<float>::max() / 2.0f;
-    //return abs(angleBetweenTwoPlanes);
+    if(abs(angleBetweenTwoPlanes) < CLUSTERING_MAX_ANGLE_THRESHOLD){
+        return getDistanceBetweenTwoPlanes(firstPlane, secondPlane);
+    }
+    return std::numeric_limits<double>::max() / 2.0f;
 }
 
 vector<Plane> Clustering::getAveragedPlanes(vector<vector<Plane>> &clusteredPlanes) {
@@ -110,7 +106,11 @@ void Clustering::selectParts(const std::vector<Plane> &planesVec, std::vector<st
         std::cout << std::setprecision(1) << std::fixed;
         for(auto row : distanceMatrix){
             for(auto element : row){
-                std::cout<<element << "  ";
+                if(element < 1000){
+                    std::cout<<element << "  ";
+                } else{
+                    std::cout<<"h" << "  ";
+                }
             }
             std::cout<<std::endl;
         }

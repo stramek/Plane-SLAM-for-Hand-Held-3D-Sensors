@@ -187,9 +187,7 @@ double Plane::getAngleBetweenTwoPlanes(const Plane &plane) const {
     if(angleCos < -1) angleCos = -1.0f;
     if(angleCos > 1) angleCos = 1.0f;
     double angle = acosf(angleCos)*180.0f/(double)M_PI;
-/*    if(angle > 90.0f){
-        angle = 180.0f - angle;
-    }*/
+
     return angle;
 }
 

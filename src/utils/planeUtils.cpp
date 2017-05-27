@@ -186,7 +186,7 @@ namespace planeUtils {
 
         imwrite( "../images/similar.png", merged );
 
-        waitKey(1);
+        waitKey(100);
     }
 
     void filterPairsByAngle(vector<pair<Plane, Plane>> &pairs) {
@@ -208,7 +208,7 @@ namespace planeUtils {
         if (planeVector.size() == 0) return;
         vector<vector<Plane>> clusteredPLanes;
         Clustering clustering;
-        clustering.setCutSimilarity(CLUSTERING_MAX_ANGLE_THRESHOLD);
+        clustering.setCutSimilarity(CLUSTERING_MAX_DISTANCE_THRESHOLD);
         clustering.selectParts(planeVector, clusteredPLanes);
         planeVector = Clustering::getAveragedPlanes(clusteredPLanes);
     }
@@ -217,7 +217,7 @@ namespace planeUtils {
         if (planes.size() == 0) return;
         vector<vector<Plane>> clusteredPLanes;
         Clustering clustering;
-        clustering.setCutSimilarity(CLUSTERING_MAX_ANGLE_THRESHOLD);
+        clustering.setCutSimilarity(CLUSTERING_MAX_DISTANCE_THRESHOLD);
         clustering.selectParts(planes, clusteredPLanes);
         //Clustering::getClusteredPlaneGroup(plane, clusteredPLanes);
         int i = 0;
@@ -226,7 +226,7 @@ namespace planeUtils {
             for (auto planeInCluster : singleCluster) {
                 putText(imagePair.getRgb(), to_string(i), Point(planeInCluster.getImageCoords().getCenterX(),
                                                                 planeInCluster.getImageCoords().getCenterY()),
-                        FONT_HERSHEY_SIMPLEX, 0.8, cv::Scalar(0, 0, 255), 1);
+                        FONT_HERSHEY_SIMPLEX, 0.8, cv::Scalar(0, 0, 255), 2);
             }
         }
         imshow("Clustered planes", imagePair.getRgb());
