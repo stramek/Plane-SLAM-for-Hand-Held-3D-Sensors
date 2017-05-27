@@ -15,7 +15,7 @@
  *
  */
 ImageLoader::ImageLoader(int numberOfPhotos) : numberOfPhotos(numberOfPhotos - 1) {
-    currentPhoto = 0;
+    currentPhoto = -1;
 }
 
 /**
@@ -30,8 +30,7 @@ ImagePair ImageLoader::getNextPair(int offset) {
 ImagePair ImageLoader::loadNextImage(int offset) {
 
     currentPhoto += offset;
-    if (currentPhoto > numberOfPhotos) {
-        cout<<"Current photo > avalaiable photos! Changing currentPhoto number to 0!"<<endl;
+    if (currentPhoto > numberOfPhotos || currentPhoto == -1) {
         currentPhoto = 0;
     }
 

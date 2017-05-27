@@ -16,13 +16,13 @@ double Clustering::getDistanceBetweenTwoPlanes(const Plane &firstPlane, const Pl
     double distance = 0;
     vector<Vector3d> pointsVec = secondPlane.getPoints();
 
-    for (int i = 0; i < 50; ++i) {
+/*    for (int i = 0; i < 50; ++i) {
         random_device rd;
         mt19937 rng(rd());
         uniform_int_distribution<unsigned int> pointIndex(0, secondPlane.getNumberOfPoints() - 1);
         Vector3d randomPointOnSecondPlane = pointsVec[pointIndex(rng)];
         distance += getDistanceBetweenPointAndPlane(firstPlane, randomPointOnSecondPlane);
-    }
+    }*/
 
 
     return abs(firstPlane.getD() - secondPlane.getD());
@@ -61,7 +61,7 @@ double Clustering::getSimilarityOfTwoPlanes(const Plane &firstPlane, const Plane
 
 vector<Plane> Clustering::getAveragedPlanes(vector<vector<Plane>> &clusteredPlanes) {
     vector<Plane> averagedPlanesVec;
-    for (auto planesFromCluster : clusteredPlanes) {
+    for (auto &planesFromCluster : clusteredPlanes) {
         double averagedD = 0;
         int averagedHue = 0;
         int averagedSaturation = 0;
@@ -69,7 +69,7 @@ vector<Plane> Clustering::getAveragedPlanes(vector<vector<Plane>> &clusteredPlan
         vector<Vector3d> mergedPlanePoints;
         vector<ImageCoords> mergedPlaneImageCoordsVec;
         Vector3d averagedNormalVec = Vector3d::Zero();
-        for (auto plane : planesFromCluster) {
+        for (auto &plane : planesFromCluster) {
             averagedNormalVec += plane.getPlaneNormalVec();
             averagedD += plane.getD();
             averagedHue += plane.getColor().getHue();
@@ -102,22 +102,6 @@ void Clustering::selectParts(const std::vector<Plane> &planesVec, std::vector<st
     //computeDistanceMatrix(dictionary, hierarchy, distanceMatrix, transformMatrix);
     computeDistanceMatrix(planesVec, distanceMatrix);
 
-    if (DEBUG) {
-        std::cout << std::setprecision(1) << std::fixed;
-        for (auto row : distanceMatrix) {
-            for (auto element : row) {
-                if (element < 1000) {
-                    std::cout << element << "  ";
-                } else {
-                    std::cout << "h" << "  ";
-                }
-            }
-            std::cout << std::endl;
-        }
-
-        std::cout << std::endl;
-    }
-
     std::vector<std::vector<int>> clusters(planesVec.size());
     for (size_t i = 0; i < clusters.size(); i++) {
         clusters[i].push_back((int) i);
@@ -127,10 +111,6 @@ void Clustering::selectParts(const std::vector<Plane> &planesVec, std::vector<st
 
         std::pair<int, int> pairedIds;
         double minDist = findMinDistance(pairedIds);
-        if (DEBUG) {
-            std::cout << "PairedIds with min distance: " << pairedIds.first << " " << pairedIds.second << " distance: "
-                      << minDist << std::endl;
-        }
 
         if (minDist >= cutSimilarity)
             break;
@@ -138,38 +118,13 @@ void Clustering::selectParts(const std::vector<Plane> &planesVec, std::vector<st
         //merge two centroids
         std::pair<int, int> clustersIds;
         findPartsInClusters(clusters, pairedIds, clustersIds);
-        if (DEBUG) {
-            std::cout << "ClustersIds: " << clustersIds.first << " " << clustersIds.second << std::endl;
-        }
 
         if (clustersIds.first != clustersIds.second) {
             mergeTwoClusters(clusters, clustersIds, distanceMatrix);
         }
     }
 
-    if (DEBUG) {
-        for (auto singleCluster : clusters) {
-            for (auto planeIndex : singleCluster) {
-                std::cout << planeIndex << " ";
-            }
-            std::cout << std::endl;
-        }
-        std::cout << std::endl;
-        std::cout << std::endl;
-    }
-
     getClusteredPlaneGroup(clusters, planesVec, clusteredPlanes);
-
-    if (DEBUG) {
-        for (auto row : distanceMatrix) {
-            for (auto element : row) {
-                std::cout << element << "  ";
-            }
-            std::cout << std::endl;
-        }
-
-        std::cout << std::endl;
-    }
 }
 
 void Clustering::computeDistanceMatrix(const std::vector<Plane> &planesVec,

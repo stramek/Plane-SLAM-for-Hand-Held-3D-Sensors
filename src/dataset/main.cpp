@@ -34,7 +34,7 @@ int main(int argc, char **argv) {
         ImagePair imagePair1 = imageLoader.getNextPair();
         planeUtils::fillPlaneVector(NUMBER_OF_POINTS, AREA_SIZE, imagePair1, &planeVectorPreviousFrame,
                                     nullptr, 0.0, false);
-        ImagePair imagePair2 = imageLoader.getNextPair(30);
+        ImagePair imagePair2 = imageLoader.getNextPair(49);
         planeUtils::fillPlaneVector(NUMBER_OF_POINTS, AREA_SIZE, imagePair2, &planeVectorCurrentFrame,
                                     &planeVectorPreviousFrame, 0.5f, false);
 

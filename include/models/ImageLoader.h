@@ -21,7 +21,7 @@ public:
 private:
 
     int numberOfPhotos;
-    int currentPhoto = -1;
+    int currentPhoto;
 
     ImagePair loadNextImage(int offset);
 };
