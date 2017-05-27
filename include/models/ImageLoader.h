@@ -16,14 +16,14 @@ public:
 
     ImageLoader(int numberOfPhotos);
 
-    ImagePair getNextPair();
+    ImagePair getNextPair(int offset = 1);
 
 private:
 
     int numberOfPhotos;
-    int currentPhoto;
+    int currentPhoto = -1;
 
-    ImagePair loadNextImage();
+    ImagePair loadNextImage(int offset);
 };
 
 

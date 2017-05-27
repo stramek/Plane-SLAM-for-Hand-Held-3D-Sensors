@@ -22,20 +22,27 @@ ImageLoader::ImageLoader(int numberOfPhotos) : numberOfPhotos(numberOfPhotos - 1
  * @return
  * ImagePair object which contains loaded rgb and depth photo.
  */
-ImagePair ImageLoader::getNextPair() {
-    return loadNextImage();
+ImagePair ImageLoader::getNextPair(int offset) {
+    if (offset > numberOfPhotos || offset < 0) throw runtime_error("Offset must be between <0;" + to_string(numberOfPhotos) + ">!");
+    return loadNextImage(offset);
 }
 
-ImagePair ImageLoader::loadNextImage() {
-    if (currentPhoto > numberOfPhotos) currentPhoto = 0;
+ImagePair ImageLoader::loadNextImage(int offset) {
 
+    currentPhoto += offset;
+    if (currentPhoto > numberOfPhotos) {
+        cout<<"Current photo > avalaiable photos! Changing currentPhoto number to 0!"<<endl;
+        currentPhoto = 0;
+    }
+
+    cout<<"Loading photo: "<<currentPhoto<<endl;
     String rgbImagePath = "../dataset_photos//rgb//" + to_string(currentPhoto) + ".png";
     String depthImagePath = "../dataset_photos//depth//" + to_string(currentPhoto) + ".png";
 
     ImagePair imagePair;
     imagePair.setRgb(imread(rgbImagePath));
     imagePair.setDepth(imread(depthImagePath, CV_LOAD_IMAGE_ANYDEPTH));
-    ++currentPhoto;
+
 
     if (imagePair.getRgb().empty()) {
         throw runtime_error("Could not find rgb image: " + rgbImagePath);
