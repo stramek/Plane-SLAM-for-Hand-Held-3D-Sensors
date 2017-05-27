@@ -20,6 +20,8 @@ using namespace std;
 
 class PlaneSimilarity {
 public:
+    PlaneSimilarity();
+
     PlaneSimilarity(const Plane &lastFrame, const Plane &currentFrame, unsigned int lastFrameIndex,
                     unsigned int currentFrameIndex);
 
@@ -30,11 +32,10 @@ public:
     unsigned int getCurrentFrameIndex() const;
     bool isAnyOfFramesTaken() const;
     void setFramesAsTaken();
-    bool isOneOfIndexesEqual(PlaneSimilarity planeSimilarity) const;
+    bool isOneOfIndexesEqual(PlaneSimilarity &planeSimilarity) const;
     bool isSimilarityValid() const;
-
+    bool isAngleBetweenPlanedValid() const;
     bool isLastFrameTaken() const;
-
     bool isCurrentFrameTaken() const;
 
     bool operator < (const PlaneSimilarity& plane) const {

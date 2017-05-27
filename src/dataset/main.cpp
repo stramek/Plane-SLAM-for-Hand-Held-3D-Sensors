@@ -26,35 +26,34 @@ int main(int argc, char **argv) {
         vector<Plane> planeVectorCurrentFrame;
         vector<pair<Plane, Plane>> similarPlanes;
 
-        const int AREA_SIZE = 17; // odd number
-        const int NUMBER_OF_POINTS = 300;
+        const int AREA_SIZE = 21; // odd number
+        const int NUMBER_OF_POINTS = 200;
         if (AREA_SIZE % 2 == 0) throw runtime_error("AREA_SIZE needs to be odd number");
 
         cout<<endl<<endl<<endl<<"Filling vectors with planes..."<<endl;
         ImagePair imagePair1 = imageLoader.getNextPair();
-        planeUtils::fillPlaneVector(NUMBER_OF_POINTS, AREA_SIZE, imagePair1, &planeVectorPreviousFrame);
+        planeUtils::fillPlaneVector(NUMBER_OF_POINTS, AREA_SIZE, imagePair1, &planeVectorPreviousFrame,
+                                    nullptr, 0.0, false);
         ImagePair imagePair2 = imageLoader.getNextPair();
         planeUtils::fillPlaneVector(NUMBER_OF_POINTS, AREA_SIZE, imagePair2, &planeVectorCurrentFrame,
-                                    &planeVectorPreviousFrame, 0.0f, true);
+                                    &planeVectorPreviousFrame, 0.0f, false);
 
 
-        //planeUtils::displayClusteredPlanes(imagePair1, planeVectorPreviousFrame);
-        cout<<"Clustering..."<<endl;
-        planeUtils::displayClusteredPlanes(imagePair2, planeVectorCurrentFrame);
+//        planeUtils::displayClusteredPlanes(imagePair1, planeVectorPreviousFrame);
+//        planeUtils::displayClusteredPlanes(imagePair2, planeVectorCurrentFrame);
 
-//        cout<<"Merging planes..."<<endl;
-//        planeUtils::mergePlanes(planeVectorPreviousFrame);
-//        planeUtils::mergePlanes(planeVectorCurrentFrame);
-//
-//        cout<<"Findinf similar planes..."<<endl;
-//        similarPlanes = planeUtils::getSimilarPlanes(planeVectorPreviousFrame, planeVectorCurrentFrame);
-//
-//        cout<<"Filtering pairs by angle..."<<endl;
-//        planeUtils::filterPairsByAngle(similarPlanes);
-//        cout<<"Finished!"<<endl;
-//        planeUtils::visualizeSimilarPlanes(similarPlanes, imagePair1.getRgb(), imagePair2.getRgb());
-         //visualizer.updateCloud(imagePair2.getRgb(), imagePair2.getDepth());
-         //visualizer.updatePlanes(planeVectorCurrentFrame);
+        cout<<"Merging planes..."<<endl;
+        planeUtils::mergePlanes(planeVectorPreviousFrame);
+        planeUtils::mergePlanes(planeVectorCurrentFrame);
+
+        cout<<"Finding similar planes..."<<endl;
+        similarPlanes = planeUtils::getSimilarPlanes(planeVectorPreviousFrame, planeVectorCurrentFrame);
+
+        //cout<<"Filtering pairs by angle..."<<endl;
+        cout<<"Finished!"<<endl;
+        planeUtils::visualizeSimilarPlanes(similarPlanes, imagePair1.getRgb(), imagePair2.getRgb());
+        //visualizer.updateCloud(imagePair2.getRgb(), imagePair2.getDepth());
+        //visualizer.updatePlanes(planeVectorCurrentFrame);
 
         waitKey();
 

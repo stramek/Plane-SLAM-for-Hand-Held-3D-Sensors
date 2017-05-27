@@ -38,7 +38,7 @@ int main(int argc, char **argv) {
     vector<Plane> planeVectorCurrentFrame;
     vector<pair<Plane, Plane>> similarPlanes;
     const int AREA_SIZE = 21; // odd number
-    const int NUMBER_OF_POINTS = 100;
+    const int NUMBER_OF_POINTS = 50;
     if (AREA_SIZE % 2 == 0) throw runtime_error("AREA_SIZE needs to be odd number");
 
     Mat previousFrame;
@@ -57,7 +57,7 @@ int main(int argc, char **argv) {
         registration->apply(rgb, depth, &undistorted, &registered, true);
 
         planeUtils::fillPlaneVector(NUMBER_OF_POINTS, AREA_SIZE, &planeVectorCurrentFrame,
-                                    &planeVectorPreviousFrame, 0.0, registration, &undistorted, &registered);
+                                    &planeVectorPreviousFrame, 0.5, registration, &undistorted, &registered);
 
         if (KINECT_MODE == SHOW_POINTCLOUD) {
             visualizer.updateCloud(registration, &undistorted, &registered);
