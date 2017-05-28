@@ -59,9 +59,9 @@ double Plane::getD() const {
     return D;
 }
 
-double Plane::getDistanceFromPoint(Vector3d point) {
-    return std::abs(A * point(0) + B * point(1) + C * point(2) + D)
-           / sqrtf(powf(A, 2) + powf(B, 2) + powf(C, 2));
+double Plane::getDistanceFromPoint(Vector3d point) const {
+    return std::abs(A * point(0) + B * point(1) + C * point(2) - D)
+           / sqrt(pow(A, 2.0) + pow(B, 2.0) + pow(C, 2.0));
 }
 
 void Plane::computePlaneEquation(Vector3d point1, Vector3d point2, Vector3d point3) {

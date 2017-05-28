@@ -44,7 +44,7 @@ public:
 
     bool isValid() const;
 
-    double getDistanceFromPoint(Eigen::Vector3d point);
+    double getDistanceFromPoint(Eigen::Vector3d point) const;
 
     Vector3d getPlaneNormalVec() const;
 

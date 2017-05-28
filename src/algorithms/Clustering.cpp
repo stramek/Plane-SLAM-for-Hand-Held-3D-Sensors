@@ -5,12 +5,6 @@
 #include "include/algorithms/Clustering.h"
 
 
-double Clustering::getDistanceBetweenPointAndPlane(const Plane &plane, const Vector3d &point) {
-    double distance = abs(plane.getA() * point(0) + plane.getB() * point(1) + plane.getC() * point(2) - plane.getD()) /
-                      sqrt(pow(plane.getA(), 2.0) + pow(plane.getB(), 2.0) + pow(plane.getC(), 2.0));
-    return distance;
-}
-
 double Clustering::getDistanceBetweenTwoPlanes(const Plane &firstPlane, const Plane &secondPlane) {
 
     const int NUMBER_OF_RANDOM_POINTS = 50;
@@ -20,7 +14,7 @@ double Clustering::getDistanceBetweenTwoPlanes(const Plane &firstPlane, const Pl
     uniform_int_distribution<unsigned int> pointIndex(0, secondPlane.getNumberOfPoints() - 1);
     for (int i = 0; i < NUMBER_OF_RANDOM_POINTS; ++i) {
         Vector3d randomPointOnSecondPlane = pointsVec[pointIndex(rng)].position;
-        distance += getDistanceBetweenPointAndPlane(firstPlane, randomPointOnSecondPlane);
+        distance += firstPlane.getDistanceFromPoint(randomPointOnSecondPlane);
     }
 
     return distance / NUMBER_OF_RANDOM_POINTS;

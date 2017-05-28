@@ -228,7 +228,6 @@ namespace planeUtils {
         Clustering clustering;
         clustering.setCutSimilarity(CLUSTERING_MAX_DISTANCE_THRESHOLD);
         clustering.selectParts(planes, clusteredPLanes);
-        //Clustering::getClusteredPlaneGroup(plane, clusteredPLanes);
         int i = 0;
         for (auto singleCluster : clusteredPLanes) {
             ++i;
