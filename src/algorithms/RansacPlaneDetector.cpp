@@ -2,9 +2,9 @@
 // Created by mordimer on 12.03.17.
 //
 
-#include "include/algorithms/PlaneRansac.h"
+#include "include/algorithms/RansacPlaneDetector.h"
 
-Plane PlaneRansac::computePlane(const vector<Point3D> &pointsVector, const ImageCoords &imageCoords ) {
+Plane RansacPlaneDetector::computePlane(const vector<Point3D> &pointsVector, const ImageCoords &imageCoords ) {
     for (int i = 0; i < MAX_ITERATIONS_NUM; ++i) {
         Vector3d random3Points[3];
         getRandom3Points(pointsVector, random3Points);
@@ -24,7 +24,7 @@ Plane PlaneRansac::computePlane(const vector<Point3D> &pointsVector, const Image
     return Plane();
 }
 
-void PlaneRansac::getRandom3Points(const vector<Point3D> &pointsVector, Vector3d *random3Points) {
+void RansacPlaneDetector::getRandom3Points(const vector<Point3D> &pointsVector, Vector3d *random3Points) {
     random_device rd;
     mt19937 rng(rd());
     uniform_int_distribution<unsigned int> distribution(0, static_cast<unsigned int>(pointsVector.size() - 1));
@@ -44,7 +44,7 @@ void PlaneRansac::getRandom3Points(const vector<Point3D> &pointsVector, Vector3d
     }
 }
 
-Plane PlaneRansac::getPlane(const vector<Point3D> &pointsVector, const ImageCoords &imageCoords, const Mat *colorImage) {
+Plane RansacPlaneDetector::getPlane(const vector<Point3D> &pointsVector, const ImageCoords &imageCoords, const Mat *colorImage) {
     Plane plane = computePlane(pointsVector, imageCoords);
     if (plane.isValid()) {
         if (colorImage != nullptr) {

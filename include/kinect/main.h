@@ -36,7 +36,7 @@
 #include <include/utils/utils.h>
 #include "include/utils/planeUtils.h"
 #include "include/algorithms/PcaPlaneDetector.h"
-#include "include/algorithms/PlaneRansac.h"
+#include "include/algorithms/RansacPlaneDetector.h"
 #include "include/models/PlaneFiller.h"
 
 namespace Rx {

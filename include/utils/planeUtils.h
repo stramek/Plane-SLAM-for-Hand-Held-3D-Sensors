@@ -24,7 +24,7 @@
 #include <libfreenect2/registration.h>
 #include <libfreenect2/packet_pipeline.h>
 #include <libfreenect2/logger.h>
-#include <include/algorithms/PlaneRansac.h>
+#include <include/algorithms/RansacPlaneDetector.h>
 #include <iomanip>
 #include <sstream>
 
