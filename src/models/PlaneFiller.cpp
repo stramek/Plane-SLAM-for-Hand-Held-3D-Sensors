@@ -84,7 +84,7 @@ void PlaneFiller::fillVectorFromDataset(vector<Plane> *vectorToFill) {
 
         PointCloud pointCloud;
         pointCloud.depth2cloud(croppedDepthImage, croppedRgbImage, imageCoords.getUpLeftX(), imageCoords.getUpLeftY());
-        vector<Vector3d> pointsVector = pointCloud.getPoints();
+        vector<Point3D> pointsVector = pointCloud.getPoints3D();
 
         Plane plane = PlanePca::getPlane(pointsVector, croppedRgbImage, imageCoords);
 
@@ -119,9 +119,8 @@ void PlaneFiller::fillVectorFromKinect(vector<Plane> *vectorToFill) {
                 }
             }
         }
-        vector<Vector3d> pointsVector = pointCloud.getPoints();
-        vector<Point3D> points = pointCloud.getPoints3D();
-        Plane plane = PlanePca::getPlane(pointsVector, points, imageCoords);
+        vector<Point3D> pointsVector = pointCloud.getPoints3D();
+        Plane plane = PlanePca::getPlane(pointsVector, imageCoords);
         if (plane.isValid()) {
             vectorToFill->push_back(plane);
         }
