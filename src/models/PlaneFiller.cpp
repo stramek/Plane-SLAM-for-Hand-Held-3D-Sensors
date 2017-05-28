@@ -86,8 +86,7 @@ void PlaneFiller::fillVectorFromDataset(vector<Plane> *vectorToFill) {
         pointCloud.depth2cloud(croppedDepthImage, croppedRgbImage, imageCoords.getUpLeftX(), imageCoords.getUpLeftY());
         vector<Point3D> pointsVector = pointCloud.getPoints3D();
 
-        PlanePca planePca;
-        Plane plane = planePca.getPlane(pointsVector, imageCoords, &croppedRgbImage);
+        Plane plane = getPlaneDetector()->getPlane(pointsVector, imageCoords, &croppedRgbImage);
 
         if (colorPlanes) {
             Vec3b color = plane.isValid() ? Vec3b(0, 255, 0) : Vec3b(0, 0, 255);
@@ -121,8 +120,7 @@ void PlaneFiller::fillVectorFromKinect(vector<Plane> *vectorToFill) {
             }
         }
         vector<Point3D> pointsVector = pointCloud.getPoints3D();
-        PlanePca planePca;
-        Plane plane = planePca.getPlane(pointsVector, imageCoords);
+        Plane plane = getPlaneDetector()->getPlane(pointsVector, imageCoords);
         if (plane.isValid()) {
             vectorToFill->push_back(plane);
         }
@@ -181,6 +179,18 @@ void PlaneFiller::setRegistered(libfreenect2::Frame *registered) {
     PlaneFiller::registered = registered;
 }
 
+void PlaneFiller::setPlaneDetector(PlaneDetector *planeDetector) {
+    PlaneFiller::planeDetector = planeDetector;
+}
+
+PlaneDetector *PlaneFiller::getPlaneDetector() const {
+    return planeDetector;
+}
+
+PlaneFiller::~PlaneFiller() {
+    delete planeDetector;
+}
+
 void PlaneFillerBuilder::validateData() {
     if (planeFiller.get()->getFillerMode() == PlaneFiller::ERROR) {
         throw runtime_error("You need to call withKinect() or withDataset() method before build()");
@@ -190,5 +200,8 @@ void PlaneFillerBuilder::validateData() {
     }
     if (planeFiller.get()->getAreaSize() % 2 == 0) {
         throw runtime_error("Passed areaSize need to be odd number!");
+    }
+    if (planeFiller.get()->getPlaneDetector() == nullptr) {
+        throw runtime_error("withPlaneDetector(PlaneDetector) not called.");
     }
 }

@@ -34,6 +34,7 @@ int main(int argc, char **argv) {
 
         make_unique<PlaneFillerBuilder>()
                 ->withDataset(&imagePair1)
+                //->withPlaneDetector(new PlaneDetector())
                 ->withAreaSize(AREA_SIZE)
                 ->withNumberOfPoints(NUMBER_OF_POINTS)
                 ->build()
