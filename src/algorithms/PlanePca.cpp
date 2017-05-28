@@ -4,26 +4,26 @@
 
 #include "include/algorithms/PlanePca.h"
 
-Vector3d PlanePca::computeMean(const vector<Vector3d> &pointsVector) {
+Vector3d PlanePca::computeMean(const vector<Point3D> &pointsVector) {
     Vector3d mean(0, 0, 0);
     for (auto &vector : pointsVector) {
-        mean += vector;
+        mean += vector.position;
     }
     mean /= (double) pointsVector.size();
     return mean;
 }
 
-Mat33 PlanePca::computeCovMatrix(const vector<Vector3d> &pointsVector, const Vector3d &mean) {
+Mat33 PlanePca::computeCovMatrix(const vector<Point3D> &pointsVector, const Vector3d &mean) {
     Mat33 cov(Mat33::Zero());
 
     for (auto &point : pointsVector) {
-        cov += (point - mean) * (point - mean).transpose();
+        cov += (point.position - mean) * (point.position - mean).transpose();
     }
 
     return cov;
 }
 
-Plane PlanePca::computePlane(const vector<Vector3d> &pointsVector, const ImageCoords &imageCoords) {
+Plane PlanePca::computePlane(const vector<Point3D> &pointsVector, const ImageCoords &imageCoords) {
     if (pointsVector.size() < 3)
         return Plane();
     Vector3d mean = computeMean(pointsVector);
@@ -59,26 +59,26 @@ Plane PlanePca::computePlane(const vector<Vector3d> &pointsVector, const ImageCo
                 normalVec = -normalVec;
             }
         } else {
-            Vector3d cameraToPlaneVec = pointsVector.at((pointsVector.size() - 1) / 2);
+            Vector3d cameraToPlaneVec = pointsVector.at((pointsVector.size() - 1) / 2).position;
             cameraToPlaneVec.normalize();
             double angle = acos(normalVec.dot(cameraToPlaneVec)) * 180.0 / M_PI;
             if(angle < 90) normalVec = -normalVec;
         }
 
 
-        return Plane(normalVec, pointsVector.at(0), pointsVector, imageCoords);
+        return Plane(normalVec, pointsVector.at(0).position, pointsVector, imageCoords);
         //return Plane();
     }
     return Plane();
 }
 
-Plane PlanePca::getPlane(const vector<Vector3d> &pointsVector, const Mat &colorImage, const ImageCoords &imageCoords) {
+Plane PlanePca::getPlane(const vector<Point3D> &pointsVector, const Mat &colorImage, const ImageCoords &imageCoords) {
     Plane plane = computePlane(pointsVector, imageCoords);
     if (plane.isValid()) plane.setColor(HSVColor(colorImage));
     return plane;
 }
 
-Plane PlanePca::getPlane(const vector<Vector3d> &pointsVector, const vector<Point3D> &points, const ImageCoords &imageCoords) {
+Plane PlanePca::getPlane(const vector<Point3D> &pointsVector, const vector<Point3D> &points, const ImageCoords &imageCoords) {
     Plane plane = computePlane(pointsVector, imageCoords);
     if (plane.isValid()) plane.setColor(HSVColor(points));
     return plane;

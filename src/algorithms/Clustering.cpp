@@ -4,7 +4,6 @@
 
 #include "include/algorithms/Clustering.h"
 
-const double Clustering::MAX_ANGLE_THRESHOLD = 5.0;
 
 double Clustering::getDistanceBetweenPointAndPlane(Plane plane, Vector3d point) {
     double distance = abs(plane.getA() * point(0) + plane.getB() * point(1) + plane.getC() * point(2) - plane.getD()) /
@@ -14,20 +13,14 @@ double Clustering::getDistanceBetweenPointAndPlane(Plane plane, Vector3d point) 
 
 double Clustering::getDistanceBetweenTwoPlanes(const Plane &firstPlane, const Plane &secondPlane) {
     double distance = 0;
-    vector<Vector3d> pointsVec = secondPlane.getPoints();
+    vector<Point3D> pointsVec = secondPlane.getPoints();
 
     uniform_int_distribution<unsigned int> pointIndex(0, secondPlane.getNumberOfPoints() - 1);
     for (int i = 0; i < 50; ++i) {
-        Vector3d randomPointOnSecondPlane = pointsVec[pointIndex(rng)];
+        Vector3d randomPointOnSecondPlane = pointsVec[pointIndex(rng)].position;
         distance += getDistanceBetweenPointAndPlane(firstPlane, randomPointOnSecondPlane);
     }
 
-//    std::cout << "First plane: " << firstPlane << std::endl;
-//    std::cout << "Second plane: " << secondPlane << std::endl;
-//    std::cout << "Angle: " << firstPlane.getAngleBetweenTwoPlanes(secondPlane) << std::endl;
-//    std::cout << "Distance: " << distance / 100.0 << std::endl;
-
-    //return abs(firstPlane.getD() - secondPlane.getD());
     return distance / 50.0;
 }
 
@@ -36,7 +29,7 @@ double Clustering::getSimilarityOfTwoPlanes(const Plane &firstPlane, const Plane
     if (abs(angleBetweenTwoPlanes) < CLUSTERING_MAX_ANGLE_THRESHOLD) {
         return getDistanceBetweenTwoPlanes(firstPlane, secondPlane);
     }
-    return std::numeric_limits<double>::max() / 2.0f;
+    return std::numeric_limits<double>::max();
 }
 
 vector<Plane> Clustering::getAveragedPlanes(vector<vector<Plane>> &clusteredPlanes) {
@@ -46,7 +39,7 @@ vector<Plane> Clustering::getAveragedPlanes(vector<vector<Plane>> &clusteredPlan
         int averagedHue = 0;
         int averagedSaturation = 0;
         int averagedValue = 0;
-        vector<Vector3d> mergedPlanePoints;
+        vector<Point3D> mergedPlanePoints;
         vector<ImageCoords> mergedPlaneImageCoordsVec;
         Vector3d averagedNormalVec = Vector3d::Zero();
         for (auto &plane : planesFromCluster) {
@@ -56,7 +49,7 @@ vector<Plane> Clustering::getAveragedPlanes(vector<vector<Plane>> &clusteredPlan
             averagedSaturation += plane.getColor().getSaturation();
             averagedValue += plane.getColor().getValue();
 
-            vector<Vector3d> points = plane.getPoints();
+            vector<Point3D> points = plane.getPoints();
             vector<ImageCoords> imageCoordsVec = plane.getImageCoordsVec();
             mergedPlanePoints.insert(mergedPlanePoints.end(), points.begin(), points.end());
             mergedPlaneImageCoordsVec.insert(mergedPlaneImageCoordsVec.end(), imageCoordsVec.begin(),

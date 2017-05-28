@@ -79,7 +79,7 @@ namespace planeUtils {
             pointCloud.depth2cloud(croppedDepthImage, croppedRgbImage, imageCoords.getUpLeftX(),
                                    imageCoords.getUpLeftY());
 
-            vector<Vector3d> pointsVector = pointCloud.getPoints();
+            vector<Point3D> pointsVector = pointCloud.getPoints3D();
 
             //cout<<"Getting plane: "<<iteration + 1<<" of "<<numberOfPoints<<endl;
             Plane plane = PlanePca::getPlane(pointsVector, croppedRgbImage, imageCoords);
@@ -139,7 +139,7 @@ namespace planeUtils {
 
             //cout<< shouldBreak << " points: "<<pointCloud.getPoints3D().size()<<endl;
 
-            vector<Vector3d> pointsVector = pointCloud.getPoints();
+            vector<Point3D> pointsVector = pointCloud.getPoints3D();
             vector<Point3D> points = pointCloud.getPoints3D();
             Plane plane = PlanePca::getPlane(pointsVector, points, imageCoords);
             if (plane.isValid()) {

@@ -24,10 +24,10 @@ namespace utils {
         if (pointCloud.empty()) throw runtime_error("Passed pointcloud is empty! Did you forget to call updateCloud() method?");
         ColorOcTree tree(resolution);
         for (Point3D p : pointCloud) {
-            tree.updateNode(point3d(p.x, p.y, p.z), true);
+            tree.updateNode(point3d((float)p.position(0), (float)p.position(1), (float)p.position(2)), true);
         }
         for (Point3D p : pointCloud) {
-            tree.integrateNodeColor(p.x, p.y, p.z, p.red, p.green, p.blue);
+            tree.integrateNodeColor((float)p.position(0), (float)p.position(1), (float)p.position(2), p.red, p.green, p.blue);
         }
         tree.updateInnerOccupancy();
         if (tree.write(filename + ".ot")) {

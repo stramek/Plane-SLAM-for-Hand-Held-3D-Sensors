@@ -18,60 +18,30 @@ Plane::Plane(std::array<Vector3d, 3>, const Mat& colorImage) {
     color = HSVColor(colorImage);
 }
 
-Plane::Plane(Vector3d normalVec, Vector3d point, const vector<Vector3d> &points, const ImageCoords &imageCoords) {
+Plane::Plane(Vector3d normalVec, Vector3d point, const vector<Point3D> &points, const ImageCoords &imageCoords) {
     planeNormalVec = normalVec;
     planeNormalVec.normalize();
     A = normalVec(0);
     B = normalVec(1);
     C = normalVec(2);
     D = A * point(0) + B * point(1) + C * point(2);
-/*    if(this->D < 0){
-        planeNormalVec = - planeNormalVec;
-        this->A = -this->A;
-        this->B = -this->B;
-        this->C = -this->C;
-        this->D = -this->D;
-    }*/
     this->points = points;
     this->imageCoordsVec.push_back(imageCoords);
     valid = true;
 }
 
-Plane::Plane(Vector3d normalVec, double D, vector<Vector3d> points, vector<ImageCoords> imageCoordsVec, HSVColor color){
+Plane::Plane(Vector3d normalVec, double D, vector<Point3D> points, vector<ImageCoords> imageCoordsVec, HSVColor color){
     this->planeNormalVec = normalVec;
     this->D = D;
     this->A = normalVec(0);
     this->B = normalVec(1);
     this->C = normalVec(2);
-/*    if(this->D < 0){
-        planeNormalVec = - planeNormalVec;
-        this->A = -this->A;
-        this->B = -this->B;
-        this->C = -this->C;
-        this->D = -this->D;
-    }*/
     this->points = points;
     this->imageCoordsVec = imageCoordsVec;
     this->color = color;
     valid = true;
 }
 
-Plane::Plane(Vector3d normalVec, double D){
-    planeNormalVec = normalVec;
-    planeNormalVec.normalize();
-    A = normalVec(0);
-    B = normalVec(1);
-    C = normalVec(2);
-    this->D = D;
-/*    if(this->D < 0){
-        planeNormalVec = - planeNormalVec;
-        this->A = -this->A;
-        this->B = -this->B;
-        this->C = -this->C;
-        this->D = -this->D;
-    }*/
-    valid = true;
-}
 
 double Plane::getA() const {
     return A;
@@ -107,13 +77,6 @@ void Plane::computePlaneEquation(Vector3d point1, Vector3d point2, Vector3d poin
     planeNormalVec(0) = A;
     planeNormalVec(1) = B;
     planeNormalVec(2) = C;
-/*    if(this->D < 0){
-        planeNormalVec = - planeNormalVec;
-        this->A = -this->A;
-        this->B = -this->B;
-        this->C = -this->C;
-        this->D = -this->D;
-    }*/
 }
 
 bool Plane::isValid() const {
@@ -168,11 +131,11 @@ void Plane::setImageCoords(const ImageCoords &imageCoords) {
     Plane::imageCoordsVec.push_back(imageCoords);
 }
 
-const vector<Vector3d> &Plane::getPoints() const {
+const vector<Point3D> &Plane::getPoints() const {
     return points;
 }
 
-void Plane::setPoints(const vector<Vector3d> &points) {
+void Plane::setPoints(const vector<Point3D> &points) {
     Plane::points = points;
 }
 
@@ -195,7 +158,7 @@ void Plane::setColor(const HSVColor &color) {
     Plane::color = color;
 }
 
-void Plane::insertPoints(vector<Vector3d> points){
+void Plane::insertPoints(vector<Point3D> points){
     this->points.insert(this->points.end(), points.begin(), points.end());
 }
 
@@ -214,7 +177,7 @@ const vector<ImageCoords> &Plane::getImageCoordsVec() const {
     return imageCoordsVec;
 }
 
-Vector3d Plane::getCentralPoint() const {
+Point3D Plane::getCentralPoint() const {
     return points[(points.size() - 1) / 2];
 }
 

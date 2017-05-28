@@ -21,16 +21,16 @@ class PlanePca {
 private:
     static void pointsVectorToMatrix(const vector<Vector3d> &pointsVector, MatrixXf &matrix);
 
-    static Mat33 computeCovMatrix(const vector<Vector3d> &pointsVector, const Vector3d &mean);
+    static Mat33 computeCovMatrix(const vector<Point3D> &pointsVector, const Vector3d &mean);
 
-    static Vector3d computeMean(const vector<Vector3d> &pointsVector);
+    static Vector3d computeMean(const vector<Point3D> &pointsVector);
 
-    static Plane computePlane(const vector<Vector3d> &pointsVector, const ImageCoords &imageCoords);
+    static Plane computePlane(const vector<Point3D> &pointsVector, const ImageCoords &imageCoords);
 
 public:
-    static Plane getPlane(const vector<Vector3d> &pointsVector, const vector<Point3D> &points, const ImageCoords &imageCoords);
+    static Plane getPlane(const vector<Point3D> &pointsVector, const vector<Point3D> &points, const ImageCoords &imageCoords);
 
-    static Plane getPlane(const vector<Vector3d> &pointsVector, const Mat& colorImage, const ImageCoords& imageCoords);
+    static Plane getPlane(const vector<Point3D> &pointsVector, const Mat& colorImage, const ImageCoords& imageCoords);
 };
 
 

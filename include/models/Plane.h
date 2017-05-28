@@ -30,11 +30,9 @@ public:
 
     Plane(std::array<Eigen::Vector3d, 3>, const Mat &colorImage);
 
-    Plane(Vector3d normalVec, Vector3d point, const vector<Vector3d> &points, const ImageCoords &imageCoords);
+    Plane(Vector3d normalVec, Vector3d point, const vector<Point3D> &points, const ImageCoords &imageCoords);
 
-    Plane(Vector3d normalVec, double D, vector<Vector3d> points, vector<ImageCoords> imageCoordsVec, HSVColor color);
-
-    Plane(Vector3d normalVec, double D); // added for testing, TODO remove after testing
+    Plane(Vector3d normalVec, double D, vector<Point3D> points, vector<ImageCoords> imageCoordsVec, HSVColor color);
 
     double getA() const;
 
@@ -58,21 +56,21 @@ public:
 
     const HSVColor &getColor() const;
 
-    const vector<Vector3d> &getPoints() const;
+    const vector<Point3D> &getPoints() const;
 
-    void setPoints(const vector<Vector3d> &points);
+    void setPoints(const vector<Point3D> &points);
 
     unsigned int getNumberOfPoints() const;
 
     double getAngleBetweenTwoPlanes(const Plane &plane) const;
 
-    void insertPoints(vector<Vector3d> points);
+    void insertPoints(vector<Point3D> points);
 
     void mergePlane(Plane plane);
 
     void insertImageCoords(vector<ImageCoords> imageCoordsVec);
 
-    Vector3d getCentralPoint() const;
+    Point3D getCentralPoint() const;
 
     void setColor(const HSVColor &color);
 
@@ -85,7 +83,7 @@ public:
 
 private:
     double A, B, D, C;
-    vector<Vector3d> points;
+    vector<Point3D> points;
     vector<ImageCoords> imageCoordsVec;
     Vector3d planeNormalVec;
     HSVColor color = HSVColor();

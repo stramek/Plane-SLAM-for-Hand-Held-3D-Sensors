@@ -20,7 +20,6 @@ private:
     std::priority_queue<Cluster> priorityQueueDistance;
     double cutSimilarity = 0;
 
-    const static double MAX_ANGLE_THRESHOLD;
 
     double getDistanceBetweenTwoPlanes(const Plane &firstPlane, const Plane &secondPlane);
     double getAngleBetweenTwoPlanes(const Plane &firstPlane, const Plane &secondPlane);
