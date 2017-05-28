@@ -28,7 +28,7 @@ private:
     static Plane computePlane(const vector<Point3D> &pointsVector, const ImageCoords &imageCoords);
 
 public:
-    static Plane getPlane(const vector<Point3D> &pointsVector, const vector<Point3D> &points, const ImageCoords &imageCoords);
+    static Plane getPlane(const vector<Point3D> &pointsVector, const ImageCoords &imageCoords);
 
     static Plane getPlane(const vector<Point3D> &pointsVector, const Mat& colorImage, const ImageCoords& imageCoords);
 };

@@ -61,8 +61,8 @@ Plane PlanePca::getPlane(const vector<Point3D> &pointsVector, const Mat &colorIm
     return plane;
 }
 
-Plane PlanePca::getPlane(const vector<Point3D> &pointsVector, const vector<Point3D> &points, const ImageCoords &imageCoords) {
+Plane PlanePca::getPlane(const vector<Point3D> &pointsVector, const ImageCoords &imageCoords) {
     Plane plane = computePlane(pointsVector, imageCoords);
-    if (plane.isValid()) plane.setColor(HSVColor(points));
+    if (plane.isValid()) plane.setColor(HSVColor(pointsVector));
     return plane;
 }

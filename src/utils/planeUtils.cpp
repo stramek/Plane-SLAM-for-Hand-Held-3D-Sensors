@@ -140,8 +140,7 @@ namespace planeUtils {
             //cout<< shouldBreak << " points: "<<pointCloud.getPoints3D().size()<<endl;
 
             vector<Point3D> pointsVector = pointCloud.getPoints3D();
-            vector<Point3D> points = pointCloud.getPoints3D();
-            Plane plane = PlanePca::getPlane(pointsVector, points, imageCoords);
+            Plane plane = PlanePca::getPlane(pointsVector, imageCoords);
             if (plane.isValid()) {
                 planeVector->push_back(plane);
             }
