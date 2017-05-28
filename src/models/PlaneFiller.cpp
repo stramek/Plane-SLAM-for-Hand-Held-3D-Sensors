@@ -86,7 +86,7 @@ void PlaneFiller::fillVectorFromDataset(vector<Plane> *vectorToFill) {
         pointCloud.depth2cloud(croppedDepthImage, croppedRgbImage, imageCoords.getUpLeftX(), imageCoords.getUpLeftY());
         vector<Point3D> pointsVector = pointCloud.getPoints3D();
 
-        Plane plane = PlanePca::getPlane(pointsVector, croppedRgbImage, imageCoords);
+        Plane plane = PlanePca::getPlane(pointsVector, imageCoords, &croppedRgbImage);
 
         if (colorPlanes) {
             Vec3b color = plane.isValid() ? Vec3b(0, 255, 0) : Vec3b(0, 0, 255);

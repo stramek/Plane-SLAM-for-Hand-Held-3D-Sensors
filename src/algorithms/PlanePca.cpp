@@ -55,14 +55,22 @@ Plane PlanePca::computePlane(const vector<Point3D> &pointsVector, const ImageCoo
     return Plane();
 }
 
-Plane PlanePca::getPlane(const vector<Point3D> &pointsVector, const Mat &colorImage, const ImageCoords &imageCoords) {
+Plane PlanePca::getPlane(const vector<Point3D> &pointsVector, const ImageCoords &imageCoords, const Mat *colorImage) {
     Plane plane = computePlane(pointsVector, imageCoords);
-    if (plane.isValid()) plane.setColor(HSVColor(colorImage));
+    if (plane.isValid()) {
+        if (colorImage != nullptr) {
+            plane.setColor(HSVColor(*colorImage));
+        } else {
+            plane.setColor(HSVColor(pointsVector));
+        }
+    }
     return plane;
 }
 
+/*
 Plane PlanePca::getPlane(const vector<Point3D> &pointsVector, const ImageCoords &imageCoords) {
     Plane plane = computePlane(pointsVector, imageCoords);
     if (plane.isValid()) plane.setColor(HSVColor(pointsVector));
     return plane;
 }
+*/

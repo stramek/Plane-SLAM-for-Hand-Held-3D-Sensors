@@ -44,14 +44,14 @@ void PlaneRansac::getRandom3Points(const vector<Point3D> &pointsVector, Vector3d
     }
 }
 
-Plane PlaneRansac::getPlane(const vector<Point3D> &pointsVector, const Mat &colorImage, const ImageCoords &imageCoords) {
+Plane PlaneRansac::getPlane(const vector<Point3D> &pointsVector, const ImageCoords &imageCoords, const Mat *colorImage) {
     Plane plane = computePlane(pointsVector, imageCoords);
-    if (plane.isValid()) plane.setColor(HSVColor(colorImage));
-    return plane;
-}
-
-Plane PlaneRansac::getPlane(const vector<Point3D> &pointsVector, const ImageCoords &imageCoords) {
-    Plane plane = computePlane(pointsVector, imageCoords);
-    if (plane.isValid()) plane.setColor(HSVColor(pointsVector));
+    if (plane.isValid()) {
+        if (colorImage != nullptr) {
+            plane.setColor(HSVColor(*colorImage));
+        } else {
+            plane.setColor(HSVColor(pointsVector));
+        }
+    }
     return plane;
 }

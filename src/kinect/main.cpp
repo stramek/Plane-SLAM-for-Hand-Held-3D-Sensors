@@ -37,7 +37,7 @@ int main(int argc, char **argv) {
     vector<Plane> planeVectorPreviousFrame;
     vector<Plane> planeVectorCurrentFrame;
     vector<pair<Plane, Plane>> similarPlanes;
-    const int AREA_SIZE = 31; // odd number
+    const int AREA_SIZE = 37; // odd number
     const int NUMBER_OF_POINTS = 200;
     if (AREA_SIZE % 2 == 0) throw runtime_error("AREA_SIZE needs to be odd number");
 

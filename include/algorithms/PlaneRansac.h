@@ -22,8 +22,7 @@ private:
     static void getRandom3Points(const vector<Point3D> &pointsVector, Vector3d *random3Points);
     static Plane computePlane(const vector<Point3D> &pointsVector, const ImageCoords &imageCoords);
 public:
-    static Plane getPlane(const vector<Point3D> &pointsVector, const Mat &colorImage, const ImageCoords &imageCoords);
-    static Plane getPlane(const vector<Point3D> &pointsVector, const ImageCoords &imageCoords);
+    static Plane getPlane(const vector<Point3D> &pointsVector, const ImageCoords &imageCoords, const Mat *colorImage = nullptr);
 };
 
 
