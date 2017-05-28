@@ -34,7 +34,7 @@ int main(int argc, char **argv) {
 
         make_unique<PlaneFillerBuilder>()
                 ->withDataset(&imagePair1)
-                //->withPlaneDetector(new PlaneDetector())
+                ->withPlaneDetector(new PlaneRansac())
                 ->withAreaSize(AREA_SIZE)
                 ->withNumberOfPoints(NUMBER_OF_POINTS)
                 ->build()
@@ -44,6 +44,7 @@ int main(int argc, char **argv) {
 
         make_unique<PlaneFillerBuilder>()
                 ->withDataset(&imagePair2)
+                ->withPlaneDetector(new PlaneRansac())
                 ->withAreaSize(AREA_SIZE)
                 ->withNumberOfPoints(NUMBER_OF_POINTS)
                 ->withPreviousPlanePercent(&planeVectorPreviousFrame, 0.5)
