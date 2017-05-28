@@ -38,6 +38,8 @@ int main(int argc, char **argv) {
         planeUtils::fillPlaneVector(NUMBER_OF_POINTS, AREA_SIZE, imagePair2, &planeVectorCurrentFrame,
                                     &planeVectorPreviousFrame, 0.5f, false);
 
+        imshow("Detected planes", imagePair2.getRgb());
+
 
         planeUtils::displayClusteredPlanes(imagePair1, planeVectorPreviousFrame);
         planeUtils::displayClusteredPlanes(imagePair2, planeVectorCurrentFrame);
@@ -52,8 +54,8 @@ int main(int argc, char **argv) {
         cout<<"Filtering pairs by angle..."<<endl;
         cout<<"Finished!"<<endl;
         planeUtils::visualizeSimilarPlanes(similarPlanes, imagePair1.getRgb(), imagePair2.getRgb());
-        //visualizer.updateCloud(imagePair2.getRgb(), imagePair2.getDepth());
-        //visualizer.updatePlanes(planeVectorCurrentFrame);
+//        visualizer.updateCloud(imagePair2.getRgb(), imagePair2.getDepth());
+//        visualizer.updatePlanes(planeVectorCurrentFrame);
 
         waitKey();
 

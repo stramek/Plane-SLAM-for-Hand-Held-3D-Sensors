@@ -26,7 +26,7 @@ class Plane {
 public:
     Plane();
 
-    Plane(Vector3d point1, Vector3d point2, Vector3d point3, const ImageCoords &imageCoords);
+    Plane(const Vector3d &point1, const Vector3d &point2, const Vector3d &point3, const ImageCoords &imageCoords);
 
     Plane(std::array<Eigen::Vector3d, 3>, const Mat &colorImage);
 
@@ -81,6 +81,8 @@ public:
         return stream;
     }
 
+    void computeNormalVecDirection();
+
 private:
     double A, B, D, C;
     vector<Point3D> points;
@@ -89,7 +91,7 @@ private:
     HSVColor color = HSVColor();
     bool valid = false;
 
-    void computePlaneEquation(Vector3d point1, Vector3d point2, Vector3d point3);
+    void computePlaneEquation(const Vector3d &point1, const Vector3d &point2, const Vector3d &point3);
 };
 
 #endif /* Plane_h */
