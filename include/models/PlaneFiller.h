@@ -18,6 +18,7 @@
 #include <libfreenect2/logger.h>
 #include <include/models/PointCloud.h>
 #include "include/utils/utils.h"
+#include "include/models/PlaneDetector.h"
 
 using namespace std;
 
@@ -66,6 +67,12 @@ public:
 
     void setRegistered(libfreenect2::Frame *registered);
 
+    void setPlaneDetector(PlaneDetector *planeDetector);
+
+    PlaneDetector *getPlaneDetector() const;
+
+    virtual ~PlaneFiller();
+
     enum FillerMode {
         DATASET, KINECT, ERROR
     };
@@ -86,11 +93,14 @@ private:
     ImagePair *imagePair = nullptr;
     double previousPlanePercent = 0.0;
     bool colorPlanes = false;
+
     vector<Plane> *vectorToFill;
     vector<Plane> *previousVector = nullptr;
     libfreenect2::Registration *registration = nullptr;
     libfreenect2::Frame *undistorted = nullptr;
     libfreenect2::Frame *registered = nullptr;
+
+    PlaneDetector *planeDetector = nullptr;
 
     const ImageCoords getNextCoords(int iteration);
 
@@ -113,6 +123,11 @@ public:
     PlaneFiller *build() {
         validateData();
         return planeFiller.release();
+    }
+
+    PlaneFillerBuilder *withPlaneDetector(PlaneDetector *planeDetector) {
+        planeFiller->setPlaneDetector(planeDetector);
+        return this;
     }
 
     PlaneFillerBuilder *withNumberOfPoints(int numberOfPoints) {
