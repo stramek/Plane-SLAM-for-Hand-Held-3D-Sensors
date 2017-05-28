@@ -17,13 +17,13 @@ using namespace std;
 class PlaneRansac {
 private:
     static const int MAX_ITERATIONS_NUM = 10000;
-    static constexpr double INLAIERS_PERCENT_CONSENSUS = 0.8f;
-    static constexpr double MAX_INLARIES_POINT_PLANE_DISTANCE = 1.0f;
-    static void getRandom3Points(const vector<Vector3d> &pointsVector, Vector3d *random3Points);
-    static Plane computePlane(const vector<Vector3d> &pointsVector, const ImageCoords &imageCoords);
+    static constexpr double INLAIERS_PERCENT_CONSENSUS = 0.95f;
+    static constexpr double MAX_INLARIES_POINT_PLANE_DISTANCE = 0.01f;
+    static void getRandom3Points(const vector<Point3D> &pointsVector, Vector3d *random3Points);
+    static Plane computePlane(const vector<Point3D> &pointsVector, const ImageCoords &imageCoords);
 public:
-    static Plane getPlane(const vector<Vector3d> &pointsVector, const Mat &colorImage, const ImageCoords &imageCoords);
-    static Plane getPlane(const vector<Vector3d> &pointsVector, const vector<Point3D> &points, const ImageCoords &imageCoords);
+    static Plane getPlane(const vector<Point3D> &pointsVector, const Mat &colorImage, const ImageCoords &imageCoords);
+    static Plane getPlane(const vector<Point3D> &pointsVector, const ImageCoords &imageCoords);
 };
 
 

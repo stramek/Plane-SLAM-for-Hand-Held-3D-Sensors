@@ -16,14 +16,14 @@ void QGLVisualizer::draw() {
     std::vector<Point3D> points = pointCloud.getPoints3D();
     for (Point3D i : points) {
         glColor3f(i.red / 255.0f, i.green / 255.0f, i.blue / 255.0f);
-        glVertex3f(i.x, i.y, i.z);
+        glVertex3f(i.position(0), i.position(1), i.position(2));
     }
     glEnd();
 
     // Drawing normals
     double normalScaleFactor = 5.0f;
     for (auto plane : planes){
-        Vector3d point = plane.getCentralPoint();
+        Vector3d point = plane.getCentralPoint().position;
         Vector3d normalVec = plane.getPlaneNormalVec() / normalScaleFactor;
         glLineWidth(2);
         glBegin(GL_LINES);

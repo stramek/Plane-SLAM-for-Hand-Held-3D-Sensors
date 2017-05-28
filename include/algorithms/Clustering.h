@@ -20,13 +20,10 @@ private:
     std::priority_queue<Cluster> priorityQueueDistance;
     double cutSimilarity = 0;
 
-    const static double MAX_ANGLE_THRESHOLD;
 
     double getDistanceBetweenTwoPlanes(const Plane &firstPlane, const Plane &secondPlane);
     double getAngleBetweenTwoPlanes(const Plane &firstPlane, const Plane &secondPlane);
     double getSimilarityOfTwoPlanes(const Plane &firstPlane, const Plane &secondPlane);
-
-    static double getDistanceBetweenPointAndPlane(const Plane &plane, const Vector3d &point);
 
     double findMinDistance(std::pair<int,int>& pairedIds);
     void findPartsInClusters(const std::vector<std::vector<int>>& clusters, const std::pair<int,int>& pairedIds, std::pair<int,int>& clustersIds) const;
