@@ -54,6 +54,18 @@ public:
 
     vector<Plane> *getPreviousVector() const;
 
+    libfreenect2::Registration *getRegistration() const;
+
+    void setRegistration(libfreenect2::Registration *registration);
+
+    libfreenect2::Frame *getUndistorted() const;
+
+    void setUndistorted(libfreenect2::Frame *undistorted);
+
+    libfreenect2::Frame *getRegistered() const;
+
+    void setRegistered(libfreenect2::Frame *registered);
+
 private:
 
     int numberOfPoints = 100;
@@ -63,6 +75,25 @@ private:
     bool colorPlanes = false;
     vector<Plane> *vectorToFill;
     vector<Plane> *previousVector = nullptr;
+    libfreenect2::Registration *registration = nullptr;
+    libfreenect2::Frame *undistorted = nullptr;
+    libfreenect2::Frame *registered = nullptr;
+
+    enum FillerMode {
+        DATASET, KINECT
+    };
+
+    bool isPrevousVectorPassed();
+
+    FillerMode getFillerMode() {
+        if (registration != nullptr) return FillerMode::KINECT;
+        else if (imagePair != nullptr) return FillerMode::DATASET;
+        throw runtime_error("Not enough data passed to PlaneFiller!");
+    }
+
+    const ImageCoords getNextCoords(int iteration);
+
+    const Mat getCroppedMat(Mat &image, ImageCoords &imageCoords);
 };
 
 class PlaneFillerBuilder {
@@ -96,6 +127,14 @@ public:
 
     PlaneFillerBuilder *withColorPlanes(bool colorPlanes) {
         planeFiller->setColorPlanes(true);
+        return this;
+    }
+
+    PlaneFillerBuilder *withKinect(libfreenect2::Registration *registration, libfreenect2::Frame *undistoreted,
+                                   libfreenect2::Frame *registered) {
+        planeFiller->setRegistration(registration);
+        planeFiller->setUndistorted(undistoreted);
+        planeFiller->setRegistered(registered);
         return this;
     }
 

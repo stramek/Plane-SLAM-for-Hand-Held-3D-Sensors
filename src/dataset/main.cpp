@@ -26,9 +26,8 @@ int main(int argc, char **argv) {
         vector<Plane> planeVectorCurrentFrame;
         vector<pair<Plane, Plane>> similarPlanes;
 
-        const int AREA_SIZE = 31; // odd number
+        const int AREA_SIZE = 31;
         const int NUMBER_OF_POINTS = 200;
-        if (AREA_SIZE % 2 == 0) throw runtime_error("AREA_SIZE needs to be odd number");
 
         cout<<endl<<endl<<endl<<"Filling vectors with planes..."<<endl;
         ImagePair imagePair1 = imageLoader.getNextPair();
@@ -50,8 +49,8 @@ int main(int argc, char **argv) {
                 ->build()
                 ->fillVector(&planeVectorCurrentFrame);
 
-        planeUtils::displayClusteredPlanes(imagePair1, planeVectorPreviousFrame);
-        planeUtils::displayClusteredPlanes(imagePair2, planeVectorCurrentFrame);
+        //planeUtils::displayClusteredPlanes(imagePair1, planeVectorPreviousFrame);
+        //planeUtils::displayClusteredPlanes(imagePair2, planeVectorCurrentFrame);
 
         cout<<"Merging planes..."<<endl;
         planeUtils::mergePlanes(planeVectorPreviousFrame);
