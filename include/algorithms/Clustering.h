@@ -25,7 +25,7 @@ private:
     double getAngleBetweenTwoPlanes(const Plane &firstPlane, const Plane &secondPlane);
     double getSimilarityOfTwoPlanes(const Plane &firstPlane, const Plane &secondPlane);
 
-    static double getDistanceBetweenPointAndPlane(Plane plane, Vector3d point);
+    static double getDistanceBetweenPointAndPlane(const Plane &plane, const Vector3d &point);
 
     double findMinDistance(std::pair<int,int>& pairedIds);
     void findPartsInClusters(const std::vector<std::vector<int>>& clusters, const std::pair<int,int>& pairedIds, std::pair<int,int>& clustersIds) const;

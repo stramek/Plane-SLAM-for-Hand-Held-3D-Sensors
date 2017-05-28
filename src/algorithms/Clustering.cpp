@@ -5,13 +5,15 @@
 #include "include/algorithms/Clustering.h"
 
 
-double Clustering::getDistanceBetweenPointAndPlane(Plane plane, Vector3d point) {
+double Clustering::getDistanceBetweenPointAndPlane(const Plane &plane, const Vector3d &point) {
     double distance = abs(plane.getA() * point(0) + plane.getB() * point(1) + plane.getC() * point(2) - plane.getD()) /
                       sqrt(pow(plane.getA(), 2.0) + pow(plane.getB(), 2.0) + pow(plane.getC(), 2.0));
     return distance;
 }
 
 double Clustering::getDistanceBetweenTwoPlanes(const Plane &firstPlane, const Plane &secondPlane) {
+
+    const int NUMBER_OF_RANDOM_POINTS = 50;
     double distance = 0;
     vector<Point3D> pointsVec = secondPlane.getPoints();
 
