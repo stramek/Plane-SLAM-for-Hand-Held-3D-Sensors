@@ -34,7 +34,6 @@ namespace planeUtils {
         }
 
 
-
         return toReturn;
     };
 
@@ -81,7 +80,6 @@ namespace planeUtils {
 
             vector<Vector3d> pointsVector = pointCloud.getPoints();
 
-            //cout<<"Getting plane: "<<iteration + 1<<" of "<<numberOfPoints<<endl;
             Plane plane = PlanePca::getPlane(pointsVector, croppedRgbImage, imageCoords);
 
             if (colorPlanes) {
@@ -200,7 +198,8 @@ namespace planeUtils {
             stream << fixed << setprecision(1) << angle;
             Point centerPoint = ((previousPlanePoint + currentPlanePoint) / 2);
             centerPoint.x = centerPoint.x - 50;
-            putText(merged, "Angle: " + stream.str() + " Color diff: " + to_string(colorDiff), centerPoint, FONT_HERSHEY_SIMPLEX, 0.5, color, 2);
+            putText(merged, "Angle: " + stream.str() + " Color diff: " + to_string(colorDiff), centerPoint,
+                    FONT_HERSHEY_SIMPLEX, 0.5, color, 2);
 
             pointNumber++;
             if (pointNumber >= limitPoints) break;

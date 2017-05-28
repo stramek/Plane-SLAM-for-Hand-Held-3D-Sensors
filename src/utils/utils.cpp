@@ -2,7 +2,7 @@
 
 namespace utils {
 
-    void paintPixel(Mat &rgb, const Vector3f &vector, Vec3b color) {
+    void paintPixel(Mat &rgb, const Vector3f &vector, Vec3b &color) {
         for (int i = 0; i < 3; ++i) {
             rgb.at<Vec3b>((int) vector[0], (int) vector[1])[i] = (uchar) color[i];
         }

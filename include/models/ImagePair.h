@@ -26,6 +26,8 @@ public:
 
     int getDepthAt(int x, int y);
 
+    bool isEmpty()const;
+
 private:
     Mat rgb;
     Mat depth;

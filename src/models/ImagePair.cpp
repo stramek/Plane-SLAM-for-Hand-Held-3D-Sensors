@@ -34,3 +34,7 @@ void ImagePair::setDepth(const Mat &depth) {
 int ImagePair::getDepthAt(int x, int y) {
     return depth.at<uint16_t>(x, y);
 }
+
+bool ImagePair::isEmpty()const {
+    return rgb.empty() || depth.empty();
+}

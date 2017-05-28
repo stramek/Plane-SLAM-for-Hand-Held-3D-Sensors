@@ -18,8 +18,8 @@ int main(int argc, char **argv) {
     visualizer.show();
 
 
-    while (true) {
 
+    while (true) {
         ImageLoader imageLoader(50);
 
         vector<Plane> planeVectorPreviousFrame;
@@ -32,12 +32,23 @@ int main(int argc, char **argv) {
 
         cout<<endl<<endl<<endl<<"Filling vectors with planes..."<<endl;
         ImagePair imagePair1 = imageLoader.getNextPair();
-        planeUtils::fillPlaneVector(NUMBER_OF_POINTS, AREA_SIZE, imagePair1, &planeVectorPreviousFrame,
-                                    nullptr, 0.0, false);
-        ImagePair imagePair2 = imageLoader.getNextPair(0);
-        planeUtils::fillPlaneVector(NUMBER_OF_POINTS, AREA_SIZE, imagePair2, &planeVectorCurrentFrame,
-                                    &planeVectorPreviousFrame, 0.5f, false);
 
+        make_unique<PlaneFillerBuilder>()
+                ->withAreaSize(AREA_SIZE)
+                ->withNumberOfPoints(NUMBER_OF_POINTS)
+                ->withImagePair(&imagePair1)
+                ->build()
+                ->fillVector(&planeVectorPreviousFrame);
+
+        ImagePair imagePair2 = imageLoader.getNextPair(20);
+
+        make_unique<PlaneFillerBuilder>()
+                ->withAreaSize(AREA_SIZE)
+                ->withNumberOfPoints(NUMBER_OF_POINTS)
+                ->withImagePair(&imagePair2)
+                ->withPreviousPlanePercent(&planeVectorPreviousFrame, 0.5)
+                ->build()
+                ->fillVector(&planeVectorCurrentFrame);
 
         planeUtils::displayClusteredPlanes(imagePair1, planeVectorPreviousFrame);
         planeUtils::displayClusteredPlanes(imagePair2, planeVectorCurrentFrame);
