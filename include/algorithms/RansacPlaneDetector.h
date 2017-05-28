@@ -15,7 +15,7 @@
 using namespace Eigen;
 using namespace std;
 
-class PlaneRansac : public PlaneDetector {
+class RansacPlaneDetector : public PlaneDetector {
 private:
     static const int MAX_ITERATIONS_NUM = 10000;
     static constexpr double INLAIERS_PERCENT_CONSENSUS = 0.95f;

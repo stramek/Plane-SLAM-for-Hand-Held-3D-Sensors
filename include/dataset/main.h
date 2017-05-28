@@ -27,6 +27,7 @@
 #include <include/algorithms/PlanePca.h>
 #include "include/utils/planeUtils.h"
 #include "include/models/PlaneFiller.h"
+#include "include/algorithms/RansacPlaneDetector.h"
 
 namespace Rx {
     using namespace rxcpp;

@@ -10,7 +10,7 @@
 #include <string>
 #include <iostream>
 #include <memory>
-#include <include/algorithms/PlaneRansac.h>
+#include <include/algorithms/RansacPlaneDetector.h>
 #include <libfreenect2/libfreenect2.hpp>
 #include <libfreenect2/frame_listener_impl.h>
 #include <libfreenect2/registration.h>
