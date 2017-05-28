@@ -2,8 +2,8 @@
 // Created by mordimer on 26.02.17.
 //
 
-#ifndef PROJEKTMAGISTERSKI_PLANEPCA_H
-#define PROJEKTMAGISTERSKI_PLANEPCA_H
+#ifndef PROJEKTMAGISTERSKI_PCAPLANEDETECTOR_H
+#define PROJEKTMAGISTERSKI_PCAPLANEDETECTOR_H
 
 #include <iostream>
 #include <Eigen/Dense>
@@ -18,7 +18,7 @@ using namespace std;
 
 typedef Matrix<double, 3, 3> Mat33;
 
-class PlanePca : public PlaneDetector{
+class PcaPlaneDetector : public PlaneDetector{
 private:
     void pointsVectorToMatrix(const vector<Vector3d> &pointsVector, MatrixXf &matrix);
 

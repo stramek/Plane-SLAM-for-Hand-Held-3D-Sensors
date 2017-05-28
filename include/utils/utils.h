@@ -8,7 +8,7 @@
 #include <opencv2/opencv.hpp>
 #include "include/models/Plane.h"
 #include "include/models/PlaneSimilarity.h"
-#include <include/algorithms/PlanePca.h>
+#include <include/algorithms/PcaPlaneDetector.h>
 #include "include/models/ImageCoords.h"
 #include <include/models/ImagePair.h>
 #include <limits.h>

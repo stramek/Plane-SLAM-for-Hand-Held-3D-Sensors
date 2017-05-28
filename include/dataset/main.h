@@ -24,7 +24,7 @@
 #include "include/models/ImageLoader.h"
 #include <rxcpp/rx.hpp>
 #include <include/utils/utils.h>
-#include <include/algorithms/PlanePca.h>
+#include <include/algorithms/PcaPlaneDetector.h>
 #include "include/utils/planeUtils.h"
 #include "include/models/PlaneFiller.h"
 

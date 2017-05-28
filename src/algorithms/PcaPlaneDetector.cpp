@@ -2,9 +2,9 @@
 // Created by mordimer on 26.02.17.
 //
 
-#include "include/algorithms/PlanePca.h"
+#include "include/algorithms/PcaPlaneDetector.h"
 
-Vector3d PlanePca::computeMean(const vector<Point3D> &pointsVector) {
+Vector3d PcaPlaneDetector::computeMean(const vector<Point3D> &pointsVector) {
     Vector3d mean(0, 0, 0);
     for (auto &vector : pointsVector) {
         mean += vector.position;
@@ -13,7 +13,7 @@ Vector3d PlanePca::computeMean(const vector<Point3D> &pointsVector) {
     return mean;
 }
 
-Mat33 PlanePca::computeCovMatrix(const vector<Point3D> &pointsVector, const Vector3d &mean) {
+Mat33 PcaPlaneDetector::computeCovMatrix(const vector<Point3D> &pointsVector, const Vector3d &mean) {
     Mat33 cov(Mat33::Zero());
 
     for (auto &point : pointsVector) {
@@ -23,7 +23,7 @@ Mat33 PlanePca::computeCovMatrix(const vector<Point3D> &pointsVector, const Vect
     return cov;
 }
 
-Plane PlanePca::computePlane(const vector<Point3D> &pointsVector, const ImageCoords &imageCoords) {
+Plane PcaPlaneDetector::computePlane(const vector<Point3D> &pointsVector, const ImageCoords &imageCoords) {
     if (pointsVector.size() < 3)
         return Plane();
     Vector3d mean = computeMean(pointsVector);
@@ -55,7 +55,7 @@ Plane PlanePca::computePlane(const vector<Point3D> &pointsVector, const ImageCoo
     return Plane();
 }
 
-Plane PlanePca::getPlane(const vector<Point3D> &pointsVector, const ImageCoords &imageCoords, const Mat *colorImage) {
+Plane PcaPlaneDetector::getPlane(const vector<Point3D> &pointsVector, const ImageCoords &imageCoords, const Mat *colorImage) {
     Plane plane = computePlane(pointsVector, imageCoords);
     if (plane.isValid()) {
         if (colorImage != nullptr) {
@@ -68,7 +68,7 @@ Plane PlanePca::getPlane(const vector<Point3D> &pointsVector, const ImageCoords 
 }
 
 /*
-Plane PlanePca::getPlane(const vector<Point3D> &pointsVector, const ImageCoords &imageCoords) {
+Plane PcaPlaneDetector::getPlane(const vector<Point3D> &pointsVector, const ImageCoords &imageCoords) {
     Plane plane = computePlane(pointsVector, imageCoords);
     if (plane.isValid()) plane.setColor(HSVColor(pointsVector));
     return plane;

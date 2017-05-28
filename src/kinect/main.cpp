@@ -58,7 +58,7 @@ int main(int argc, char **argv) {
 
         make_unique<PlaneFillerBuilder>()
                 ->withKinect(registration, &undistorted, &registered)
-                ->withPlaneDetector(new PlanePca())
+                ->withPlaneDetector(new PcaPlaneDetector())
                 ->withAreaSize(AREA_SIZE)
                 ->withNumberOfPoints(NUMBER_OF_POINTS)
                 ->withPreviousPlanePercent(&planeVectorPreviousFrame, 0.5)
