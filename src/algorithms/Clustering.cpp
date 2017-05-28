@@ -18,12 +18,12 @@ double Clustering::getDistanceBetweenTwoPlanes(const Plane &firstPlane, const Pl
     vector<Point3D> pointsVec = secondPlane.getPoints();
 
     uniform_int_distribution<unsigned int> pointIndex(0, secondPlane.getNumberOfPoints() - 1);
-    for (int i = 0; i < 50; ++i) {
+    for (int i = 0; i < NUMBER_OF_RANDOM_POINTS; ++i) {
         Vector3d randomPointOnSecondPlane = pointsVec[pointIndex(rng)].position;
         distance += getDistanceBetweenPointAndPlane(firstPlane, randomPointOnSecondPlane);
     }
 
-    return distance / 50.0;
+    return distance / NUMBER_OF_RANDOM_POINTS;
 }
 
 double Clustering::getSimilarityOfTwoPlanes(const Plane &firstPlane, const Plane &secondPlane) {
