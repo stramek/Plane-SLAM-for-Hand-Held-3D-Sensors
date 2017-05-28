@@ -42,7 +42,11 @@ const ImageCoords PlaneFiller::getNextCoords(int iteration) {
         && iteration < previousVector->size()) {
         return previousVector->at((unsigned int) iteration).getImageCoords();
     } else {
-        position = utils::getRandomPosition(imagePair->getDepth(), areaSize);
+        if (getFillerMode() == KINECT) {
+            position = utils::getRandomPosition((int) undistorted->width, (int) undistorted->height, areaSize);
+        } else if (getFillerMode() == DATASET) {
+            position = utils::getRandomPosition(imagePair->getDepth(), areaSize);
+        }
         return ImageCoords(position, areaSize);
     }
 };
@@ -61,6 +65,14 @@ void PlaneFiller::fillVector(vector<Plane> *vectorToFill) {
         shuffle(previousVector->begin(), previousVector->end(), default_random_engine{});
     }
 
+    if (getFillerMode() == PlaneFiller::DATASET) {
+        fillVectorFromDataset(vectorToFill);
+    } else if (getFillerMode() == PlaneFiller::KINECT) {
+        fillVectorFromKinect(vectorToFill);
+    }
+}
+
+void PlaneFiller::fillVectorFromDataset(vector<Plane> *vectorToFill) {
     Mat rgb = imagePair->getRgb();
     Mat depth = imagePair->getDepth();
 
@@ -80,6 +92,36 @@ void PlaneFiller::fillVector(vector<Plane> *vectorToFill) {
             Vec3b color = plane.isValid() ? Vec3b(0, 255, 0) : Vec3b(0, 0, 255);
             croppedRgbImage.setTo(color);
         }
+        if (plane.isValid()) {
+            vectorToFill->push_back(plane);
+        }
+    }
+}
+
+void PlaneFiller::fillVectorFromKinect(vector<Plane> *vectorToFill) {
+    for (int iteration = 0; iteration < numberOfPoints; ++iteration) {
+        ImageCoords imageCoords = getNextCoords(iteration);
+        bool shouldBreak = false;
+        long nanPixelsCount = 0;
+        PointCloud pointCloud;
+        for (int row = imageCoords.getUpLeftY(); row < imageCoords.getDownRightY() && !shouldBreak; ++row) {
+            for (int col = imageCoords.getUpLeftX(); col < imageCoords.getDownRightX() && !shouldBreak; ++col) {
+                float x, y, z, color;
+                registration->getPointXYZRGB(undistorted, registered, row, col, x, y, z, color);
+                const uint8_t *p = reinterpret_cast<uint8_t *>(&color);
+
+                if (!isnanf(z) && color != 0) {
+                    Point3D point3D(-x, -y, -z, p[2], p[1], p[0]);
+                    pointCloud.push_back(point3D);
+                } else if (imageCoords.hasTooMuchNanPixels(++nanPixelsCount)) {
+                    pointCloud.clear();
+                    shouldBreak = true;
+                }
+            }
+        }
+        vector<Vector3d> pointsVector = pointCloud.getPoints();
+        vector<Point3D> points = pointCloud.getPoints3D();
+        Plane plane = PlanePca::getPlane(pointsVector, points, imageCoords);
         if (plane.isValid()) {
             vectorToFill->push_back(plane);
         }
@@ -139,9 +181,8 @@ void PlaneFiller::setRegistered(libfreenect2::Frame *registered) {
 }
 
 void PlaneFillerBuilder::validateData() {
-    if (planeFiller.get()->getImagePair() == nullptr) {
-        throw runtime_error(
-                "Passed imagePair is empty! Did you forget to call withImagePair(ImagePair* imagepair) method?");
+    if (planeFiller.get()->getFillerMode() == PlaneFiller::ERROR) {
+        throw runtime_error("You need to call withKinect() or withDataset() method before build()");
     }
     if (planeFiller.get()->getPreviousPlanePercent() > 1.0 || planeFiller.get()->getPreviousPlanePercent() < 0.0) {
         throw runtime_error("previousPlanePercent value must be between <0.0 ; 1.0>");

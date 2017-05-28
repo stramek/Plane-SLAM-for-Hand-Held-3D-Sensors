@@ -33,18 +33,18 @@ int main(int argc, char **argv) {
         ImagePair imagePair1 = imageLoader.getNextPair();
 
         make_unique<PlaneFillerBuilder>()
+                ->withDataset(&imagePair1)
                 ->withAreaSize(AREA_SIZE)
                 ->withNumberOfPoints(NUMBER_OF_POINTS)
-                ->withImagePair(&imagePair1)
                 ->build()
                 ->fillVector(&planeVectorPreviousFrame);
 
         ImagePair imagePair2 = imageLoader.getNextPair(20);
 
         make_unique<PlaneFillerBuilder>()
+                ->withDataset(&imagePair2)
                 ->withAreaSize(AREA_SIZE)
                 ->withNumberOfPoints(NUMBER_OF_POINTS)
-                ->withImagePair(&imagePair2)
                 ->withPreviousPlanePercent(&planeVectorPreviousFrame, 0.5)
                 ->build()
                 ->fillVector(&planeVectorCurrentFrame);

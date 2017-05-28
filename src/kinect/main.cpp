@@ -56,8 +56,13 @@ int main(int argc, char **argv) {
 
         registration->apply(rgb, depth, &undistorted, &registered, true);
 
-        planeUtils::fillPlaneVector(NUMBER_OF_POINTS, AREA_SIZE, &planeVectorCurrentFrame,
-                                    &planeVectorPreviousFrame, 0.5, registration, &undistorted, &registered);
+        make_unique<PlaneFillerBuilder>()
+                ->withKinect(registration, &undistorted, &registered)
+                ->withAreaSize(AREA_SIZE)
+                ->withNumberOfPoints(NUMBER_OF_POINTS)
+                ->withPreviousPlanePercent(&planeVectorPreviousFrame, 0.5)
+                ->build()
+                ->fillVector(&planeVectorCurrentFrame);
 
         if (KINECT_MODE == SHOW_POINTCLOUD) {
             visualizer.updateCloud(registration, &undistorted, &registered);

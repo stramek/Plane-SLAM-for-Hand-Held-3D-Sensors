@@ -66,6 +66,19 @@ public:
 
     void setRegistered(libfreenect2::Frame *registered);
 
+    enum FillerMode {
+        DATASET, KINECT, ERROR
+    };
+
+    bool isPrevousVectorPassed();
+
+    FillerMode getFillerMode() {
+        if (registration != nullptr && imagePair != nullptr) return FillerMode::ERROR;
+        if (registration != nullptr) return FillerMode::KINECT;
+        else if (imagePair != nullptr) return FillerMode::DATASET;
+        return FillerMode::ERROR;
+    }
+
 private:
 
     int numberOfPoints = 100;
@@ -79,21 +92,13 @@ private:
     libfreenect2::Frame *undistorted = nullptr;
     libfreenect2::Frame *registered = nullptr;
 
-    enum FillerMode {
-        DATASET, KINECT
-    };
-
-    bool isPrevousVectorPassed();
-
-    FillerMode getFillerMode() {
-        if (registration != nullptr) return FillerMode::KINECT;
-        else if (imagePair != nullptr) return FillerMode::DATASET;
-        throw runtime_error("Not enough data passed to PlaneFiller!");
-    }
-
     const ImageCoords getNextCoords(int iteration);
 
     const Mat getCroppedMat(Mat &image, ImageCoords &imageCoords);
+
+    void fillVectorFromDataset(vector<Plane> *vectorToFill);
+
+    void fillVectorFromKinect(vector<Plane> *vectorToFill);
 };
 
 class PlaneFillerBuilder {
@@ -120,7 +125,7 @@ public:
         return this;
     }
 
-    PlaneFillerBuilder *withImagePair(ImagePair *imagePair) {
+    PlaneFillerBuilder *withDataset(ImagePair *imagePair) {
         planeFiller->setImagePair(imagePair);
         return this;
     }
