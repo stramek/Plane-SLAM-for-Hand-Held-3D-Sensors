@@ -8,6 +8,10 @@
 
 #include "include/dataset/main.h"
 
+vector<Plane> planeVectorPreviousFrame;
+vector<Plane> planeVectorCurrentFrame;
+vector<pair<Plane, Plane>> similarPlanes;
+
 int main(int argc, char **argv) {
     QApplication application(argc, argv);
     glutInit(&argc, argv);
@@ -17,17 +21,11 @@ int main(int argc, char **argv) {
     visualizer.setPHCPModel(PHCP_MODEL);
     visualizer.show();
 
-
-
     while (true) {
         ImageLoader imageLoader(50);
 
-        vector<Plane> planeVectorPreviousFrame;
-        vector<Plane> planeVectorCurrentFrame;
-        vector<pair<Plane, Plane>> similarPlanes;
-
-        const int AREA_SIZE = 31;
-        const int NUMBER_OF_POINTS = 200;
+        const int AREA_SIZE = 35;
+        const int NUMBER_OF_POINTS = 300;
 
         cout<<endl<<endl<<endl<<"Filling vectors with planes..."<<endl;
         ImagePair imagePair1 = imageLoader.getNextPair();
@@ -40,7 +38,7 @@ int main(int argc, char **argv) {
                 ->build()
                 ->fillVector(&planeVectorPreviousFrame);
 
-        ImagePair imagePair2 = imageLoader.getNextPair(20);
+        ImagePair imagePair2 = imageLoader.getNextPair(40);
 
         make_unique<PlaneFillerBuilder>()
                 ->withDataset(&imagePair2)

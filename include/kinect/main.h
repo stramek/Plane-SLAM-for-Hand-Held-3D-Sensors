@@ -38,6 +38,7 @@
 #include "include/algorithms/PcaPlaneDetector.h"
 #include "include/algorithms/RansacPlaneDetector.h"
 #include "include/models/PlaneFiller.h"
+#include "KinectModule.h"
 
 namespace Rx {
     using namespace rxcpp;
@@ -52,7 +53,8 @@ using namespace Eigen;
 using namespace Rx;
 using namespace libfreenect2;
 
-void quitIfDeviceNotConnected();
-void openDevice();
+void copyPlanesToPreviousFrames();
+void visualizePlanes(KinectModule &kinectModule, KinectFrames &kinectFrames);
+void notifyNumberOfSimilarPlanes();
 
 #endif /* main_h */
