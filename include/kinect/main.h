@@ -40,21 +40,9 @@
 #include "include/models/PlaneFiller.h"
 #include "KinectModule.h"
 
-namespace Rx {
-    using namespace rxcpp;
-    using namespace rxcpp::sources;
-    using namespace rxcpp::operators;
-    using namespace rxcpp::util;
-}
-
 using namespace std;
 using namespace cv;
 using namespace Eigen;
-using namespace Rx;
 using namespace libfreenect2;
-
-void copyPlanesToPreviousFrames();
-void visualizePlanes(KinectModule &kinectModule, KinectFrames &kinectFrames);
-void notifyNumberOfSimilarPlanes();
 
 #endif /* main_h */

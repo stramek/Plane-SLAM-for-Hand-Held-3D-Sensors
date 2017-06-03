@@ -12,6 +12,9 @@
 #include <libfreenect2/logger.h>
 #include <functional>
 #include "include/kinect/KinectFrames.h"
+#include <opencv2/opencv.hpp>
+#include "include/models/Plane.h"
+#include "include/utils/planeUtils.h"
 
 using namespace libfreenect2;
 using namespace std;
@@ -21,7 +24,7 @@ public:
 
     class KinectFramesListener {
     public:
-        typedef function<void(KinectFrames&)> KinectFramesCallback;
+        typedef function<void(KinectFrames &)> KinectFramesCallback;
 
     public:
         KinectFramesListener(KinectFramesCallback kinectFramesCallback) : callback(kinectFramesCallback) {}
@@ -42,7 +45,15 @@ public:
 
     void start();
 
+    vector<Plane> &getPlaneVectorPreviousFrame();
+
+    vector<Plane> &getPlaneVectorCurrentFrame();
+
     Registration *getRegistration() const;
+
+    void visualizePlanes(KinectFrames &kinectFrames);
+
+    void notifyNumberOfSimilarPlanes();
 
 private:
     Freenect2 freenect2;
@@ -51,11 +62,20 @@ private:
     KinectFramesListener *kinectFramesListener = nullptr;
     Registration *registration = nullptr;
 
+    vector<Plane> planeVectorPreviousFrame;
+    vector<Plane> planeVectorCurrentFrame;
+    vector<pair<Plane, Plane>> similarPlanes;
+
+    Mat previousFrame;
+    Mat currentFrame;
+
     bool finishedProgram = false;
 
     void quitIfDeviceNotConnected();
+    void copyPlanesToPreviousFrames();
     void openDevice();
-
+    void calculateSimilarPlanes();
+    void mergePlanes();
 };
 
 

@@ -8,13 +8,6 @@
 
 #include "include/kinect/main.h"
 
-vector<Plane> planeVectorPreviousFrame;
-vector<Plane> planeVectorCurrentFrame;
-vector<pair<Plane, Plane>> similarPlanes;
-
-Mat previousFrame;
-Mat currentFrame;
-
 int main(int argc, char **argv) {
     QApplication application(argc, argv);
     glutInit(&argc, argv);
@@ -29,43 +22,14 @@ int main(int argc, char **argv) {
                         ->withPlaneDetector(new PcaPlaneDetector())
                         ->withAreaSize(35)
                         ->withNumberOfPoints(300)
-                        ->withPreviousPlanePercent(&planeVectorPreviousFrame, 0.5)
+                        ->withPreviousPlanePercent(&kinectModule.getPlaneVectorPreviousFrame(), 0.5)
                         ->build()
-                        ->fillVector(&planeVectorCurrentFrame);
+                        ->fillVector(&kinectModule.getPlaneVectorCurrentFrame());
 
-                planeUtils::mergePlanes(planeVectorCurrentFrame);
-                similarPlanes = planeUtils::getSimilarPlanes(planeVectorPreviousFrame, planeVectorCurrentFrame);
-
-                copyPlanesToPreviousFrames();
-                visualizePlanes(kinectModule, kinectFrames);
-                notifyNumberOfSimilarPlanes();
+                kinectModule.visualizePlanes(kinectFrames);
+                kinectModule.notifyNumberOfSimilarPlanes();
             }
     ));
     kinectModule.start();
     return application.exec();
-}
-
-void copyPlanesToPreviousFrames() {
-    planeVectorPreviousFrame.clear();
-    copy(planeVectorCurrentFrame.begin(), planeVectorCurrentFrame.end(), back_inserter(planeVectorPreviousFrame));
-    planeVectorCurrentFrame.clear();
-}
-
-void visualizePlanes(KinectModule &kinectModule, KinectFrames &kinectFrames) {
-    previousFrame = currentFrame.clone();
-    currentFrame = planeUtils::getRGBFrameMat(kinectModule.getRegistration(), kinectFrames.getUndistorted(),
-                                              kinectFrames.getRegistered());
-
-    if (!previousFrame.empty()) {
-        planeUtils::visualizeSimilarPlanes(similarPlanes, previousFrame, currentFrame);
-    }
-}
-
-void notifyNumberOfSimilarPlanes() {
-    cout << "Found " << similarPlanes.size() << " planes.";
-    if (similarPlanes.size() >= 3) {
-        cout << " Ok!" << endl;
-    } else {
-        cout << " Not too much..." << endl;
-    }
 }
