@@ -15,6 +15,7 @@
 #include <opencv2/opencv.hpp>
 #include "include/models/Plane.h"
 #include "include/utils/planeUtils.h"
+#include <thread>
 
 using namespace libfreenect2;
 using namespace std;
@@ -38,21 +39,12 @@ public:
     };
 
     KinectModule();
-
     void setKinectFramesListener(KinectFramesListener *kinectFramesListener);
-
     void setFinishedProgram(bool finishedProgram);
-
-    void start();
-
     vector<Plane> &getPlaneVectorPreviousFrame();
-
     vector<Plane> &getPlaneVectorCurrentFrame();
-
     Registration *getRegistration() const;
-
     void visualizePlanes(KinectFrames &kinectFrames);
-
     void notifyNumberOfSimilarPlanes();
 
 private:
@@ -76,6 +68,7 @@ private:
     void openDevice();
     void calculateSimilarPlanes();
     void mergePlanes();
+    void start();
 };
 
 

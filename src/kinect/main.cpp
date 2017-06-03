@@ -20,8 +20,8 @@ int main(int argc, char **argv) {
                         ->withKinect(kinectModule.getRegistration(), kinectFrames.getUndistorted(),
                                      kinectFrames.getRegistered())
                         ->withPlaneDetector(new PcaPlaneDetector())
-                        ->withAreaSize(35)
-                        ->withNumberOfPoints(300)
+                        ->withAreaSize(31)
+                        ->withNumberOfPoints(400)
                         ->withPreviousPlanePercent(&kinectModule.getPlaneVectorPreviousFrame(), 0.5)
                         ->build()
                         ->fillVector(&kinectModule.getPlaneVectorCurrentFrame());
@@ -30,6 +30,6 @@ int main(int argc, char **argv) {
                 kinectModule.notifyNumberOfSimilarPlanes();
             }
     ));
-    kinectModule.start();
+
     return application.exec();
 }

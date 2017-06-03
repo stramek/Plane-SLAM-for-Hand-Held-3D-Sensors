@@ -77,7 +77,7 @@ namespace planeUtils {
                                             currentImageCoords.getCenterY());
 
             int size = previousImageCoords.getAreaSize() / 2;
-            Scalar color = Scalar(rng.uniform(180, 255), rng.uniform(180, 255), rng.uniform(180, 255));
+            Scalar color = Scalar(rng.uniform(150, 255), rng.uniform(150, 255), rng.uniform(150, 255));
 
             circle(merged, previousPlanePoint, size, color, 2);
             circle(merged, currentPlanePoint, size, color, 2);

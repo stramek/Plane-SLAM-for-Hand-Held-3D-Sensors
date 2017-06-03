@@ -9,6 +9,7 @@ KinectModule::KinectModule() {
 
 void KinectModule::setKinectFramesListener(KinectFramesListener *kinectFramesListener) {
     KinectModule::kinectFramesListener = kinectFramesListener;
+    start();
 }
 
 void KinectModule::quitIfDeviceNotConnected() {
