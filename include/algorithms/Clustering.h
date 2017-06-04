@@ -36,6 +36,7 @@ public:
     Clustering(){
         random_device rd;
         mt19937 rng(rd());
+        this->rng = rng;
     }
 
     void selectParts(const std::vector<Plane> &planesVec, std::vector<std::vector<Plane>> &clusteredPlanes);

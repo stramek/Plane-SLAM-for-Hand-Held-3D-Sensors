@@ -8,11 +8,12 @@
 
 using namespace Eigen;
 
-const static float PCA_MAX_ACCEPTED_DISTANCE = 0.003f;
+const static float PCA_MAX_ACCEPTED_DISTANCE = 0.01f;
 const static float CLUSTERING_MAX_ANGLE_THRESHOLD = 20.0;
 const static double CLUSTERING_MAX_DISTANCE_THRESHOLD = 1.5;
 const int MAX_SIMILARITY_VALUE = 15;
-const int MAX_ANGLE_BETWEEN_PLANES = 20;
+const int MAX_ANGLE_BETWEEN_PLANES = 8;
+const double MAX_DISTANCE_BETWEEN_PLANES = 1.0;
 
 const float MAX_PERCENT_OF_NAN_PIXELS_INSIDE_PLAIN = 10.0f;
 
@@ -30,7 +31,5 @@ const Matrix<double, 3, 3> PHCP_MODEL = [] {
             0, 0, 1;
     return matrix;
 }();
-
-static int SCREENSHOT_HELPER = 1;
 
 #endif //PROJEKTMAGISTERSKI_CONSTANTS_H

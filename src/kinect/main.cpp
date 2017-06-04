@@ -10,7 +10,7 @@
 
 int main(int argc, char **argv) {
     QApplication application(argc, argv);
-    glutInit(&argc, argv);
+    //glutInit(&argc, argv);
 
     KinectModule kinectModule;
     kinectModule.setKinectFramesListener(new KinectModule::KinectFramesListener(

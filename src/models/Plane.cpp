@@ -202,3 +202,19 @@ void Plane::computeNormalVecDirection(){
 
 }
 
+double Plane::getDistanceBetweenPlanes(const Plane &plane) const {
+    const int NUMBER_OF_RANDOM_POINTS = 50;
+    double distance = 0;
+    vector<Point3D> pointsVec = plane.getPoints();
+
+    random_device rd;
+    mt19937 rng(rd());
+    uniform_int_distribution<unsigned int> pointIndex(0, plane.getNumberOfPoints() - 1);
+    for (int i = 0; i < NUMBER_OF_RANDOM_POINTS; ++i) {
+        Vector3d randomPointOnSecondPlane = pointsVec[pointIndex(rng)].position;
+        distance += this->getDistanceFromPoint(randomPointOnSecondPlane);
+    }
+
+    return distance / NUMBER_OF_RANDOM_POINTS;
+}
+

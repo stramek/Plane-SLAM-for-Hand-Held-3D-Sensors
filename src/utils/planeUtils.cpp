@@ -17,7 +17,7 @@ namespace planeUtils {
         for (PlaneSimilarity &outerPlaneSimilarity : planeSimilarityVec) {
             if (!outerPlaneSimilarity.isAnyOfFramesTaken()) {
                 if (outerPlaneSimilarity.isSimilarityValid()) {
-                    if (outerPlaneSimilarity.isAngleBetweenPlanedValid()) {
+                    if (outerPlaneSimilarity.isDistanceBetweeenPlaneValid() && outerPlaneSimilarity.isAngleBetweenPlanedValid()) {
                         toReturn.push_back(pair<Plane, Plane>(outerPlaneSimilarity.getLastFrame(),
                                                               outerPlaneSimilarity.getCurrentFrame()));
 

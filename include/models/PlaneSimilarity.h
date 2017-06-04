@@ -35,6 +35,7 @@ public:
     bool isOneOfIndexesEqual(PlaneSimilarity &planeSimilarity) const;
     bool isSimilarityValid() const;
     bool isAngleBetweenPlanedValid() const;
+    bool isDistanceBetweeenPlaneValid() const;
     bool isLastFrameTaken() const;
     bool isCurrentFrameTaken() const;
 

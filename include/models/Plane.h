@@ -83,6 +83,8 @@ public:
 
     void computeNormalVecDirection();
 
+    double getDistanceBetweenPlanes(const Plane &plane) const;
+
 private:
     double A, B, D, C;
     vector<Point3D> points;
