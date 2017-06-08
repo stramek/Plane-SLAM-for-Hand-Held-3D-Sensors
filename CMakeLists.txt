@@ -84,6 +84,20 @@ INSTALL(FILES ${DEFS_HEADERS} DESTINATION include/algorithms/)
 
 #########################################
 
+############### PLANE G2O ###############
+
+file(GLOB PLANEG2O_SOURCES
+        "${CMAKE_SOURCE_DIR}/src/planeG2O/*.cpp"
+)
+file(GLOB PLANEG2O_HEADERS
+        "${CMAKE_SOURCE_DIR}/include/planeG2O/*.h"
+)
+ADD_LIBRARY(PlaneG2O STATIC ${PLANEG2O_SOURCES} ${PLANEG2O_HEADERS})
+TARGET_LINK_LIBRARIES(PlaneG2O Utils Models)
+INSTALL(FILES ${DEFS_HEADERS} DESTINATION include/planeG2O/)
+
+#########################################
+
 ################ Kinect ################
 
 file(GLOB MAIN_SOURCES
@@ -94,7 +108,7 @@ file(GLOB MAIN_HEADERS
 )
 
 ADD_EXECUTABLE(Kinect ${MAIN_SOURCES} ${MAIN_HEADERS})
-TARGET_LINK_LIBRARIES(Kinect Models Utils Algorithms ${OpenCV_LIBRARIES} ${freenect2_LIBRARIES}
+TARGET_LINK_LIBRARIES(Kinect Models Utils Algorithms PlaneG2O ${OpenCV_LIBRARIES} ${freenect2_LIBRARIES}
     ${QGLVIEWER_LIBRARY} ${QT_LIBRARIES} ${QT_LIBRARIES} QtCore QtXml QtOpenGL QtGui ${OPENGL_LIBRARY} glut)
 
 #########################################
@@ -108,7 +122,7 @@ file(GLOB DATASET_SOURCES
   "${CMAKE_SOURCE_DIR}/include/dataset/*.h"
 )
 ADD_EXECUTABLE(Dataset ${DATASET_SOURCES} ${DATASET_HEADERS})
-TARGET_LINK_LIBRARIES(Dataset Models Utils Algorithms ${OpenCV_LIBRARIES} ${freenect2_LIBRARIES}
+TARGET_LINK_LIBRARIES(Dataset Models Utils Algorithms PlaneG2O ${OpenCV_LIBRARIES} ${freenect2_LIBRARIES}
     ${QGLVIEWER_LIBRARY} ${QT_LIBRARIES} ${QT_LIBRARIES} QtCore QtXml QtOpenGL QtGui ${OPENGL_LIBRARY} glut)
 
 #########################################

@@ -1,0 +1,12 @@
+//
+// Created by stramek on 04.06.17.
+//
+
+#ifndef PROJEKTMAGISTERSKI_PLANEG2OMODULE_H
+#define PROJEKTMAGISTERSKI_PLANEG2OMODULE_H
+
+class PlaneG2oModule {
+
+};
+
+#endif //PROJEKTMAGISTERSKI_PLANEG2OMODULE_H
