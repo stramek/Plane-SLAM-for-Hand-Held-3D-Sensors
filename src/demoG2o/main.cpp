@@ -29,45 +29,30 @@ using namespace std;
 
 int main(int argc, const char *argv[]) {
 
-
-
     g2o::SparseOptimizer optimizer;
     optimizer.setVerbose(false);
     g2o::BlockSolverX::LinearSolverType *linearSolver;
-    //if (DENSE) {
+
     linearSolver = new g2o::LinearSolverPCG<g2o::BlockSolverX::PoseMatrixType>();
-    /*} else {
-        linearSolver
-                = new g2o::LinearSolverCholmod<g2o
-        ::BlockSolver_6_3::PoseMatrixType>();
-    }*/
 
+    g2o::BlockSolverX *blockSolver = new g2o::BlockSolverX(linearSolver);
 
-    g2o::BlockSolverX *solver_ptr
-            = new g2o::BlockSolverX(linearSolver);
-    g2o::OptimizationAlgorithmGaussNewton *solver = new g2o::OptimizationAlgorithmGaussNewton(solver_ptr);
-    optimizer.setAlgorithm(solver);
+    g2o::OptimizationAlgorithmGaussNewton* optimizationAlgorithm = new g2o::OptimizationAlgorithmGaussNewton(blockSolver);
+
+    optimizer.setVerbose(true);
+    optimizer.setAlgorithm(optimizationAlgorithm);
+
 
     g2o::Factory* factory = g2o::Factory::instance();
 
-    //double focal_length = 1000.;
-    g2o::ParameterSE3Offset parameterSE3Offset;
-    Eigen::Isometry3d cameraPose(Eigen::Isometry3d::Identity());
-/*    Eigen::Matrix3d R; R << 1, 0, 0,
-                            0, 1, 0,
-                            0, 0, 1;*/
-    //cameraPose = R;
-    //cameraPose.translation() = cam;
-    parameterSE3Offset.setOffset(cameraPose);
-    //Vector2d principal_point(320., 240.);
 
-    //vector<g2o::SE3Quat, aligned_allocator<g2o::SE3Quat> > true_poses;
-    //g2o::CameraParameters * cam_params = new g2o::CameraParameters (focal_length, principal_point, 0.);
-    //cam_params->setId(0);
-
-    if (!optimizer.addParameter(&parameterSE3Offset)) {
-        assert(false);
-    }
+    g2o::ParameterSE3Offset *cameraOffset = new g2o::ParameterSE3Offset;
+    cameraOffset->setId(0);
+    Eigen::Isometry3d cameraPose;
+    Eigen::Matrix3d R;  R  << 1,  0,  0,  0,  1,  0,  0, 0,  1;
+    cameraPose= R; cameraPose.translation() = Eigen::Vector3d(0.0, 0.0, 0.0);
+    cameraOffset->setOffset(cameraPose);
+    optimizer.addParameter(cameraOffset);
 
     int vertex_id = 0;
     for (size_t i = 0; i < 15; ++i) {
@@ -87,12 +72,11 @@ int main(int argc, const char *argv[]) {
         std::cout<< vertex_id << std::endl;
     }
 
-
-
     optimizer.save("test.g2o");
     optimizer.initializeOptimization();
     optimizer.setVerbose(true);
 
     optimizer.optimize(10);
     optimizer.save("after.g2o");
+    return 1;
 }
