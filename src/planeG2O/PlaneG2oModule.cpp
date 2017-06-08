@@ -4,3 +4,6 @@
 
 #include "include/planeG2O/PlaneG2oModule.h"
 
+PlaneG2oModule::PlaneG2oModule() {
+
+}

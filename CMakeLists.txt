@@ -93,8 +93,23 @@ file(GLOB PLANEG2O_HEADERS
         "${CMAKE_SOURCE_DIR}/include/planeG2O/*.h"
 )
 ADD_LIBRARY(PlaneG2O STATIC ${PLANEG2O_SOURCES} ${PLANEG2O_HEADERS})
-TARGET_LINK_LIBRARIES(PlaneG2O Utils Models)
+TARGET_LINK_LIBRARIES(PlaneG2O Utils Models g2o_types_slam2d g2o_types_slam3d g2o_csparse_extension g2o_stuff g2o_core g2o_solver_csparse)
 INSTALL(FILES ${DEFS_HEADERS} DESTINATION include/planeG2O/)
+
+#########################################
+
+################ Demo G2O ################
+
+file(GLOB DEMOG2O_SOURCES
+        "${CMAKE_SOURCE_DIR}/src/demoG2o/*.cpp"
+)
+file(GLOB DEMOG2O_HEADERS
+        "${CMAKE_SOURCE_DIR}/include/demoG2o/*.h"
+)
+
+ADD_EXECUTABLE(DemoG2o ${DEMOG2O_SOURCES} ${DEMOG2O_HEADERS})
+TARGET_LINK_LIBRARIES(DemoG2o Models Utils Algorithms PlaneG2O ${OpenCV_LIBRARIES} ${freenect2_LIBRARIES}
+        ${QGLVIEWER_LIBRARY} ${QT_LIBRARIES} ${QT_LIBRARIES} QtCore QtXml QtOpenGL QtGui ${OPENGL_LIBRARY} glut)
 
 #########################################
 
