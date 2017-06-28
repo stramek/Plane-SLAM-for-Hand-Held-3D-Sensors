@@ -128,7 +128,7 @@ namespace planeUtils {
                         FONT_HERSHEY_SIMPLEX, 0.8, cv::Scalar(0, 0, 255), 2);
             }
         }
-        //imshow("Clustered planes", imagePair.getRgb());
+        imshow("Clustered planes", imagePair.getRgb());
         //waitKey();
     }
 }
