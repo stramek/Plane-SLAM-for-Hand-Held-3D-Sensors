@@ -34,6 +34,8 @@ public:
 
     Plane(Vector3d normalVec, double D, vector<Point3D> points, vector<ImageCoords> imageCoordsVec, HSVColor color);
 
+    Plane(double D, const Vector3d &planeNormalVec);
+
     double getA() const;
 
     double getB() const;
