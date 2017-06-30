@@ -88,7 +88,7 @@ int main(int argc, const char *argv[]) {
 
     for(int i=0; i<planeFrame2.size(); ++i){
         g2o::EdgeSE3Plane* curEdge = new g2o::EdgeSE3Plane();
-        curEdge->setVertex(0, optimizerMin.vertex(1));
+        curEdge->setVertex(0, optimizerMin.vertex(0));
         curEdge->setVertex(1, optimizerMin.vertex(planeFrame1.size() + i));
         curEdge->setMeasurement(normAndDToQuat(planeFrame2.at(i).getD(), planeFrame2.at(i).getPlaneNormalVec()));
         curEdge->setInformation(Eigen::Matrix<double, 3, 3>::Identity());
