@@ -22,22 +22,21 @@
 #include "include/models/ImageCoords.h"
 #include <opencv2/opencv.hpp>
 #include "include/models/ImageLoader.h"
-#include <rxcpp/rx.hpp>
 #include <include/utils/utils.h>
 #include <include/algorithms/PcaPlaneDetector.h>
 #include "include/utils/planeUtils.h"
 #include "include/models/PlaneFiller.h"
 #include "include/algorithms/RansacPlaneDetector.h"
 
-namespace Rx {
-    using namespace rxcpp;
-    using namespace rxcpp::sources;
-    using namespace rxcpp::operators;
-    using namespace rxcpp::util;
-}
+#include "g2o/core/base_binary_edge.h"
+#include "g2o/core/sparse_optimizer.h"
+#include "g2o/core/block_solver.h"
+#include "g2o/core/factory.h"
+#include "g2o/core/optimization_algorithm_factory.h"
+#include "g2o/core/optimization_algorithm_gauss_newton.h"
+#include "g2o/solvers/csparse/linear_solver_csparse.h"
 
-using namespace Rx;
+using namespace g2o;
 using namespace std;
-using namespace cv;
 
 #endif
