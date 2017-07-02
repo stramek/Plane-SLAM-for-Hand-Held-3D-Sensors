@@ -70,7 +70,7 @@ int main(int argc, const char *argv[]) {
     curV1->setEstimate(poseSE3Quat);
     curV1->setId(1);
 
-    optimizerMin.addVertex(curV);
+    optimizerMin.addVertex(curV1);
 
 
     // set plane pose
@@ -88,7 +88,7 @@ int main(int argc, const char *argv[]) {
         g2o::VertexPlaneQuat* curV2 = new g2o::VertexPlaneQuat();
 
         curV2->setEstimate(normAndDToQuat(planeFrame1.at(i).getD(), planeFrame1.at(i).getPlaneNormalVec()));
-        curV2->setId(planeFrame1.size() + i);
+        curV2->setId( 2  + i);
 //				if(pl == 0 || pl == 1 || pl == 2){
 //					curV->setFixed(true);
 //				}
