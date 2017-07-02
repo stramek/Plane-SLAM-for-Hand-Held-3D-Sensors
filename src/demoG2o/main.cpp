@@ -63,6 +63,16 @@ int main(int argc, const char *argv[]) {
     curV->setFixed(true);
 
     optimizerMin.addVertex(curV);
+
+    // set camera pose in second frame
+    g2o::VertexSE3Quat* curV1 = new g2o::VertexSE3Quat();
+
+    curV1->setEstimate(poseSE3Quat);
+    curV1->setId(1);
+
+    optimizerMin.addVertex(curV);
+
+
     // set plane pose
 
     std::vector<std::vector<Plane>> frameVector;
@@ -86,14 +96,16 @@ int main(int argc, const char *argv[]) {
         optimizerMin.addVertex(curV2);
     }
 
-    for(int i=0; i<planeFrame2.size(); ++i){
-        g2o::EdgeSE3Plane* curEdge = new g2o::EdgeSE3Plane();
-        curEdge->setVertex(0, optimizerMin.vertex(0));
-        curEdge->setVertex(1, optimizerMin.vertex(planeFrame1.size() + i));
-        curEdge->setMeasurement(normAndDToQuat(planeFrame2.at(i).getD(), planeFrame2.at(i).getPlaneNormalVec()));
-        curEdge->setInformation(Eigen::Matrix<double, 3, 3>::Identity());
+    for(int j=0; j<2;++j){
+        for(int i=0; i<planeFrame2.size(); ++i){
+            g2o::EdgeSE3Plane* curEdge = new g2o::EdgeSE3Plane();
+            curEdge->setVertex(0, optimizerMin.vertex(j));
+            curEdge->setVertex(1, optimizerMin.vertex(planeFrame1.size() + i));
+            curEdge->setMeasurement(normAndDToQuat(planeFrame2.at(i).getD(), planeFrame2.at(i).getPlaneNormalVec()));
+            curEdge->setInformation(Eigen::Matrix<double, 3, 3>::Identity());
 
-        optimizerMin.addEdge(curEdge);
+            optimizerMin.addEdge(curEdge);
+        }
     }
 
     optimizerMin.save("before.g2o");
