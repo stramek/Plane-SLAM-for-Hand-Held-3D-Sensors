@@ -10,9 +10,20 @@ PosOrient::PosOrient(const Vector3d &position, const Vector4d &orientation) : po
 
 }
 
+void PosOrient::setPosOrient(const Vector7d &posOrient) {
+    position[0] = posOrient[0];
+    position[1] = posOrient[1];
+    position[2] = posOrient[2];
+
+    orientation[0] = posOrient[3];
+    orientation[1] = posOrient[4];
+    orientation[2] = posOrient[5];
+    orientation[3] = posOrient[6];
+}
+
 void PosOrient::print() {
     cout<<"x: "<<position[0]<<" y: "<<position[1]<<" z: "<<position[2]<<endl;
-    cout<<"q1: "<<orientation[0]<<" q2: "<<orientation[1]<<" q3: "<<orientation[2]<<" q4: "<<orientation[3];
+    cout<<"q1: "<<orientation[0]<<" q2: "<<orientation[1]<<" q3: "<<orientation[2]<<" q4: "<<orientation[3] << endl;
 }
 
 void PosOrient::printDiff(const PosOrient &posOrient) {

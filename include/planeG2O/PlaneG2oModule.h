@@ -12,6 +12,7 @@
 #include "g2o/core/optimization_algorithm_factory.h"
 #include "g2o/core/optimization_algorithm_gauss_newton.h"
 //#include "g2o/solvers/csparse/linear_solver_csparse.h"
+#include "include/models/Plane.h"
 
 using namespace g2o;
 using namespace std;
@@ -19,6 +20,7 @@ using namespace std;
 class PlaneG2oModule {
 public:
     static PlaneG2oModule& getInstance();
+    void ComputeCameraPos(vector<pair<Plane, Plane>> matchedPlanes);
 
 private:
     PlaneG2oModule();
@@ -28,6 +30,8 @@ private:
     Eigen::Quaterniond normAndDToQuat(double d, Eigen::Vector3d norm);
 
     g2o::SparseOptimizer optimizerMin;
+    int positionNumber;
+    const int PLANES_INDEXES_SHIFT = 100000;
 };
 
 #endif //PROJEKTMAGISTERSKI_PLANEG2OMODULE_H

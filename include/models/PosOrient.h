@@ -15,6 +15,7 @@ using namespace std;
 class PosOrient {
 public:
     PosOrient(const Vector3d &position, const Vector4d &orientation);
+    void setPosOrient(const Vector7d &posOrient);
     void print();
     void printDiff(const PosOrient &posOrient);
 private:
