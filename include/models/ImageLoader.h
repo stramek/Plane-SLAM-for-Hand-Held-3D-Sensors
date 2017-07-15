@@ -18,6 +18,8 @@ public:
 
     ImagePair getNextPair(int offset = 1);
 
+    int getNumberOfPhotos() const;
+
 private:
 
     int numberOfPhotos;

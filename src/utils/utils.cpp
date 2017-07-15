@@ -1,5 +1,10 @@
 #include "include/utils/utils.h"
 
+using namespace cv;
+using namespace std;
+using namespace Eigen;
+using namespace octomap;
+
 namespace utils {
 
     void paintPixel(Mat &rgb, const Vector3f &vector, Vec3b &color) {

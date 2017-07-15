@@ -28,6 +28,11 @@
 #include "include/utils/planeUtils.h"
 #include "include/models/PlaneFiller.h"
 #include "include/algorithms/RansacPlaneDetector.h"
+#include <sstream>
+#include <string>
+#include <boost/algorithm/string.hpp>
+#include "include/models/PosOrient.h"
+#include "boost/lexical_cast.hpp"
 
 namespace Rx {
     using namespace rxcpp;

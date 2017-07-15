@@ -34,7 +34,6 @@ ImagePair ImageLoader::loadNextImage(int offset) {
         currentPhoto = 0;
     }
 
-    cout<<"Loading photo: "<<currentPhoto<<endl;
     String rgbImagePath = "../dataset_photos//rgb//" + to_string(currentPhoto) + ".png";
     String depthImagePath = "../dataset_photos//depth//" + to_string(currentPhoto) + ".png";
 
@@ -50,4 +49,8 @@ ImagePair ImageLoader::loadNextImage(int offset) {
     }
 
     return imagePair;
+}
+
+int ImageLoader::getNumberOfPhotos() const {
+    return numberOfPhotos;
 }
