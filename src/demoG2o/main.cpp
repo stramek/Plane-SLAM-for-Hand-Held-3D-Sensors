@@ -29,7 +29,7 @@ using namespace std;
 G2O_USE_TYPE_GROUP(slam2d)
 G2O_USE_TYPE_GROUP(slam3d)
 
-Eigen::Quaterniond normAndDToQuat(double d, Eigen::Vector3d norm){
+Eigen::Quaterniond normAndDToQuat(double d, Eigen::Vector3d norm) {
     Eigen::Quaterniond res;
     norm.normalize();
     res.x() = norm[0];
@@ -45,14 +45,14 @@ int main(int argc, const char *argv[]) {
 
     g2o::SparseOptimizer optimizerMin;
     {
-        g2o::BlockSolverX::LinearSolverType* linearSolverMin = new g2o::LinearSolverPCG<g2o::BlockSolverX::PoseMatrixType>();
-        g2o::BlockSolverX* solverMin = new g2o::BlockSolverX(linearSolverMin);
-        g2o::OptimizationAlgorithmLevenberg* algorithmMin = new g2o::OptimizationAlgorithmLevenberg(solverMin);
+        g2o::BlockSolverX::LinearSolverType *linearSolverMin = new g2o::LinearSolverPCG<g2o::BlockSolverX::PoseMatrixType>();
+        g2o::BlockSolverX *solverMin = new g2o::BlockSolverX(linearSolverMin);
+        g2o::OptimizationAlgorithmLevenberg *algorithmMin = new g2o::OptimizationAlgorithmLevenberg(solverMin);
 
         optimizerMin.setAlgorithm(algorithmMin);
     }
     // set camera pose
-    g2o::VertexSE3Quat* curV = new g2o::VertexSE3Quat();
+    g2o::VertexSE3Quat *curV = new g2o::VertexSE3Quat();
 
     Vector3d trans(0.0, 0.0, 0.0);
     Quaterniond q;
@@ -65,7 +65,7 @@ int main(int argc, const char *argv[]) {
     optimizerMin.addVertex(curV);
 
     // set camera pose in second frame
-    g2o::VertexSE3Quat* curV1 = new g2o::VertexSE3Quat();
+    g2o::VertexSE3Quat *curV1 = new g2o::VertexSE3Quat();
 
     curV1->setEstimate(poseSE3Quat);
     curV1->setId(1);
@@ -77,18 +77,18 @@ int main(int argc, const char *argv[]) {
 
     std::vector<std::vector<Plane>> frameVector;
     std::vector<Plane> planeFrame1 = {Plane(-5, Vector3d(1, 0, 0)), Plane(-2, Vector3d(0, 1, 0)),
-                                        Plane(10, Vector3d(0, 0, 1))};
+                                      Plane(10, Vector3d(0, 0, 1))};
     std::vector<Plane> planeFrame2 = {Plane(-10, Vector3d(1, 0, 0)), Plane(-2, Vector3d(0, 1, 0)),
                                       Plane(10, Vector3d(0, 0, 1))};
     frameVector.push_back(planeFrame1);
     frameVector.push_back(planeFrame2);
 
 
-    for(int i=0; i<planeFrame1.size(); ++i){
-        g2o::VertexPlaneQuat* curV2 = new g2o::VertexPlaneQuat();
+    for (int i = 0; i < planeFrame1.size(); ++i) {
+        g2o::VertexPlaneQuat *curV2 = new g2o::VertexPlaneQuat();
 
         curV2->setEstimate(normAndDToQuat(planeFrame1.at(i).getD(), planeFrame1.at(i).getPlaneNormalVec()));
-        curV2->setId( 2  + i);
+        curV2->setId(2 + i);
 //				if(pl == 0 || pl == 1 || pl == 2){
 //					curV->setFixed(true);
 //				}
@@ -96,16 +96,18 @@ int main(int argc, const char *argv[]) {
         optimizerMin.addVertex(curV2);
     }
 
-    for(int j=0; j<2;++j){
-        for(int i=0; i<planeFrame2.size(); ++i){
-            g2o::EdgeSE3Plane* curEdge = new g2o::EdgeSE3Plane();
+    for (int j = 0; j < 2; ++j) {
+        for (int i = 0; i < planeFrame2.size(); ++i) {
+            g2o::EdgeSE3Plane *curEdge = new g2o::EdgeSE3Plane();
             curEdge->setVertex(0, optimizerMin.vertex(j));
             curEdge->setVertex(1, optimizerMin.vertex(planeFrame1.size() + i));
 
             if (j == 0) {
-                curEdge->setMeasurement(normAndDToQuat(planeFrame1.at(i).getD(), planeFrame1.at(i).getPlaneNormalVec()));
+                curEdge->setMeasurement(
+                        normAndDToQuat(planeFrame1.at(i).getD(), planeFrame1.at(i).getPlaneNormalVec()));
             } else {
-                curEdge->setMeasurement(normAndDToQuat(planeFrame2.at(i).getD(), planeFrame2.at(i).getPlaneNormalVec()));
+                curEdge->setMeasurement(
+                        normAndDToQuat(planeFrame2.at(i).getD(), planeFrame2.at(i).getPlaneNormalVec()));
             }
 
             curEdge->setInformation(Eigen::Matrix<double, 3, 3>::Identity());
