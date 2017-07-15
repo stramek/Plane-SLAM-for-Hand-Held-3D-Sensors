@@ -13,7 +13,7 @@
 
 using namespace Eigen;
 
-Eigen::Quaterniond normAndDToQuat(double d, Eigen::Vector3d norm){
+Eigen::Quaterniond PlaneG2oModule::normAndDToQuat(double d, Eigen::Vector3d norm){
     Eigen::Quaterniond res;
     norm.normalize();
     res.x() = norm[0];
@@ -51,11 +51,11 @@ PlaneG2oModule &PlaneG2oModule::getInstance() {
     return instance;
 }
 
-void PlaneG2oModule::ComputeCameraPos(vector<pair<Plane, Plane>> matchedPlanes) {
+void PlaneG2oModule::ComputeCameraPos(vector<pair<Plane, Plane>> &matchedPlanes) {
     if(matchedPlanes.size() > 2){
         positionNumber++;
         g2o::VertexSE3Quat* curV = new g2o::VertexSE3Quat();
-        Vector3d trans(0.0, 0.0, 0.0);
+        Vector3d trans(0.0, 0.0, -2.5);
         Quaterniond q;
         q.setIdentity();
         g2o::SE3Quat poseSE3Quat(q, trans);
@@ -103,8 +103,8 @@ void PlaneG2oModule::ComputeCameraPos(vector<pair<Plane, Plane>> matchedPlanes) 
             g2o::VertexSE3Quat* curPoseVert = static_cast<g2o::VertexSE3Quat*>(optimizerMin.vertex(i));
             g2o::Vector7d poseVect = curPoseVert->estimate().toVector();
             posOrient[i].setPosOrient(poseVect);
+            posOrient[i].print();
         }
-
     }
     else{
         std::cout<<"Unable to compute transformation between two frames. Number of matched planes less than 3!" << endl;

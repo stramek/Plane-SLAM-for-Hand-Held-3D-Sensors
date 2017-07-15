@@ -10,7 +10,7 @@ PosOrient::PosOrient(const Vector3d &position, const Vector4d &orientation) : po
 
 }
 
-void PosOrient::setPosOrient(const Vector7d &posOrient) {
+void PosOrient::setPosOrient(const g2o::Vector7d &posOrient) {
     position[0] = posOrient[0];
     position[1] = posOrient[1];
     position[2] = posOrient[2];
@@ -34,4 +34,8 @@ void PosOrient::printDiff(const PosOrient &posOrient) {
         <<" q2: "<<abs(orientation[1] - posOrient.orientation[1])
         <<" q3: "<<abs(orientation[2] - posOrient.orientation[2])
         <<" q4: "<<abs(orientation[3] - posOrient.orientation[3])<<endl;
+}
+
+PosOrient::PosOrient() {
+
 }
