@@ -19,7 +19,7 @@ double sTod(string s) {
 void loadDatasetLines(vector<PosOrient>& positions) {
 
     cout<<"Loading file \""<<"dataset_data.txt"<<"\"... ";
-    ifstream myfile("dataset_data.txt");
+    ifstream myfile("../dataset_data.txt");
 
     if (myfile.good()) {
         std::string line;
