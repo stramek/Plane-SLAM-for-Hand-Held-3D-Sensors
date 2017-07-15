@@ -47,7 +47,7 @@ int main(int argc, const char *argv[]) {
     {
         g2o::BlockSolverX::LinearSolverType* linearSolverMin = new g2o::LinearSolverPCG<g2o::BlockSolverX::PoseMatrixType>();
         g2o::BlockSolverX* solverMin = new g2o::BlockSolverX(linearSolverMin);
-        g2o::OptimizationAlgorithmGaussNewton* algorithmMin = new g2o::OptimizationAlgorithmGaussNewton(solverMin);
+        g2o::OptimizationAlgorithmLevenberg* algorithmMin = new g2o::OptimizationAlgorithmLevenberg(solverMin);
 
         optimizerMin.setAlgorithm(algorithmMin);
     }
@@ -101,7 +101,13 @@ int main(int argc, const char *argv[]) {
             g2o::EdgeSE3Plane* curEdge = new g2o::EdgeSE3Plane();
             curEdge->setVertex(0, optimizerMin.vertex(j));
             curEdge->setVertex(1, optimizerMin.vertex(planeFrame1.size() + i));
-            curEdge->setMeasurement(normAndDToQuat(planeFrame2.at(i).getD(), planeFrame2.at(i).getPlaneNormalVec()));
+
+            if (j == 0) {
+                curEdge->setMeasurement(normAndDToQuat(planeFrame1.at(i).getD(), planeFrame1.at(i).getPlaneNormalVec()));
+            } else {
+                curEdge->setMeasurement(normAndDToQuat(planeFrame2.at(i).getD(), planeFrame2.at(i).getPlaneNormalVec()));
+            }
+
             curEdge->setInformation(Eigen::Matrix<double, 3, 3>::Identity());
 
             optimizerMin.addEdge(curEdge);
