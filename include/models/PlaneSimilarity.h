@@ -16,6 +16,7 @@
 #include "include/models/Plane.h"
 #include "include/utils/constants.h"
 #include <math.h>
+
 using namespace std;
 
 class PlaneSimilarity {
@@ -26,15 +27,15 @@ public:
                     unsigned int currentFrameIndex);
 
     int getSimilarity() const;
-    const Plane &getLastFrame() const;
-    const Plane &getCurrentFrame() const;
+    Plane &getLastFrame();
+    Plane &getCurrentFrame();
     unsigned int getLastFrameIndex() const;
     unsigned int getCurrentFrameIndex() const;
     bool isAnyOfFramesTaken() const;
     void setFramesAsTaken();
     bool isOneOfIndexesEqual(PlaneSimilarity &planeSimilarity) const;
     bool isSimilarityValid() const;
-    bool isAngleBetweenPlanedValid() const;
+    bool isAngleBetweenPlanedValid();
     bool isLastFrameTaken() const;
     bool isCurrentFrameTaken() const;
 

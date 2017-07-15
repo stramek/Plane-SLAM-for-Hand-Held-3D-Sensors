@@ -34,7 +34,7 @@ using namespace Eigen;
 using namespace octomap;
 
 namespace planeUtils {
-    vector<pair<Plane, Plane>> getSimilarPlanes(const vector<Plane> &previousFrame, const vector<Plane> &currentFrame);
+    vector<pair<Plane, Plane>> getSimilarPlanes(vector<Plane> &previousFrame, vector<Plane> &currentFrame);
     void fillPlaneVector(int numberOfPoints, int areaSize, ImagePair &imagePair,
                          vector<Plane> *planeVector, vector<Plane> *previousPlaneVector = nullptr,
                          double previousPlanePercent = 0.5, bool colorPlanes = true);

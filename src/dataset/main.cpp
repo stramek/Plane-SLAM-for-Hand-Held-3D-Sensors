@@ -64,7 +64,7 @@ int main(int argc, char **argv) {
                 ->withPlaneDetector(new PcaPlaneDetector())
                 ->withAreaSize(AREA_SIZE)
                 ->withNumberOfPoints(NUMBER_OF_POINTS)
-                ->withPreviousPlanePercent(&planeVectorPreviousFrame, 0.5)
+                ->withPreviousPlanePercent(&planeVectorPreviousFrame, 0.0)
                 ->build()
                 ->fillVector(&planeVectorCurrentFrame);
 

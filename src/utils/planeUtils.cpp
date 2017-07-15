@@ -1,7 +1,17 @@
 #include "include/utils/planeUtils.h"
 
 namespace planeUtils {
-    vector<pair<Plane, Plane>> getSimilarPlanes(const vector<Plane> &previousFrame, const vector<Plane> &currentFrame) {
+
+    void setPlaneId(vector<Plane> &currentFrames, Plane &currentFrame, Plane &previousFrame) {
+        for (Plane &plane : currentFrames) {
+            if (currentFrame == plane) {
+                plane.setId(previousFrame.getId());
+                break;
+            }
+        }
+    }
+
+    vector<pair<Plane, Plane>> getSimilarPlanes(vector<Plane> &previousFrame, vector<Plane> &currentFrame) {
 
         vector<pair<Plane, Plane>> toReturn;
         vector<PlaneSimilarity> planeSimilarityVec;
@@ -18,6 +28,10 @@ namespace planeUtils {
             if (!outerPlaneSimilarity.isAnyOfFramesTaken()) {
                 if (outerPlaneSimilarity.isSimilarityValid()) {
                     if (outerPlaneSimilarity.isAngleBetweenPlanedValid()) {
+
+                        //outerPlaneSimilarity.getCurrentFrame().setId(outerPlaneSimilarity.getLastFrame().getId());
+                        setPlaneId(currentFrame, outerPlaneSimilarity.getCurrentFrame(), outerPlaneSimilarity.getLastFrame());
+
                         toReturn.push_back(pair<Plane, Plane>(outerPlaneSimilarity.getLastFrame(),
                                                               outerPlaneSimilarity.getCurrentFrame()));
 

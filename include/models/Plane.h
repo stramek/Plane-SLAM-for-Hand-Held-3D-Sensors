@@ -22,6 +22,8 @@
 
 using namespace Eigen;
 
+static long planeId = 0;
+
 class Plane {
 public:
     Plane();
@@ -85,9 +87,18 @@ public:
 
     void computeNormalVecDirection();
 
-    long getId() const;
+    long getId();
 
     void setId(long id);
+
+    long generatePlaneId() {
+        return ++planeId;
+    }
+
+    bool operator == (const Plane &plane) const {
+        return(this->getA() == plane.getA() && this->getB() == plane.getB()
+               && this->getC() == plane.getC() && this->getD() == plane.getD());
+    }
 
 private:
     long id = -1;

@@ -4,7 +4,6 @@
 //
 //  Created by Marcin Stramowski on 11.02.2017.
 //
-//
 
 #include "include/models/Plane.h"
 
@@ -13,10 +12,12 @@ Plane::Plane() {}
 Plane::Plane(const Vector3d &point1, const Vector3d &point2, const Vector3d &point3, const ImageCoords &imageCoords) {
     this->imageCoordsVec.push_back(imageCoords);
     computePlaneEquation(point1, point2, point3);
+    id = generatePlaneId();
 }
 
 Plane::Plane(std::array<Vector3d, 3>, const Mat &colorImage) {
     color = HSVColor(colorImage);
+    id = generatePlaneId();
 }
 
 Plane::Plane(Vector3d normalVec, Vector3d point, const vector<Point3D> &points, const ImageCoords &imageCoords) {
@@ -29,6 +30,7 @@ Plane::Plane(Vector3d normalVec, Vector3d point, const vector<Point3D> &points, 
     this->points = points;
     this->imageCoordsVec.push_back(imageCoords);
     valid = true;
+    id = generatePlaneId();
 }
 
 Plane::Plane(Vector3d normalVec, double D, vector<Point3D> points, vector<ImageCoords> imageCoordsVec, HSVColor color) {
@@ -41,6 +43,7 @@ Plane::Plane(Vector3d normalVec, double D, vector<Point3D> points, vector<ImageC
     this->imageCoordsVec = imageCoordsVec;
     this->color = color;
     valid = true;
+    id = generatePlaneId();
 }
 
 
@@ -204,7 +207,7 @@ void Plane::computeNormalVecDirection(){
 
 Plane::Plane(double D, const Vector3d &planeNormalVec) : D(D), planeNormalVec(planeNormalVec) {}
 
-long Plane::getId() const {
+long Plane::getId() {
     return id;
 }
 

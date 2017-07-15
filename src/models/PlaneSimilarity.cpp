@@ -31,11 +31,11 @@ unsigned int PlaneSimilarity::getCurrentFrameIndex() const {
     return currentFrameIndex;
 }
 
-const Plane &PlaneSimilarity::getLastFrame() const {
+Plane &PlaneSimilarity::getLastFrame() {
     return lastFrame;
 }
 
-const Plane &PlaneSimilarity::getCurrentFrame() const {
+Plane &PlaneSimilarity::getCurrentFrame() {
     return currentFrame;
 }
 
@@ -57,7 +57,7 @@ bool PlaneSimilarity::isSimilarityValid() const {
     return similarity <= MAX_SIMILARITY_VALUE;
 }
 
-bool PlaneSimilarity::isAngleBetweenPlanedValid() const {
+bool PlaneSimilarity::isAngleBetweenPlanedValid() {
     return getLastFrame().getAngleBetweenTwoPlanes(getCurrentFrame()) < MAX_ANGLE_BETWEEN_PLANES;
 }
 
