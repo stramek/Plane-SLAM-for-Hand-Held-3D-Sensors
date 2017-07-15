@@ -85,7 +85,12 @@ public:
 
     void computeNormalVecDirection();
 
+    long getId() const;
+
+    void setId(long id);
+
 private:
+    long id = -1;
     double A, B, D, C;
     vector<Point3D> points;
     vector<ImageCoords> imageCoordsVec;

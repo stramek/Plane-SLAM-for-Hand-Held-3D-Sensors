@@ -204,3 +204,11 @@ void Plane::computeNormalVecDirection(){
 
 Plane::Plane(double D, const Vector3d &planeNormalVec) : D(D), planeNormalVec(planeNormalVec) {}
 
+long Plane::getId() const {
+    return id;
+}
+
+void Plane::setId(long id) {
+    Plane::id = id;
+}
+
