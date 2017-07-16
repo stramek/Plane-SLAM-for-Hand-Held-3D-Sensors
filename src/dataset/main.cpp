@@ -27,19 +27,10 @@ void loadDatasetLines(vector<PosOrient>& positions) {
             std::vector<std::string> loadedValues;
             boost::split(loadedValues, line, boost::is_any_of(" "));
 
-            for(int i=1; i<8; ++i){
-                std::cout << loadedValues[i] << " ";
-            }
-            std::cout << endl;
-
             PosOrient posOrient(Vector3d(sTod(loadedValues[1]), sTod(loadedValues[2]), sTod(loadedValues[3])),
                                 Vector4d(sTod(loadedValues[4]), sTod(loadedValues[5]), sTod(loadedValues[6]), sTod(loadedValues[7])));
 
-            std::cout << "qwe" << endl;
-
             positions.push_back(posOrient);
-
-            std::cout << "qwe1" << endl;
         }
         cout<<"Success!"<<endl;
     } else {
@@ -66,7 +57,7 @@ int main(int argc, char **argv) {
     ImageLoader imageLoader(50);
     ImagePair currentFrame;
 
-    //PlaneG2oModule &planeG2o = PlaneG2oModule::getInstance();
+    PlaneG2oModule &planeG2o = PlaneG2oModule::getInstance();
 
     for (int i = 0; i < 2; ++i) {
         currentFrame = imageLoader.getNextPair();
@@ -85,7 +76,7 @@ int main(int argc, char **argv) {
         if (!planeVectorPreviousFrame.empty()) {
             similarPlanes = planeUtils::getSimilarPlanes(planeVectorPreviousFrame, planeVectorCurrentFrame);
             cout<<"Frame "<<i<<"-"<<i+1<<" found: "<<similarPlanes.size()<<" similar planes."<<endl;
-            //planeG2o.ComputeCameraPos(similarPlanes);
+            planeG2o.ComputeCameraPos(similarPlanes);
         }
 
         planeVectorPreviousFrame.clear();
