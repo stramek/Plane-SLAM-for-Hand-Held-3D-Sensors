@@ -46,7 +46,7 @@ namespace utils {
         return boost::lexical_cast<double>(s);
     }
 
-    void loadDatasetLines(vector<PosOrient>& positions) {
+    void loadDatasetPositions(vector<PosOrient> &positions) {
         cout<<"Loading file \""<<"dataset_data.txt"<<"\"... ";
         ifstream myfile("../dataset_data.txt");
 

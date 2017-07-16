@@ -22,9 +22,9 @@ int main(int argc, char **argv) {
 
     const int AREA_SIZE = 35;
     const int NUMBER_OF_POINTS = 200;
-    const bool visualize = true;
+    const bool visualize = false;
 
-    utils::loadDatasetLines(idealSlamPositions);
+    utils::loadDatasetPositions(idealSlamPositions);
 
     for (int i = 0; i < 5; ++i) {
         ImagePair currentFrame = imageLoader.getNextPair();
