@@ -24,7 +24,6 @@ int main(int argc, char **argv) {
 
     utils::loadDatasetPositions(idealSlamPositions);
 
-    for (int i = 0; i < 2; ++i) {
     PlaneG2oModule &planeG2o = PlaneG2oModule::getInstance();
 
     for (int i = 0; i < 2; ++i) {

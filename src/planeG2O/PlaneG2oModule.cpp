@@ -35,7 +35,7 @@ PlaneG2oModule::PlaneG2oModule() {
 
     //set init camera pose
     g2o::VertexSE3Quat* curV = new g2o::VertexSE3Quat();
-    Vector3d trans(0.0, 0.0, -2.5);
+    Vector3d trans(0.0, 0.0, 0.0);
     Quaterniond q;
     q.setIdentity();
     g2o::SE3Quat poseSE3Quat(q, trans);
@@ -55,7 +55,7 @@ void PlaneG2oModule::ComputeCameraPos(vector<pair<Plane, Plane>> &matchedPlanes)
     if(matchedPlanes.size() > 2){
         positionNumber++;
         g2o::VertexSE3Quat* curV = new g2o::VertexSE3Quat();
-        Vector3d trans(0.0, 0.0, -2.5);
+        Vector3d trans(0.0, 0.0, 0.0);
         Quaterniond q;
         q.setIdentity();
         g2o::SE3Quat poseSE3Quat(q, trans);
@@ -92,10 +92,13 @@ void PlaneG2oModule::ComputeCameraPos(vector<pair<Plane, Plane>> &matchedPlanes)
             }
         }
 
+        optimizerMin.save("before.g2o");
         optimizerMin.initializeOptimization();
         cout << "optimization initialized" << endl;
         optimizerMin.setVerbose(true);
         optimizerMin.optimize(50000);
+        optimizerMin.save("after.g2o");
+        cout << "optimization ended" << endl;
 
 
         PosOrient posOrient[2];
