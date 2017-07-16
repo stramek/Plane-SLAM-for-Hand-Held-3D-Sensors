@@ -20,12 +20,11 @@ int main(int argc, char **argv) {
     vector<PosOrient> idealSlamPositions;
     Mat previousRgbImage;
 
-    const int AREA_SIZE = 35;
-    const int NUMBER_OF_POINTS = 200;
     const bool visualize = false;
 
     utils::loadDatasetPositions(idealSlamPositions);
 
+    for (int i = 0; i < 2; ++i) {
     PlaneG2oModule &planeG2o = PlaneG2oModule::getInstance();
 
     for (int i = 0; i < 2; ++i) {
@@ -34,8 +33,8 @@ int main(int argc, char **argv) {
         make_unique<PlaneFillerBuilder>()
                 ->withDataset(&currentFrame)
                 ->withPlaneDetector(new PcaPlaneDetector())
-                ->withAreaSize(AREA_SIZE)
-                ->withNumberOfPoints(NUMBER_OF_POINTS)
+                ->withAreaSize(35)
+                ->withNumberOfPoints(600)
                 ->withPreviousPlanePercent(&planeVectorPreviousFrame, 0.5)
                 ->build()
                 ->fillVector(&planeVectorCurrentFrame);
