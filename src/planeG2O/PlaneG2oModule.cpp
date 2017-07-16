@@ -26,7 +26,7 @@ Eigen::Quaterniond PlaneG2oModule::normAndDToQuat(double d, Eigen::Vector3d norm
 }
 
 PlaneG2oModule::PlaneG2oModule() {
-    positionNumber = 1;
+    positionNumber = 0;
 
     g2o::BlockSolverX::LinearSolverType* linearSolverMin = new g2o::LinearSolverPCG<g2o::BlockSolverX::PoseMatrixType>();
     g2o::BlockSolverX* solverMin = new g2o::BlockSolverX(linearSolverMin);
@@ -35,7 +35,7 @@ PlaneG2oModule::PlaneG2oModule() {
 
     //set init camera pose
     g2o::VertexSE3Quat* curV = new g2o::VertexSE3Quat();
-    Vector3d trans(0.0, 0.0, 0.0);
+    Vector3d trans(0.0, 0.0, -2.5);
     Quaterniond q;
     q.setIdentity();
     g2o::SE3Quat poseSE3Quat(q, trans);
@@ -60,7 +60,7 @@ void PlaneG2oModule::ComputeCameraPos(vector<pair<Plane, Plane>> &matchedPlanes)
         q.setIdentity();
         g2o::SE3Quat poseSE3Quat(q, trans);
         curV->setEstimate(poseSE3Quat);
-        curV->setId(0);
+        curV->setId(positionNumber);
         optimizerMin.addVertex(curV);
 
 

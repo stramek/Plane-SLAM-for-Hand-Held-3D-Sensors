@@ -26,7 +26,9 @@ int main(int argc, char **argv) {
 
     utils::loadDatasetPositions(idealSlamPositions);
 
-    for (int i = 0; i < 5; ++i) {
+    PlaneG2oModule &planeG2o = PlaneG2oModule::getInstance();
+
+    for (int i = 0; i < 2; ++i) {
         ImagePair currentFrame = imageLoader.getNextPair();
 
         make_unique<PlaneFillerBuilder>()
@@ -43,6 +45,7 @@ int main(int argc, char **argv) {
         if (!planeVectorPreviousFrame.empty()) {
             similarPlanes = planeUtils::getSimilarPlanes(planeVectorPreviousFrame, planeVectorCurrentFrame);
             cout << "Frame " << i << "-" << i + 1 << " found: " << similarPlanes.size() << " similar planes." << endl;
+            planeG2o.ComputeCameraPos(similarPlanes);
             if (visualize)  {
                 planeUtils::visualizeSimilarPlanes(similarPlanes, previousRgbImage, currentFrame.getRgb());
                 waitKey();

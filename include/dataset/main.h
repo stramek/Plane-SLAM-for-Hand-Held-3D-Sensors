@@ -34,6 +34,7 @@
 #include "include/models/PosOrient.h"
 #include "boost/lexical_cast.hpp"
 #include "include/planeG2O/PlaneG2oModule.h"
+#include "include/planeG2O/PlaneG2oModule.h"
 
 namespace Rx {
     using namespace rxcpp;
