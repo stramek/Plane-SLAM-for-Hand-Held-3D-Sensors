@@ -29,8 +29,12 @@ ImagePair ImageLoader::getNextPair(int offset) {
 
 ImagePair ImageLoader::loadNextImage(int offset) {
 
-    currentPhoto += offset;
-    if (currentPhoto > numberOfPhotos || currentPhoto == -1) {
+    if (currentPhoto == -1) {
+        currentPhoto = 0;
+    } else {
+        currentPhoto += offset;
+    }
+    if (currentPhoto > numberOfPhotos) {
         currentPhoto = 0;
     }
 

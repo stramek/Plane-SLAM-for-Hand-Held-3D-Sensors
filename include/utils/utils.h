@@ -16,12 +16,17 @@
 #include <random>
 #include <octomap/octomap.h>
 #include <octomap/ColorOcTree.h>
+#include <boost/algorithm/string.hpp>
+#include "include/models/PosOrient.h"
+#include "boost/lexical_cast.hpp"
 
 namespace utils {
     void paintPixel(cv::Mat &rgb, const Eigen::Vector3f &vector, cv::Vec3b &color);
     pair<int, int> getRandomPosition(const cv::Mat &mat, int areaSize);
     pair<int, int> getRandomPosition(const int cols, const int rows, int areaSize);
     void generateOctoMap(const std::string fileName, const std::vector<Point3D> pointCloud, const float resolution = 0.05);
+    void loadDatasetLines(vector<PosOrient>& positions);
+    void movePlanesToPreviousVector(vector<Plane> &planeVectorPreviousFrame, vector<Plane> &planeVectorCurrentFrame);
 }
 
 #endif //PROJEKTMAGISTERSKI_UTILS_H
