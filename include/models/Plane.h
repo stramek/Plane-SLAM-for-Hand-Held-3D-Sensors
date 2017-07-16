@@ -38,6 +38,8 @@ public:
 
     Plane(double D, const Vector3d &planeNormalVec);
 
+    void print();
+
     double getA() const;
 
     double getB() const;

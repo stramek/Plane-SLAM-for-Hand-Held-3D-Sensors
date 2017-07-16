@@ -215,3 +215,7 @@ void Plane::setId(long id) {
     Plane::id = id;
 }
 
+void Plane::print() {
+    std::cout << "A: " << A << " B: " << B << " C: " << C << " D: " << D << std::endl;
+}
+

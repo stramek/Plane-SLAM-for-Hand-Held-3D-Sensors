@@ -76,10 +76,13 @@ void PlaneG2oModule::ComputeCameraPos(vector<pair<Plane, Plane>> &matchedPlanes)
 
         for(int j=0; j<2; ++j){
             for(int i=0; i<matchedPlanes.size(); ++i){
+                std::cout<< std::endl << std::endl;
                 g2o::EdgeSE3Plane* curEdge = new g2o::EdgeSE3Plane();
                 curEdge->setVertex(0, optimizerMin.vertex(j));
                 curEdge->setVertex(1, optimizerMin.vertex(PLANES_INDEXES_SHIFT + i));
                 if(j == 0){
+                    matchedPlanes.at(i).first.print();
+                    matchedPlanes.at(i).second.print();
                     curEdge->setMeasurement(normAndDToQuat(matchedPlanes.at(i).first.getD(), matchedPlanes.at(i).first.getPlaneNormalVec()));
                 }
                 else {
