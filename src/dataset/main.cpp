@@ -20,11 +20,11 @@ int main(int argc, char **argv) {
     vector<PosOrient> idealSlamPositions;
     Mat previousRgbImage;
 
-    const bool visualize = true;
+    const bool visualize = false;
 
     utils::loadDatasetPositions(idealSlamPositions);
 
-    for (int i = 0; i < 50; ++i) {
+    for (int i = 0; i < 2; ++i) {
         ImagePair currentFrame = imageLoader.getNextPair();
 
         make_unique<PlaneFillerBuilder>()
