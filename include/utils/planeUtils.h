@@ -45,6 +45,7 @@ namespace planeUtils {
     void mergePlanes(vector<Plane> &planeVector);
     void displayClusteredPlanes(ImagePair &imagePair, vector<Plane> planes);
     Mat getRGBFrameMat(libfreenect2::Registration *registration, libfreenect2::Frame *undistorted, libfreenect2::Frame *registered);
+    double getDistanceBetweenTwoPlanes(const Plane &firstPlane, const Plane &secondPlane);
 }
 
 #endif //PROJEKTMAGISTERSKI_PLANEUTILS_H

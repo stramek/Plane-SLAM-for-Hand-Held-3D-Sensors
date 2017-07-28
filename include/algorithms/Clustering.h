@@ -12,6 +12,7 @@
 #include <unordered_set>
 #include "include/models/Plane.h"
 #include <include/utils/constants.h>
+#include "include/utils/planeUtils.h"
 
 class Clustering {
 private:

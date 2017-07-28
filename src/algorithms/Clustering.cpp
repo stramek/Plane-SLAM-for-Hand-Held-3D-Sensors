@@ -4,26 +4,10 @@
 
 #include "include/algorithms/Clustering.h"
 
-
-double Clustering::getDistanceBetweenTwoPlanes(const Plane &firstPlane, const Plane &secondPlane) {
-
-    const int NUMBER_OF_RANDOM_POINTS = 50;
-    double distance = 0;
-    vector<Point3D> pointsVec = secondPlane.getPoints();
-
-    uniform_int_distribution<unsigned int> pointIndex(0, secondPlane.getNumberOfPoints() - 1);
-    for (int i = 0; i < NUMBER_OF_RANDOM_POINTS; ++i) {
-        Vector3d randomPointOnSecondPlane = pointsVec[pointIndex(rng)].position;
-        distance += firstPlane.getDistanceFromPoint(randomPointOnSecondPlane);
-    }
-
-    return distance / NUMBER_OF_RANDOM_POINTS;
-}
-
 double Clustering::getSimilarityOfTwoPlanes(const Plane &firstPlane, const Plane &secondPlane) {
     double angleBetweenTwoPlanes = firstPlane.getAngleBetweenTwoPlanes(secondPlane);
     if (abs(angleBetweenTwoPlanes) < CLUSTERING_MAX_ANGLE_THRESHOLD) {
-        return getDistanceBetweenTwoPlanes(firstPlane, secondPlane);
+        return planeUtils::getDistanceBetweenTwoPlanes(firstPlane, secondPlane);
     }
     return std::numeric_limits<double>::max();
 }

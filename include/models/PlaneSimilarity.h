@@ -15,6 +15,7 @@
 
 #include "include/models/Plane.h"
 #include "include/utils/constants.h"
+#include "include/utils/planeUtils.h"
 #include <math.h>
 
 using namespace std;
@@ -35,9 +36,10 @@ public:
     void setFramesAsTaken();
     bool isOneOfIndexesEqual(PlaneSimilarity &planeSimilarity) const;
     bool isSimilarityValid() const;
-    bool isAngleBetweenPlanedValid();
+    bool isAngleBetweenPlanesValid();
     bool isLastFrameTaken() const;
     bool isCurrentFrameTaken() const;
+    bool isDistanceBetweenPlanesValid();
 
     bool operator < (const PlaneSimilarity& plane) const {
         return (similarity < plane.similarity);
