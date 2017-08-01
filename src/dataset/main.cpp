@@ -20,7 +20,7 @@ int main(int argc, char **argv) {
     vector<PosOrient> idealSlamPositions;
     Mat previousRgbImage;
 
-    const bool visualize = false;
+    const bool visualize = true;
 
     utils::loadDatasetPositions(idealSlamPositions);
 
