@@ -20,30 +20,30 @@ int main(int argc, char **argv) {
     vector<PosOrient> idealSlamPositions;
     Mat previousRgbImage;
 
-    const bool visualize = true;
+    const bool visualize = false;
 
     utils::loadDatasetPositions(idealSlamPositions);
 
     PlaneG2oModule &planeG2o = PlaneG2oModule::getInstance();
 
-    for (int i = 0; i < 200; ++i) {
-        ImagePair currentFrame = imageLoader.getNextPair(30);
+    for (int i = 0; i < 2; ++i) {
+        ImagePair currentFrame = imageLoader.getNextPair();
 
         make_unique<PlaneFillerBuilder>()
                 ->withDataset(&currentFrame)
                 ->withPlaneDetector(new PcaPlaneDetector())
                 ->withAreaSize(35)
-                ->withNumberOfPoints(15)
-                ->withPreviousPlanePercent(&planeVectorPreviousFrame, 0.0)
+                ->withNumberOfPoints(1000)
+                ->withPreviousPlanePercent(&planeVectorPreviousFrame, 0.5)
                 ->build()
                 ->fillVector(&planeVectorCurrentFrame);
 
-        //planeUtils::mergePlanes(planeVectorCurrentFrame);
+        planeUtils::mergePlanes(planeVectorCurrentFrame);
 
         if (!planeVectorPreviousFrame.empty()) {
             similarPlanes = planeUtils::getSimilarPlanes(planeVectorPreviousFrame, planeVectorCurrentFrame);
             cout << "Frame " << i << "-" << i + 1 << " found: " << similarPlanes.size() << " similar planes." << endl;
-            //planeG2o.ComputeCameraPos(similarPlanes);
+            planeG2o.ComputeCameraPos(similarPlanes);
             if (visualize)  {
                 planeUtils::visualizeSimilarPlanes(similarPlanes, previousRgbImage, currentFrame.getRgb());
                 waitKey();
