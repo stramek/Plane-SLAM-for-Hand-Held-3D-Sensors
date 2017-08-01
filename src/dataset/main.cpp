@@ -42,8 +42,11 @@ int main(int argc, char **argv) {
 
         if (!planeVectorPreviousFrame.empty()) {
             similarPlanes = planeUtils::getSimilarPlanes(planeVectorPreviousFrame, planeVectorCurrentFrame);
-            cout << "Frame " << i << "-" << i + 1 << " found: " << similarPlanes.size() << " similar planes." << endl;
             planeG2o.ComputeCameraPos(similarPlanes);
+            cout << "Frame " << i << "-" << i + 1 << " found: " << similarPlanes.size() << " similar planes." << endl;
+            cout << endl << "Ideal slam position" << endl;
+            idealSlamPositions.at((unsigned int) (1)).print();
+            cout << endl;
             if (visualize)  {
                 planeUtils::visualizeSimilarPlanes(similarPlanes, previousRgbImage, currentFrame.getRgb());
                 waitKey();

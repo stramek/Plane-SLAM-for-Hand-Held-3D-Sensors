@@ -35,7 +35,7 @@ PlaneG2oModule::PlaneG2oModule() {
 
     //set init camera pose
     g2o::VertexSE3Quat* curV = new g2o::VertexSE3Quat();
-    Vector3d trans(0.0, 0.0, 0.0);
+    Vector3d trans(0.0, 0.0, -2.5);
     Quaterniond q;
     q.setIdentity();
     g2o::SE3Quat poseSE3Quat(q, trans);
