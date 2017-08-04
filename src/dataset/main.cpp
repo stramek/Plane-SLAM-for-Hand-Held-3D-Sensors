@@ -33,7 +33,7 @@ int main(int argc, char **argv) {
                 ->withDataset(&currentFrame)
                 ->withPlaneDetector(new PcaPlaneDetector())
                 ->withAreaSize(35)
-                ->withNumberOfPoints(1000)
+                ->withNumberOfPoints(300)
                 ->withPreviousPlanePercent(&planeVectorPreviousFrame, 0.5)
                 ->build()
                 ->fillVector(&planeVectorCurrentFrame);
@@ -47,7 +47,7 @@ int main(int argc, char **argv) {
             cout << endl << "Ideal slam position" << endl;
             idealSlamPositions.at((unsigned int) (1)).print();
             cout << endl;
-            if (visualize)  {
+            if (visualize) {
                 planeUtils::visualizeSimilarPlanes(similarPlanes, previousRgbImage, currentFrame.getRgb());
                 waitKey();
             }

@@ -15,6 +15,8 @@ double Clustering::getSimilarityOfTwoPlanes(const Plane &firstPlane, const Plane
 vector<Plane> Clustering::getAveragedPlanes(vector<vector<Plane>> &clusteredPlanes) {
     vector<Plane> averagedPlanesVec;
     for (auto &planesFromCluster : clusteredPlanes) {
+        vector<Point3D> points_new;
+
         double averagedD = 0;
         int averagedHue = 0;
         int averagedSaturation = 0;
@@ -29,6 +31,9 @@ vector<Plane> Clustering::getAveragedPlanes(vector<vector<Plane>> &clusteredPlan
             averagedSaturation += plane.getColor().getSaturation();
             averagedValue += plane.getColor().getValue();
 
+            points_new.insert(points_new.end(),plane.getPoints().begin(), plane.getPoints().end());
+
+
             vector<Point3D> points = plane.getPoints();
             vector<ImageCoords> imageCoordsVec = plane.getImageCoordsVec();
             mergedPlanePoints.insert(mergedPlanePoints.end(), points.begin(), points.end());
@@ -42,6 +47,11 @@ vector<Plane> Clustering::getAveragedPlanes(vector<vector<Plane>> &clusteredPlan
         averagedValue = averagedValue / (int) planesFromCluster.size();
         Plane averagedPlane(averagedNormalVec, averagedD, mergedPlanePoints, mergedPlaneImageCoordsVec,
                             HSVColor((uint8_t) averagedHue, (uint8_t) averagedSaturation, (uint8_t) averagedValue));
+        //averagedPlanesVec.push_back(averagedPlane);
+
+
+        PcaPlaneDetector pcaPlaneDetector;
+        averagedPlane = pcaPlaneDetector.getPlane(points_new, mergedPlaneImageCoordsVec.at(0), nullptr);
         averagedPlanesVec.push_back(averagedPlane);
     }
     return averagedPlanesVec;
