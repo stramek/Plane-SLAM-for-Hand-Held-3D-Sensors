@@ -28,7 +28,7 @@ int main(int argc, char **argv) {
     PlaneG2oModule &planeG2o = PlaneG2oModule::getInstance();
 
     for (int i = 0; i < 2; ++i) {
-        ImagePair currentFrame = imageLoader.getNextPair();
+        ImagePair currentFrame = imageLoader.getNextPair(10);
 
         make_unique<PlaneFillerBuilder>()
                 ->withDataset(&currentFrame)
@@ -46,7 +46,7 @@ int main(int argc, char **argv) {
             planeG2o.ComputeCameraPos(similarPlanes);
             cout << "Frame " << i << "-" << i + 1 << " found: " << similarPlanes.size() << " similar planes." << endl;
             cout << endl << "Ideal slam position" << endl;
-            idealSlamPositions.at((unsigned int) (1)).print();
+            idealSlamPositions.at((unsigned int) (10)).print();
             cout << endl;
             if (visualize) {
                 planeUtils::visualizeSimilarPlanes(similarPlanes, previousRgbImage, currentFrame.getRgb());
