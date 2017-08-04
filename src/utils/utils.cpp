@@ -68,8 +68,36 @@ namespace utils {
     }
 
     void movePlanesToPreviousVector(vector<Plane> &planeVectorPreviousFrame, vector<Plane> &planeVectorCurrentFrame) {
+//        cout<<"before"<<endl<<endl;
+//        cout<<"previous size: "<<planeVectorPreviousFrame.size()<<endl;
+//        for (Plane plane : planeVectorPreviousFrame) {
+//            cout<<"asd: ";
+//            cout<<plane.getImageCoords().getNumberOfPixels()<<endl;
+//        }
+//        cout<<"end previous"<<endl;
+//        cout<<"start current size: "<<planeVectorCurrentFrame.size()<<endl;
+//        for (Plane plane : planeVectorCurrentFrame) {
+//            cout<<"asd: ";
+//            cout<<plane.getImageCoords().getNumberOfPixels()<<endl;
+//        }
+//        cout<<"end current"<<endl;
+
         planeVectorPreviousFrame.clear();
         copy(planeVectorCurrentFrame.begin(), planeVectorCurrentFrame.end(), back_inserter(planeVectorPreviousFrame));
         planeVectorCurrentFrame.clear();
+
+//        cout<<"after"<<endl<<endl;
+//        cout<<"previous size: "<<planeVectorPreviousFrame.size()<<endl;
+//        for (Plane plane : planeVectorPreviousFrame) {
+//            cout<<"asd: ";
+//            cout<<plane.getImageCoords().getNumberOfPixels()<<endl;
+//        }
+//        cout<<"end previous"<<endl;
+//        cout<<"start current size: "<<planeVectorCurrentFrame.size()<<endl;
+//        for (Plane plane : planeVectorCurrentFrame) {
+//            cout<<"asd: ";
+//            cout<<plane.getImageCoords().getNumberOfPixels()<<endl;
+//        }
+//        cout<<"end current"<<endl;
     }
 }

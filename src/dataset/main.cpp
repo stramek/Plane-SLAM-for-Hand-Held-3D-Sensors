@@ -22,6 +22,7 @@ int main(int argc, char **argv) {
 
     const bool visualize = true;
 
+
     utils::loadDatasetPositions(idealSlamPositions);
 
     PlaneG2oModule &planeG2o = PlaneG2oModule::getInstance();
@@ -33,7 +34,7 @@ int main(int argc, char **argv) {
                 ->withDataset(&currentFrame)
                 ->withPlaneDetector(new PcaPlaneDetector())
                 ->withAreaSize(35)
-                ->withNumberOfPoints(300)
+                ->withNumberOfPoints(1000)
                 ->withPreviousPlanePercent(&planeVectorPreviousFrame, 0.5)
                 ->build()
                 ->fillVector(&planeVectorCurrentFrame);

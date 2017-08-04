@@ -40,6 +40,9 @@ const ImageCoords PlaneFiller::getNextCoords(int iteration) {
     pair<int, int> position;
     if (previousVector != nullptr && iteration < numberOfPoints * previousPlanePercent
         && iteration < previousVector->size()) {
+        if (previousVector->at(iteration).getImageCoordsVec().size() == 0) {
+            cout<<"empty!"<<endl;
+        }
         return previousVector->at((unsigned int) iteration).getImageCoords();
     } else {
         if (getFillerMode() == KINECT) {

@@ -23,7 +23,7 @@ Mat33 PcaPlaneDetector::computeCovMatrix(const vector<Point3D> &pointsVector, co
     return cov;
 }
 
-Plane PcaPlaneDetector::computePlane(const vector<Point3D> &pointsVector, const ImageCoords &imageCoords) {
+Plane PcaPlaneDetector::computePlane(const vector<Point3D> &pointsVector, const ImageCoords &imageCoords, bool withAcceptedRange) {
     if (pointsVector.size() < 3)
         return Plane();
     Vector3d mean = computeMean(pointsVector);
@@ -42,7 +42,7 @@ Plane PcaPlaneDetector::computePlane(const vector<Point3D> &pointsVector, const 
             minIndex = 0;
     }
 
-    if (abs(cov.eigenvalues()(minIndex)) < PCA_MAX_ACCEPTED_DISTANCE) {
+    if (withAcceptedRange || abs(cov.eigenvalues()(minIndex)) < PCA_MAX_ACCEPTED_DISTANCE) {
         auto eigenVectors = eigenSolver.eigenvectors();
         Vector3d normalVec = Vector3d(real(eigenVectors(0, minIndex)),
                                       real(eigenVectors(1, minIndex)), real(eigenVectors(2, minIndex)));
@@ -57,8 +57,8 @@ Plane PcaPlaneDetector::computePlane(const vector<Point3D> &pointsVector, const 
 
 
 
-Plane PcaPlaneDetector::getPlane(const vector<Point3D> &pointsVector, const ImageCoords &imageCoords, const Mat *colorImage) {
-    Plane plane = computePlane(pointsVector, imageCoords);
+Plane PcaPlaneDetector::getPlane(const vector<Point3D> &pointsVector, const ImageCoords &imageCoords, const Mat *colorImage, bool withAcceptedRange) {
+    Plane plane = computePlane(pointsVector, imageCoords, withAcceptedRange);
     if (plane.isValid()) {
         if (colorImage != nullptr) {
             plane.setColor(HSVColor(*colorImage));

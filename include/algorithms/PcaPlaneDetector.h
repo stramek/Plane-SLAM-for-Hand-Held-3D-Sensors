@@ -26,12 +26,12 @@ private:
 
     Vector3d computeMean(const vector<Point3D> &pointsVector);
 
-    Plane computePlane(const vector<Point3D> &pointsVector, const ImageCoords &imageCoords);
+    Plane computePlane(const vector<Point3D> &pointsVector, const ImageCoords &imageCoords, bool withAcceptedRange = false);
 
 public:
     //static Plane getPlane(const vector<Point3D> &pointsVector, const ImageCoords &imageCoords);
 
-    Plane getPlane(const vector<Point3D> &pointsVector, const ImageCoords &imageCoords, const Mat *colorImage = nullptr);
+    Plane getPlane(const vector<Point3D> &pointsVector, const ImageCoords &imageCoords, const Mat *colorImage = nullptr, bool withAcceptedRange = false);
 };
 
 

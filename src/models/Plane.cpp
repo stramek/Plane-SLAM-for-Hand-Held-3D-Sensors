@@ -128,7 +128,8 @@ Vector3d Plane::getPlaneNormalVec() const {
 }
 
 const ImageCoords &Plane::getImageCoords() const {
-    return imageCoordsVec[0];
+    //cout<<"Size: "<<imageCoordsVec.size()<<endl;
+    return imageCoordsVec.at(0);
 }
 
 void Plane::setImageCoords(const ImageCoords &imageCoords) {
