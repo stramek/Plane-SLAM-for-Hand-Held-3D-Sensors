@@ -47,13 +47,15 @@ Plane PcaPlaneDetector::computePlane(const vector<Point3D> &pointsVector, const 
         Vector3d normalVec = Vector3d(real(eigenVectors(0, minIndex)),
                                       real(eigenVectors(1, minIndex)), real(eigenVectors(2, minIndex)));
 
-        Plane plane(normalVec, pointsVector.at(0).position, pointsVector, imageCoords);
+        Plane plane(normalVec, mean, pointsVector, imageCoords);
         plane.computeNormalVecDirection();
 
         return plane;
     }
     return Plane();
 }
+
+
 
 Plane PcaPlaneDetector::getPlane(const vector<Point3D> &pointsVector, const ImageCoords &imageCoords, const Mat *colorImage) {
     Plane plane = computePlane(pointsVector, imageCoords);
