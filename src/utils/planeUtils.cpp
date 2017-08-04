@@ -103,7 +103,7 @@ namespace planeUtils {
             distanceStream << fixed << setprecision(1) << distance;
             Point centerPoint = ((previousPlanePoint + currentPlanePoint) / 2);
             centerPoint.x = centerPoint.x - 50;
-            putText(merged, "ang: " + angleStream.str() + " hue: " + to_string(colorDiff), centerPoint,
+            putText(merged, "num: " + to_string(pointNumber) + " ang: " + angleStream.str() + " hue: " + to_string(colorDiff), centerPoint,
                     FONT_HERSHEY_SIMPLEX, 0.5, color, 2);
 
             pointNumber++;
