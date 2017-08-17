@@ -41,7 +41,7 @@ public:
 
     void selectParts(const std::vector<Plane> &planesVec, std::vector<std::vector<Plane>> &clusteredPlanes);
 
-    static vector<Plane> getAveragedPlanes(vector<vector<Plane>>& clusteredPlanes);
+    static vector<Plane> getAveragedPlanes(vector<vector<Plane>>& clusteredPlanes, PlaneDetector *planeDetector);
 
     void setCutSimilarity(double cutSimilarity);
 };

@@ -42,7 +42,7 @@ namespace planeUtils {
                          libfreenect2::Registration *registration, libfreenect2::Frame *undistorted, libfreenect2::Frame *registered);
     void visualizeSimilarPlanes(vector<pair<Plane, Plane>> &similarPlanes, const Mat &previousImage,
                                 const Mat &currentImage, int limitPoints = INT_MAX);
-    void mergePlanes(vector<Plane> &planeVector);
+    void mergePlanes(vector<Plane> &planeVector, PlaneDetector *planeDetector);
     void displayClusteredPlanes(ImagePair &imagePair, vector<Plane> planes);
     Mat getRGBFrameMat(libfreenect2::Registration *registration, libfreenect2::Frame *undistorted, libfreenect2::Frame *registered);
     double getDistanceBetweenTwoPlanes(const Plane &firstPlane, const Plane &secondPlane);

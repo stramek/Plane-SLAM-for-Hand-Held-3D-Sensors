@@ -12,14 +12,17 @@ int main(int argc, char **argv) {
     QApplication application(argc, argv);
     glutInit(&argc, argv);
 
+    PlaneDetector* planeDetectorMethod = new PcaPlaneDetector();
+
     KinectModule kinectModule;
+    kinectModule.setPlaneDetector(planeDetectorMethod);
     kinectModule.setKinectFramesListener(new KinectModule::KinectFramesListener(
             [&](KinectFrames &kinectFrames) {
 
                 make_unique<PlaneFillerBuilder>()
                         ->withKinect(kinectModule.getRegistration(), kinectFrames.getUndistorted(),
                                      kinectFrames.getRegistered())
-                        ->withPlaneDetector(new PcaPlaneDetector())
+                        ->withPlaneDetector(planeDetectorMethod)
                         ->withAreaSize(31)
                         ->withNumberOfPoints(400)
                         ->withPreviousPlanePercent(&kinectModule.getPlaneVectorPreviousFrame(), 0.5)

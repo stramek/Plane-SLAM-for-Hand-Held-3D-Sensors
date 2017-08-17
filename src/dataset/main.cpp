@@ -28,25 +28,25 @@ int main(int argc, char **argv) {
     PlaneG2oModule &planeG2o = PlaneG2oModule::getInstance();
 
     for (int i = 0; i < 2; ++i) {
-        ImagePair currentFrame = imageLoader.getNextPair(10);
+        ImagePair currentFrame = imageLoader.getNextPair(40);
 
         make_unique<PlaneFillerBuilder>()
                 ->withDataset(&currentFrame)
                 ->withPlaneDetector(new PcaPlaneDetector())
                 ->withAreaSize(35)
-                ->withNumberOfPoints(1000)
-                ->withPreviousPlanePercent(&planeVectorPreviousFrame, 0.5)
+                ->withNumberOfPoints(200)
+                ->withPreviousPlanePercent(&planeVectorPreviousFrame, 0.0)
                 ->build()
                 ->fillVector(&planeVectorCurrentFrame);
 
-        planeUtils::mergePlanes(planeVectorCurrentFrame);
+        planeUtils::mergePlanes(planeVectorCurrentFrame, new PcaPlaneDetector());
 
         if (!planeVectorPreviousFrame.empty()) {
             similarPlanes = planeUtils::getSimilarPlanes(planeVectorPreviousFrame, planeVectorCurrentFrame);
             planeG2o.ComputeCameraPos(similarPlanes);
             cout << "Frame " << i << "-" << i + 1 << " found: " << similarPlanes.size() << " similar planes." << endl;
             cout << endl << "Ideal slam position" << endl;
-            idealSlamPositions.at((unsigned int) (10)).print();
+            idealSlamPositions.at((unsigned int) (40)).print();
             cout << endl;
             if (visualize) {
                 planeUtils::visualizeSimilarPlanes(similarPlanes, previousRgbImage, currentFrame.getRgb());

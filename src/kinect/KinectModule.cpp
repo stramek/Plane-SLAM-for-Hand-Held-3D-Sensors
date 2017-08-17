@@ -53,7 +53,7 @@ void KinectModule::start() {
         kinectFramesListener->onFramesChange(kinectFrames);
         listener.release(frames);
 
-        mergePlanes();
+        mergePlanes(planeDetector);
         calculateSimilarPlanes();
     }
 
@@ -98,8 +98,8 @@ void KinectModule::calculateSimilarPlanes() {
     similarPlanes = planeUtils::getSimilarPlanes(planeVectorPreviousFrame, planeVectorCurrentFrame);
 }
 
-void KinectModule::mergePlanes() {
-    planeUtils::mergePlanes(planeVectorCurrentFrame);
+void KinectModule::mergePlanes(PlaneDetector *planeDetector) {
+    planeUtils::mergePlanes(planeVectorCurrentFrame, planeDetector);
 }
 
 void KinectModule::visualizePlanes(KinectFrames &kinectFrames) {
@@ -110,4 +110,8 @@ void KinectModule::visualizePlanes(KinectFrames &kinectFrames) {
     if (!previousFrame.empty()) {
         planeUtils::visualizeSimilarPlanes(similarPlanes, previousFrame, currentFrame);
     }
+}
+
+void KinectModule::setPlaneDetector(PlaneDetector *planeDetector) {
+    KinectModule::planeDetector = planeDetector;
 }

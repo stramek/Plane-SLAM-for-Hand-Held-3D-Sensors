@@ -12,45 +12,21 @@ double Clustering::getSimilarityOfTwoPlanes(const Plane &firstPlane, const Plane
     return std::numeric_limits<double>::max();
 }
 
-vector<Plane> Clustering::getAveragedPlanes(vector<vector<Plane>> &clusteredPlanes) {
+vector<Plane> Clustering::getAveragedPlanes(vector<vector<Plane>> &clusteredPlanes, PlaneDetector *planeDetector) {
     vector<Plane> averagedPlanesVec;
     for (auto &planesFromCluster : clusteredPlanes) {
         vector<Point3D> points_new;
-
-        double averagedD = 0;
-        int averagedHue = 0;
-        int averagedSaturation = 0;
-        int averagedValue = 0;
         vector<Point3D> mergedPlanePoints;
         vector<ImageCoords> mergedPlaneImageCoordsVec;
-        Vector3d averagedNormalVec = Vector3d::Zero();
         for (auto &plane : planesFromCluster) {
-            averagedNormalVec += plane.getPlaneNormalVec();
-            averagedD += plane.getD();
-            averagedHue += plane.getColor().getHue();
-            averagedSaturation += plane.getColor().getSaturation();
-            averagedValue += plane.getColor().getValue();
-
             points_new.insert(points_new.end(),plane.getPoints().begin(), plane.getPoints().end());
-            //cout<<"Points size: "<<points_new.size()<<endl;
-
             vector<Point3D> points = plane.getPoints();
             vector<ImageCoords> imageCoordsVec = plane.getImageCoordsVec();
             mergedPlanePoints.insert(mergedPlanePoints.end(), points.begin(), points.end());
             mergedPlaneImageCoordsVec.insert(mergedPlaneImageCoordsVec.end(), imageCoordsVec.begin(),
                                              imageCoordsVec.end());
         }
-        averagedNormalVec = averagedNormalVec / planesFromCluster.size();
-        averagedD = averagedD / planesFromCluster.size();
-        averagedHue = averagedHue / (int) planesFromCluster.size();
-        averagedSaturation = averagedSaturation / (int) planesFromCluster.size();
-        averagedValue = averagedValue / (int) planesFromCluster.size();
-//        Plane averagedPlane(averagedNormalVec, averagedD, mergedPlanePoints, mergedPlaneImageCoordsVec,
-//                            HSVColor((uint8_t) averagedHue, (uint8_t) averagedSaturation, (uint8_t) averagedValue));
-        //averagedPlanesVec.push_back(averagedPlane);
-
-        PcaPlaneDetector pcaPlaneDetector;
-        Plane averagedPlane = pcaPlaneDetector.getPlane(points_new, mergedPlaneImageCoordsVec.at(0), nullptr, true);
+        Plane averagedPlane = planeDetector->getPlane(points_new, mergedPlaneImageCoordsVec.at(0), nullptr, true);
         averagedPlanesVec.push_back(averagedPlane);
     }
     return averagedPlanesVec;
@@ -61,7 +37,6 @@ vector<Plane> Clustering::getAveragedPlanes(vector<vector<Plane>> &clusteredPlan
 
 void Clustering::selectParts(const std::vector<Plane> &planesVec, std::vector<std::vector<Plane>> &clusteredPlanes) {
     std::vector<std::vector<double>> distanceMatrix(planesVec.size(), std::vector<double>(planesVec.size()));
-    //computeDistanceMatrix(dictionary, hierarchy, distanceMatrix, transformMatrix);
     computeDistanceMatrix(planesVec, distanceMatrix);
 
     std::vector<std::vector<int>> clusters(planesVec.size());

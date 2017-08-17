@@ -117,13 +117,13 @@ namespace planeUtils {
         waitKey(1);
     }
 
-    void mergePlanes(vector<Plane> &planeVector) {
+    void mergePlanes(vector<Plane> &planeVector, PlaneDetector *planeDetector) {
         if (planeVector.size() == 0) return;
         vector<vector<Plane>> clusteredPLanes;
         Clustering clustering;
         clustering.setCutSimilarity(CLUSTERING_MAX_DISTANCE_THRESHOLD);
         clustering.selectParts(planeVector, clusteredPLanes);
-        planeVector = Clustering::getAveragedPlanes(clusteredPLanes);
+        planeVector = Clustering::getAveragedPlanes(clusteredPLanes, planeDetector);
     }
 
     void displayClusteredPlanes(ImagePair &imagePair, vector<Plane> planes) {

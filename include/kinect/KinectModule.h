@@ -46,6 +46,7 @@ public:
     Registration *getRegistration() const;
     void visualizePlanes(KinectFrames &kinectFrames);
     void notifyNumberOfSimilarPlanes();
+    void setPlaneDetector(PlaneDetector *planeDetector);
 
 private:
     Freenect2 freenect2;
@@ -53,6 +54,7 @@ private:
     PacketPipeline *pipeline = nullptr;
     KinectFramesListener *kinectFramesListener = nullptr;
     Registration *registration = nullptr;
+    PlaneDetector *planeDetector = nullptr;
 
     vector<Plane> planeVectorPreviousFrame;
     vector<Plane> planeVectorCurrentFrame;
@@ -67,8 +69,10 @@ private:
     void copyPlanesToPreviousFrames();
     void openDevice();
     void calculateSimilarPlanes();
-    void mergePlanes();
+    void mergePlanes(PlaneDetector *planeDetector);
     void start();
+
+    void setMergePlaneDetector(PlaneDetector *planeDetector);
 };
 
 
