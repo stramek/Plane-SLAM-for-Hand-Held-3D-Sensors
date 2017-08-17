@@ -149,13 +149,30 @@ unsigned int Plane::getNumberOfPoints() const {
 }
 
 double Plane::getAngleBetweenTwoPlanes(const Plane &plane) const {
+//    cout<<"=========================================================================="<<endl;
+
+
     Eigen::Vector3d planeNormalVec = plane.getPlaneNormalVec();
 
-    double angleCos = this->planeNormalVec.dot(planeNormalVec) / this->planeNormalVec.norm() / planeNormalVec.norm();
+    double angleCos = (this->planeNormalVec(0) * plane.getPlaneNormalVec()(0) +
+                        this->planeNormalVec(1) * plane.getPlaneNormalVec()(1) +
+                        this->planeNormalVec(2) * plane.getPlaneNormalVec()(2)) /
+                        this->planeNormalVec.norm() / planeNormalVec.norm();
     if (angleCos < -1) angleCos = -1.0;
     if (angleCos > 1) angleCos = 1.0;
     double angle = acos(angleCos) * 180.0 / (double) M_PI;
 
+/*    cout<<"First plane D: "<<getD()<<" Second plane D: "<<plane.getD()<<" Calculated angle is: "<<angle<<endl;
+    cout<<"Plane 1 "<<*this<<" Plane 2: "<<plane<<" Calculated angle is: "<<angle<<endl;
+    cout<<"Dot product: "<<(this->planeNormalVec(0) * plane.getPlaneNormalVec()(0) +
+                            this->planeNormalVec(1) * plane.getPlaneNormalVec()(1) +
+                            this->planeNormalVec(2) * plane.getPlaneNormalVec()(2)) <<endl;
+    cout<<"Multiplication 1: "<< this->planeNormalVec(0) << " * "<< plane.getPlaneNormalVec()(0)<< " = " << this->planeNormalVec(0) * plane.getPlaneNormalVec()(0) <<endl;
+    cout<<"Multiplication 2: "<< this->planeNormalVec(1) << " * "<< plane.getPlaneNormalVec()(1)<< " = " << this->planeNormalVec(1) * plane.getPlaneNormalVec()(1) <<endl;
+    cout<<"Multiplication 3: "<< this->planeNormalVec(2) << " * "<< plane.getPlaneNormalVec()(2)<< " = " << this->planeNormalVec(2) * plane.getPlaneNormalVec()(2) <<endl;
+    cout<<"Norm 1: "<<this->planeNormalVec.norm()<<" Norm 2: "<<planeNormalVec.norm()<<endl;
+    cout<<"Planes cos: "<<angleCos<<endl;
+    cout<<"=========================================================================="<<endl;*/
     return angle;
 }
 
@@ -194,13 +211,23 @@ void Plane::computeNormalVecDirection(){
     if(!(normalVecCameraAxisAngle > 85 && normalVecCameraAxisAngle < 95)){
         if (normalVecCameraAxisAngle > 90) {
             planeNormalVec = -planeNormalVec;
+            A = -A;
+            B = -B;
+            C = -C;
+            D = -D;
         }
     } else {
         if(points.size() != 0){
             Vector3d cameraToPlaneVec = points.at((points.size() - 1) / 2).position;
             cameraToPlaneVec.normalize();
             double angle = acos(planeNormalVec.dot(cameraToPlaneVec)) * 180.0 / M_PI;
-            if(angle < 90) planeNormalVec = -planeNormalVec;
+            if(angle < 90) {
+                planeNormalVec = -planeNormalVec;
+                A = -A;
+                B = -B;
+                C = -C;
+                D = -D;
+            }
         }
     }
 
