@@ -28,13 +28,13 @@ int main(int argc, char **argv) {
     PlaneG2oModule &planeG2o = PlaneG2oModule::getInstance();
 
     for (int i = 0; i < 2; ++i) {
-        ImagePair currentFrame = imageLoader.getNextPair(40);
+        ImagePair currentFrame = imageLoader.getNextPair();
 
         make_unique<PlaneFillerBuilder>()
                 ->withDataset(&currentFrame)
                 ->withPlaneDetector(new PcaPlaneDetector())
                 ->withAreaSize(35)
-                ->withNumberOfPoints(200)
+                ->withNumberOfPoints(1000)
                 ->withPreviousPlanePercent(&planeVectorPreviousFrame, 0.0)
                 ->build()
                 ->fillVector(&planeVectorCurrentFrame);
