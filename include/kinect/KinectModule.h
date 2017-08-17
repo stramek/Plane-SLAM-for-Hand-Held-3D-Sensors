@@ -64,6 +64,7 @@ private:
     Mat currentFrame;
 
     bool finishedProgram = false;
+    bool lastFrameValid = false;
 
     void quitIfDeviceNotConnected();
     void copyPlanesToPreviousFrames();

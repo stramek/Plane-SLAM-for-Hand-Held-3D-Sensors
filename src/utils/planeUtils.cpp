@@ -28,7 +28,8 @@ namespace planeUtils {
             if (!outerPlaneSimilarity.isAnyOfFramesTaken()) {
                 if (outerPlaneSimilarity.isSimilarityValid()) {
                     if (outerPlaneSimilarity.isAngleBetweenPlanesValid() /*&& outerPlaneSimilarity.isDistanceBetweenPlanesValid()*/) {
-                        setPlaneId(currentFrame, outerPlaneSimilarity.getCurrentFrame(), outerPlaneSimilarity.getLastFrame());
+                        setPlaneId(currentFrame, outerPlaneSimilarity.getCurrentFrame(),
+                                   outerPlaneSimilarity.getLastFrame());
 
                         toReturn.push_back(pair<Plane, Plane>(outerPlaneSimilarity.getLastFrame(),
                                                               outerPlaneSimilarity.getCurrentFrame()));
@@ -103,7 +104,9 @@ namespace planeUtils {
             distanceStream << fixed << setprecision(1) << distance;
             Point centerPoint = ((previousPlanePoint + currentPlanePoint) / 2);
             centerPoint.x = centerPoint.x - 50;
-            putText(merged, "num: " + to_string(pointNumber) + " ang: " + angleStream.str() + " hue: " + to_string(colorDiff), centerPoint,
+            putText(merged,
+                    "num: " + to_string(pointNumber) + " ang: " + angleStream.str() + " hue: " + to_string(colorDiff),
+                    centerPoint,
                     FONT_HERSHEY_SIMPLEX, 0.5, color, 2);
 
             pointNumber++;
@@ -162,5 +165,24 @@ namespace planeUtils {
         }
 
         return distance / NUMBER_OF_RANDOM_POINTS;
+    }
+
+    bool arePlanesValid(vector<Plane> &planes) {
+        for (Plane &plane1: planes) {
+            for (Plane &plane2: planes) {
+                double angle12 = plane1.getAngleBetweenTwoPlanes(plane2);
+                if (angle12 >= VALID_ANGLE_BETWEEN_PLANES && angle12 <= (180 - VALID_ANGLE_BETWEEN_PLANES)) {
+                    for (Plane &plane3: planes) {
+                        double angle13 = plane3.getAngleBetweenTwoPlanes(plane1);
+                        double angle23 = plane3.getAngleBetweenTwoPlanes(plane2);
+                        if (angle13 >= VALID_ANGLE_BETWEEN_PLANES && angle13 <= (180 - VALID_ANGLE_BETWEEN_PLANES)
+                            && angle23 >= VALID_ANGLE_BETWEEN_PLANES && angle23 <= (180 - VALID_ANGLE_BETWEEN_PLANES)) {
+                            return true;
+                        }
+                    }
+                }
+            }
+        }
+        return false;
     }
 }
