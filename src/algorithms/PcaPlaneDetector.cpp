@@ -48,9 +48,9 @@ Plane PcaPlaneDetector::computePlane(const vector<Point3D> &pointsVector, const 
                                       real(eigenVectors(1, minIndex)), real(eigenVectors(2, minIndex)));
 
         Plane plane(normalVec, mean, pointsVector, imageCoords);
-        if (!withAcceptedRange){
-            plane.computeNormalVecDirection();
-        }
+
+        plane.computeNormalVecDirection();
+
 
         return plane;
     }
