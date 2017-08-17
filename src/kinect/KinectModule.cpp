@@ -54,7 +54,12 @@ void KinectModule::start() {
         listener.release(frames);
 
         mergePlanes(planeDetector);
-        calculateSimilarPlanes();
+        lastFrameValid = planeUtils::arePlanesValid(planeVectorCurrentFrame);
+        //if (lastFrameValid) {
+            calculateSimilarPlanes();
+        //} else {
+          //  similarPlanes.clear();
+        //}
     }
 
     dev->stop();
@@ -103,6 +108,11 @@ void KinectModule::mergePlanes(PlaneDetector *planeDetector) {
 }
 
 void KinectModule::visualizePlanes(KinectFrames &kinectFrames) {
+    if (similarPlanes.size() >= 3) {
+        circle(currentFrame, Point(30, 30), 15, Scalar(0, 255, 0), CV_FILLED);
+    } else {
+        circle(currentFrame, Point(30, 30), 15, Scalar(0, 0, 255), CV_FILLED);
+    }
     previousFrame = currentFrame.clone();
     currentFrame = planeUtils::getRGBFrameMat(getRegistration(), kinectFrames.getUndistorted(),
                                               kinectFrames.getRegistered());
@@ -110,6 +120,7 @@ void KinectModule::visualizePlanes(KinectFrames &kinectFrames) {
     if (!previousFrame.empty()) {
         planeUtils::visualizeSimilarPlanes(similarPlanes, previousFrame, currentFrame);
     }
+
 }
 
 void KinectModule::setPlaneDetector(PlaneDetector *planeDetector) {

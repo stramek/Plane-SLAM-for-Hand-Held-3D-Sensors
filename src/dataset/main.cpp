@@ -34,28 +34,32 @@ int main(int argc, char **argv) {
                 ->withDataset(&currentFrame)
                 ->withPlaneDetector(new PcaPlaneDetector())
                 ->withAreaSize(35)
-                ->withNumberOfPoints(1000)
+                ->withNumberOfPoints(200)
                 ->withPreviousPlanePercent(&planeVectorPreviousFrame, 0.0)
                 ->build()
                 ->fillVector(&planeVectorCurrentFrame);
 
         planeUtils::mergePlanes(planeVectorCurrentFrame, new PcaPlaneDetector());
 
-        if (!planeVectorPreviousFrame.empty()) {
-            similarPlanes = planeUtils::getSimilarPlanes(planeVectorPreviousFrame, planeVectorCurrentFrame);
-            planeG2o.ComputeCameraPos(similarPlanes);
-            cout << "Frame " << i << "-" << i + 1 << " found: " << similarPlanes.size() << " similar planes." << endl;
-            cout << endl << "Ideal slam position" << endl;
-            idealSlamPositions.at((unsigned int) (40)).print();
-            cout << endl;
-            if (visualize) {
-                planeUtils::visualizeSimilarPlanes(similarPlanes, previousRgbImage, currentFrame.getRgb());
-                waitKey();
+        if (planeUtils::arePlanesValid(planeVectorCurrentFrame)) {
+            cout<<"Frame number "<<i + 1<<" is valid!"<<endl;
+            if (!planeVectorPreviousFrame.empty()) {
+                similarPlanes = planeUtils::getSimilarPlanes(planeVectorPreviousFrame, planeVectorCurrentFrame);
+                planeG2o.ComputeCameraPos(similarPlanes);
+                cout << "Frame " << i << "-" << i + 1 << " found: " << similarPlanes.size() << " similar planes." << endl;
+                cout << endl << "Ideal slam position" << endl;
+                idealSlamPositions.at((unsigned int) (40)).print();
+                cout << endl;
+                if (visualize) {
+                    planeUtils::visualizeSimilarPlanes(similarPlanes, previousRgbImage, currentFrame.getRgb());
+                    waitKey();
+                }
             }
+            utils::movePlanesToPreviousVector(planeVectorPreviousFrame, planeVectorCurrentFrame);
+            if (visualize) previousRgbImage = currentFrame.getRgb().clone();
+        } else {
+            cout<<"Frame number"<<i + 1<<"is NOT valid!";
         }
-
-        utils::movePlanesToPreviousVector(planeVectorPreviousFrame, planeVectorCurrentFrame);
-        if (visualize) previousRgbImage = currentFrame.getRgb().clone();
     }
 
     return application.exec();

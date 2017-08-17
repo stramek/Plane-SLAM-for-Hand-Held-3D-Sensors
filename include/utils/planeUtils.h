@@ -27,6 +27,7 @@
 #include <include/algorithms/RansacPlaneDetector.h>
 #include <iomanip>
 #include <sstream>
+#include "include/utils/constants.h"
 
 using namespace cv;
 using namespace std;
@@ -46,6 +47,7 @@ namespace planeUtils {
     void displayClusteredPlanes(ImagePair &imagePair, vector<Plane> planes);
     Mat getRGBFrameMat(libfreenect2::Registration *registration, libfreenect2::Frame *undistorted, libfreenect2::Frame *registered);
     double getDistanceBetweenTwoPlanes(const Plane &firstPlane, const Plane &secondPlane);
+    bool arePlanesValid(vector<Plane> &planes);
 }
 
 #endif //PROJEKTMAGISTERSKI_PLANEUTILS_H
