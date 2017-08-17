@@ -29,8 +29,8 @@ private:
     PlaneG2oModule(const PlaneG2oModule&);
     const PlaneG2oModule& operator=(const PlaneG2oModule&);
 
-    g2o::SparseOptimizer optimizerMin;
-    int positionNumber;
+    //g2o::SparseOptimizer optimizerMin;
+    //int positionNumber;
     const int PLANES_INDEXES_SHIFT = 100000;
 };
 

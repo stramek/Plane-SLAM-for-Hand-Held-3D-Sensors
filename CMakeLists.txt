@@ -95,7 +95,7 @@ file(GLOB PLANEG2O_SOURCES
 file(GLOB PLANEG2O_HEADERS
         "${CMAKE_SOURCE_DIR}/include/planeG2O/*.h"
 )
-ADD_LIBRARY(PlaneG2O STATIC ${PLANEG2O_SOURCES} ${PLANEG2O_HEADERS})
+ADD_LIBRARY(PlaneG2O STATIC ${PLANEG2O_SOURCES} ${PLANEG2O_HEADERS} src/planeG2O/MatchPlanesG2o.cpp include/planeG2O/MatchPlanesG2o.h)
 TARGET_LINK_LIBRARIES(PlaneG2O Utils Models g2o_types_slam2d g2o_types_slam3d g2o_csparse_extension g2o_stuff g2o_core g2o_solver_csparse)
 INSTALL(FILES ${DEFS_HEADERS} DESTINATION include/planeG2O/)
 

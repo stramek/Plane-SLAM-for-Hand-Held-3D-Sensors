@@ -27,7 +27,7 @@ int main(int argc, char **argv) {
 
     PlaneG2oModule &planeG2o = PlaneG2oModule::getInstance();
 
-    for (int i = 0; i < 2; ++i) {
+    for (int i = 0; i < 50; ++i) {
         ImagePair currentFrame = imageLoader.getNextPair(40);
 
         make_unique<PlaneFillerBuilder>()

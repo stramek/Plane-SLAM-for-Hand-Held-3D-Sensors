@@ -26,24 +26,6 @@ Eigen::Quaterniond PlaneG2oModule::normAndDToQuat(double d, Eigen::Vector3d norm
 }
 
 PlaneG2oModule::PlaneG2oModule() {
-    positionNumber = 0;
-
-    g2o::BlockSolverX::LinearSolverType* linearSolverMin = new g2o::LinearSolverPCG<g2o::BlockSolverX::PoseMatrixType>();
-    g2o::BlockSolverX* solverMin = new g2o::BlockSolverX(linearSolverMin);
-    g2o::OptimizationAlgorithmLevenberg* algorithmMin = new g2o::OptimizationAlgorithmLevenberg(solverMin);
-    optimizerMin.setAlgorithm(algorithmMin);
-
-    //set init camera pose
-    g2o::VertexSE3Quat* curV = new g2o::VertexSE3Quat();
-    Vector3d trans(0.0, 0.0, 0.0);
-    Quaterniond q;
-    q.setIdentity();
-    g2o::SE3Quat poseSE3Quat(q, trans);
-    curV->setEstimate(poseSE3Quat);
-    curV->setId(0);
-    curV->setFixed(true);
-
-    optimizerMin.addVertex(curV);
 }
 
 PlaneG2oModule &PlaneG2oModule::getInstance() {
@@ -53,15 +35,35 @@ PlaneG2oModule &PlaneG2oModule::getInstance() {
 
 void PlaneG2oModule::ComputeCameraPos(vector<pair<Plane, Plane>> &matchedPlanes) {
     if(matchedPlanes.size() > 2){
-        positionNumber++;
+
+        //set solver algorithm
+        g2o::SparseOptimizer optimizerMin;
+        g2o::BlockSolverX::LinearSolverType* linearSolverMin = new g2o::LinearSolverPCG<g2o::BlockSolverX::PoseMatrixType>();
+        g2o::BlockSolverX* solverMin = new g2o::BlockSolverX(linearSolverMin);
+        g2o::OptimizationAlgorithmLevenberg* algorithmMin = new g2o::OptimizationAlgorithmLevenberg(solverMin);
+        optimizerMin.setAlgorithm(algorithmMin);
+
+        //set init camera pose
         g2o::VertexSE3Quat* curV = new g2o::VertexSE3Quat();
         Vector3d trans(0.0, 0.0, 0.0);
         Quaterniond q;
         q.setIdentity();
         g2o::SE3Quat poseSE3Quat(q, trans);
         curV->setEstimate(poseSE3Quat);
-        curV->setId(positionNumber);
+        curV->setId(0);
+        curV->setFixed(true);
+
         optimizerMin.addVertex(curV);
+
+        //add second camera position vertex
+        g2o::VertexSE3Quat* curV1 = new g2o::VertexSE3Quat();
+        Vector3d trans1(0.0, 0.0, 0.0);
+        Quaterniond q1;
+        q1.setIdentity();
+        g2o::SE3Quat poseSE3Quat1(q1, trans1);
+        curV1->setEstimate(poseSE3Quat1);
+        curV1->setId(1);
+        optimizerMin.addVertex(curV1);
 
 
         for(int i=0; i<matchedPlanes.size(); ++i){
