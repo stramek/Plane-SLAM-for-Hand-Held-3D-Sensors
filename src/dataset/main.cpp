@@ -27,6 +27,19 @@ int main(int argc, char **argv) {
 
     PlaneG2oModule &planeG2o = PlaneG2oModule::getInstance();
 
+    //test eigen quaternion rotation
+
+    Eigen::Quaterniond q(0.7071, 0, 0, 0.7071);
+    Eigen::Quaterniond v(0, 1, 0, 0);
+    Eigen::Quaterniond v1 = q*v*q.conjugate();
+    cout<< "Vector after rotation v1: " << v1.w() << " " << v1.x() << " " << v1.y() << " " << v1.z() << endl;
+
+    Eigen::Vector3d vr(1, 0, 0);
+    vr = q.toRotationMatrix()*vr;
+    cout<< "Vector after rotation v2: " << vr.x() << " " << vr.y() << " " << vr.z() << endl;
+
+    //
+
     for (int i = 0; i < 50; ++i) {
         ImagePair currentFrame = imageLoader.getNextPair(40);
 
