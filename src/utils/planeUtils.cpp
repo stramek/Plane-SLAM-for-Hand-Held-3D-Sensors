@@ -185,4 +185,16 @@ namespace planeUtils {
         }
         return false;
     }
+
+    bool arePlanesValid(const Plane &plane1, const Plane &plane2, const Plane &plane3) {
+        double angle12 = plane1.getAngleBetweenTwoPlanes(plane2);
+        double angle13 = plane1.getAngleBetweenTwoPlanes(plane3);
+        double angle23 = plane2.getAngleBetweenTwoPlanes(plane3);
+        if ((angle12 >= VALID_ANGLE_BETWEEN_PLANES && angle12 <= (180 - VALID_ANGLE_BETWEEN_PLANES)) &&
+            (angle13 >= VALID_ANGLE_BETWEEN_PLANES && angle13 <= (180 - VALID_ANGLE_BETWEEN_PLANES)) &&
+            (angle23 >= VALID_ANGLE_BETWEEN_PLANES && angle23 <= (180 - VALID_ANGLE_BETWEEN_PLANES))) {
+            return true;
+        }
+        return false;
+    }
 }

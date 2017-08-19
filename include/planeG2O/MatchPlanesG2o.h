@@ -8,6 +8,8 @@
 
 #include <include/models/Plane.h>
 #include <Eigen/Dense>
+#include "include/utils/planeUtils.h"
+#include "include/planeG2O/PlaneG2oModule.h"
 
 class MatchPlanesG2o {
 public:
@@ -19,6 +21,9 @@ private:
 
     void computePreviousFramePlanesIndexes(vector<Plane> &previousFrame);
     void computeCurrentFramePlanesIndexes(vector<Plane> &currentFrame);
+    bool validateMatch(vector<pair<Plane, Plane>> &matchedPlanes, PosOrient &posOrient);
+    double getAngleBetweenTwoVectors(const Vector3d &v1, const Vector3d &v2);
+    const double MaxAngleDiffrence = 5.0;
 };
 
 

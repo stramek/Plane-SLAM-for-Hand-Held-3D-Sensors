@@ -9,7 +9,6 @@
 #include <g2o/types/slam3d/vertex_plane_quat.h>
 #include <g2o/types/slam3d/edge_se3_plane.h>
 #include "include/planeG2O/PlaneG2oModule.h"
-#include "include/models/PosOrient.h"
 
 using namespace Eigen;
 
@@ -25,15 +24,7 @@ Eigen::Quaterniond PlaneG2oModule::normAndDToQuat(double d, Eigen::Vector3d norm
     return res;
 }
 
-PlaneG2oModule::PlaneG2oModule() {
-}
-
-PlaneG2oModule &PlaneG2oModule::getInstance() {
-    static PlaneG2oModule instance;
-    return instance;
-}
-
-void PlaneG2oModule::ComputeCameraPos(vector<pair<Plane, Plane>> &matchedPlanes) {
+PosOrient PlaneG2oModule::ComputeCameraPos(vector<pair<Plane, Plane>> &matchedPlanes) {
     if(matchedPlanes.size() > 2){
 
         //set solver algorithm
@@ -101,7 +92,7 @@ void PlaneG2oModule::ComputeCameraPos(vector<pair<Plane, Plane>> &matchedPlanes)
         optimizerMin.initializeOptimization();
         cout << "optimization initialized" << endl;
         optimizerMin.setVerbose(true);
-        optimizerMin.optimize(5000);
+        optimizerMin.optimize(1000);
         optimizerMin.save("after.g2o");
         cout << "optimization ended" << endl;
 
@@ -113,6 +104,8 @@ void PlaneG2oModule::ComputeCameraPos(vector<pair<Plane, Plane>> &matchedPlanes)
             posOrient[i].setPosOrient(poseVect);
             posOrient[i].print();
         }
+
+        return posOrient[1];
     }
     else{
         std::cout<<"Unable to compute transformation between two frames. Number of matched planes less than 3!" << endl;

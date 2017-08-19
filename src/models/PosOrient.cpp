@@ -39,3 +39,12 @@ void PosOrient::printDiff(const PosOrient &posOrient) {
 PosOrient::PosOrient() {
 
 }
+
+Quaterniond PosOrient::getQuaternion(){
+    Quaterniond q(orientation[3], orientation[0], orientation[1], orientation[2]);
+    return q;
+}
+
+Vector3d PosOrient::getPosition(){
+    return position;
+}

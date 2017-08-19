@@ -25,6 +25,8 @@ public:
     void setPosOrient(const g2o::Vector7d &posOrient);
     void print();
     void printDiff(const PosOrient &posOrient);
+    Quaterniond getQuaternion();
+    Vector3d getPosition();
 private:
     Vector3d position;
     Vector4d orientation;

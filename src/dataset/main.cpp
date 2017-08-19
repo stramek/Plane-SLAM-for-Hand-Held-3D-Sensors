@@ -6,6 +6,7 @@
 //  Copyright © 2016 Marcin Stramowski. All rights reserved.
 //
 
+#include <include/planeG2O/MatchPlanesG2o.h>
 #include "include/dataset/main.h"
 
 int main(int argc, char **argv) {
@@ -25,7 +26,7 @@ int main(int argc, char **argv) {
 
     utils::loadDatasetPositions(idealSlamPositions);
 
-    PlaneG2oModule &planeG2o = PlaneG2oModule::getInstance();
+    PlaneG2oModule planeG2o;
 
     //test eigen quaternion rotation
 
@@ -57,12 +58,14 @@ int main(int argc, char **argv) {
         if (planeUtils::arePlanesValid(planeVectorCurrentFrame)) {
             cout<<"Frame number "<<i + 1<<" is valid!"<<endl;
             if (!planeVectorPreviousFrame.empty()) {
-                similarPlanes = planeUtils::getSimilarPlanes(planeVectorPreviousFrame, planeVectorCurrentFrame);
-                planeG2o.ComputeCameraPos(similarPlanes);
+                //similarPlanes = planeUtils::getSimilarPlanes(planeVectorPreviousFrame, planeVectorCurrentFrame);
+                MatchPlanesG2o matchPlanesG2o;
+                similarPlanes = matchPlanesG2o.getSimilarPlanes(planeVectorPreviousFrame, planeVectorCurrentFrame);
+/*                planeG2o.ComputeCameraPos(similarPlanes);
                 cout << "Frame " << i << "-" << i + 1 << " found: " << similarPlanes.size() << " similar planes." << endl;
                 cout << endl << "Ideal slam position" << endl;
                 idealSlamPositions.at((unsigned int) (40)).print();
-                cout << endl;
+                cout << endl;*/
                 if (visualize) {
                     planeUtils::visualizeSimilarPlanes(similarPlanes, previousRgbImage, currentFrame.getRgb());
                     waitKey();

@@ -48,6 +48,7 @@ namespace planeUtils {
     Mat getRGBFrameMat(libfreenect2::Registration *registration, libfreenect2::Frame *undistorted, libfreenect2::Frame *registered);
     double getDistanceBetweenTwoPlanes(const Plane &firstPlane, const Plane &secondPlane);
     bool arePlanesValid(vector<Plane> &planes);
+    bool arePlanesValid(const Plane &plane1, const Plane &plane2, const Plane &plane3);
 }
 
 #endif //PROJEKTMAGISTERSKI_PLANEUTILS_H
