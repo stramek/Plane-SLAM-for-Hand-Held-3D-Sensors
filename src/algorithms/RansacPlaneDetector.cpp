@@ -4,7 +4,7 @@
 
 #include "include/algorithms/RansacPlaneDetector.h"
 
-Plane RansacPlaneDetector::computePlane(const vector<Point3D> &pointsVector, const ImageCoords &imageCoords ) {
+Plane RansacPlaneDetector::computePlane(const vector<Point3D> &pointsVector, const ImageCoords &imageCoords, bool withAcceptedRange) {
     for (int i = 0; i < MAX_ITERATIONS_NUM; ++i) {
         Vector3d random3Points[3];
         getRandom3Points(pointsVector, random3Points);
@@ -44,8 +44,8 @@ void RansacPlaneDetector::getRandom3Points(const vector<Point3D> &pointsVector, 
     }
 }
 
-Plane RansacPlaneDetector::getPlane(const vector<Point3D> &pointsVector, const ImageCoords &imageCoords, const Mat *colorImage) {
-    Plane plane = computePlane(pointsVector, imageCoords);
+Plane RansacPlaneDetector::getPlane(const vector<Point3D> &pointsVector, const ImageCoords &imageCoords, const Mat *colorImage, bool withAcceptedRange) {
+    Plane plane = computePlane(pointsVector, imageCoords, withAcceptedRange);
     if (plane.isValid()) {
         if (colorImage != nullptr) {
             plane.setColor(HSVColor(*colorImage));

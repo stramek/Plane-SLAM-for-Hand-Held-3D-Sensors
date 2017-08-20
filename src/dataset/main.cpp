@@ -32,9 +32,9 @@ int main(int argc, char **argv) {
 
         make_unique<PlaneFillerBuilder>()
                 ->withDataset(&currentFrame)
-                ->withPlaneDetector(new PcaPlaneDetector())
+                ->withPlaneDetector(new RansacPlaneDetector())
                 ->withAreaSize(35)
-                ->withNumberOfPoints(200)
+                ->withNumberOfPoints(600)
                 ->withPreviousPlanePercent(&planeVectorPreviousFrame, 0.0)
                 ->build()
                 ->fillVector(&planeVectorCurrentFrame);
