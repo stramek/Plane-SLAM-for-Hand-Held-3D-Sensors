@@ -58,7 +58,7 @@ bool PlaneSimilarity::isSimilarityValid() const {
 }
 
 bool PlaneSimilarity::isAngleBetweenPlanesValid() {
-    return abs(getLastFrame().getAngleBetweenTwoPlanes(getCurrentFrame())) < MAX_ANGLE_BETWEEN_PLANES;
+    return getLastFrame().getAngleBetweenTwoPlanes(getCurrentFrame()) < MAX_ANGLE_BETWEEN_PLANES;
 }
 
 bool PlaneSimilarity::isDistanceBetweenPlanesValid() {

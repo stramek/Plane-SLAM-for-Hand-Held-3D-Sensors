@@ -27,7 +27,7 @@ namespace planeUtils {
         for (PlaneSimilarity &outerPlaneSimilarity : planeSimilarityVec) {
             if (!outerPlaneSimilarity.isAnyOfFramesTaken()) {
                 if (outerPlaneSimilarity.isSimilarityValid()) {
-                    if (outerPlaneSimilarity.isAngleBetweenPlanesValid() /*&& outerPlaneSimilarity.isDistanceBetweenPlanesValid()*/) {
+                    if (outerPlaneSimilarity.isAngleBetweenPlanesValid() && outerPlaneSimilarity.isDistanceBetweenPlanesValid()) {
                         setPlaneId(currentFrame, outerPlaneSimilarity.getCurrentFrame(),
                                    outerPlaneSimilarity.getLastFrame());
 
@@ -105,7 +105,7 @@ namespace planeUtils {
             Point centerPoint = ((previousPlanePoint + currentPlanePoint) / 2);
             centerPoint.x = centerPoint.x - 50;
             putText(merged,
-                    "num: " + to_string(pointNumber) + " ang: " + angleStream.str() + " hue: " + to_string(colorDiff),
+                    "num: " + to_string(pointNumber) + " ang: " + angleStream.str() + " dist: " + distanceStream.str() + " hue: " + to_string(colorDiff),
                     centerPoint,
                     FONT_HERSHEY_SIMPLEX, 0.5, color, 2);
 
