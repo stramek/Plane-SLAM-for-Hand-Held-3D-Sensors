@@ -23,7 +23,14 @@ private:
     void computeCurrentFramePlanesIndexes(vector<Plane> &currentFrame);
     bool validateMatch(vector<pair<Plane, Plane>> &matchedPlanes, PosOrient &posOrient);
     double getAngleBetweenTwoVectors(const Vector3d &v1, const Vector3d &v2);
+    Vector3d fromRotationMat(const Mat33& pose);
+    void matchRemainingPlanes(vector<pair<Plane, Plane>> &matchedPlanes, Eigen::Vector3i &matchedIndexesPrevPlane,
+                              Eigen::Vector3i &matchedIndexesCurPlane, const vector<Plane> &previousFrame,
+                              const vector<Plane> &currentFrame, const PosOrient &posOrient);
+
     const double MaxAngleDiffrence = 5.0;
+    const double MaxRotTransformation = 5.0;
+    const double MaxPosTransformation = 0.05;
 };
 
 

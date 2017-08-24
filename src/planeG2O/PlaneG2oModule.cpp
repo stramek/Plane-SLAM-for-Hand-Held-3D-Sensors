@@ -92,7 +92,7 @@ PosOrient PlaneG2oModule::ComputeCameraPos(vector<pair<Plane, Plane>> &matchedPl
         optimizerMin.initializeOptimization();
         cout << "optimization initialized" << endl;
         optimizerMin.setVerbose(true);
-        optimizerMin.optimize(1000);
+        optimizerMin.optimize(50);
         optimizerMin.save("after.g2o");
         cout << "optimization ended" << endl;
 
