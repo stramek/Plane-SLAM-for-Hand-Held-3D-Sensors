@@ -8,14 +8,14 @@ GlobalMap &GlobalMap::getInstance() {
     return instance;
 }
 
-bool GlobalMap::addPlaneToMap(Plane &plane, PosOrient &posOrient) {
+long GlobalMap::addPlaneToMap(Plane &plane, PosOrient &posOrient) {
     Plane transformedPlane = plane.getPlaneSeenFromGlobalCamera(posOrient);
     if (!isSimilarPlaneExists(transformedPlane)) {
         assignIdToPlane(transformedPlane);
         globalMapPlanes.insert(pair<long, Plane>(transformedPlane.getId(), transformedPlane));
-        return true;
+        return currentId;
     } else {
-        return false;
+        return -1;
     }
 }
 
@@ -47,7 +47,7 @@ bool GlobalMap::isHueDiffValid(Plane &plane1, Plane &plane2) {
 }
 
 void GlobalMap::assignIdToPlane(Plane &plane) {
-    plane.setId(currentId++);
+    plane.setId(++currentId);
 }
 
 void GlobalMap::updatePlane(Plane &plane) {

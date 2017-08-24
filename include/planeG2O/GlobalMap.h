@@ -13,7 +13,7 @@ class GlobalMap {
 public:
     static GlobalMap &getInstance();
 
-    bool addPlaneToMap(Plane &plane, PosOrient &posOrient);
+    long addPlaneToMap(Plane &plane, PosOrient &posOrient);
 
     const unordered_map<long, Plane> &getGlobalMapPlanes() const;
 
@@ -26,7 +26,7 @@ private:
     GlobalMap();
     ~GlobalMap(){};
 
-    long currentId = 0;
+    long currentId = -1;
 
     std::unordered_map<long, Plane> globalMapPlanes;
 
