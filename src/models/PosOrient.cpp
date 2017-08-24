@@ -22,29 +22,30 @@ void PosOrient::setPosOrient(const g2o::Vector7d &posOrient) {
 }
 
 void PosOrient::print() {
-    cout<<"x: "<<position[0]<<" y: "<<position[1]<<" z: "<<position[2]<<endl;
-    cout<<"q1: "<<orientation[0]<<" q2: "<<orientation[1]<<" q3: "<<orientation[2]<<" q4: "<<orientation[3] << endl;
+    cout << "x: " << position[0] << " y: " << position[1] << " z: " << position[2] << endl;
+    cout << "q1: " << orientation[0] << " q2: " << orientation[1] << " q3: " << orientation[2] << " q4: "
+         << orientation[3] << endl;
 }
 
 void PosOrient::printDiff(const PosOrient &posOrient) {
-    cout<<"x: "<<abs(position[0] - posOrient.position[0])
-        <<" y: "<<abs(position[1] - posOrient.position[1])
-        <<" z: "<<abs(position[2] - posOrient.position[2])<<endl;
-    cout<<"q1: "<<abs(orientation[0] - posOrient.orientation[0])
-        <<" q2: "<<abs(orientation[1] - posOrient.orientation[1])
-        <<" q3: "<<abs(orientation[2] - posOrient.orientation[2])
-        <<" q4: "<<abs(orientation[3] - posOrient.orientation[3])<<endl;
+    cout << "x: " << abs(position[0] - posOrient.position[0])
+         << " y: " << abs(position[1] - posOrient.position[1])
+         << " z: " << abs(position[2] - posOrient.position[2]) << endl;
+    cout << "q1: " << abs(orientation[0] - posOrient.orientation[0])
+         << " q2: " << abs(orientation[1] - posOrient.orientation[1])
+         << " q3: " << abs(orientation[2] - posOrient.orientation[2])
+         << " q4: " << abs(orientation[3] - posOrient.orientation[3]) << endl;
 }
 
 PosOrient::PosOrient() {
 
 }
 
-Quaterniond PosOrient::getQuaternion(){
+Quaterniond PosOrient::getQuaternion() {
     Quaterniond q(orientation[3], orientation[0], orientation[1], orientation[2]);
     return q;
 }
 
-Vector3d PosOrient::getPosition(){
+Vector3d PosOrient::getPosition() {
     return position;
 }

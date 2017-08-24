@@ -8,6 +8,7 @@
 
 #include <include/planeG2O/MatchPlanesG2o.h>
 #include "include/dataset/main.h"
+#include <Eigen/Dense>
 
 int main(int argc, char **argv) {
     QApplication application(argc, argv);
@@ -48,7 +49,7 @@ int main(int argc, char **argv) {
                 ->withDataset(&currentFrame)
                 ->withPlaneDetector(new PcaPlaneDetector())
                 ->withAreaSize(35)
-                ->withNumberOfPoints(200)
+                ->withNumberOfPoints(600)
                 ->withPreviousPlanePercent(&planeVectorPreviousFrame, 0.0)
                 ->build()
                 ->fillVector(&planeVectorCurrentFrame);

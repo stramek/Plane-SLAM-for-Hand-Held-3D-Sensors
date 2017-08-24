@@ -19,6 +19,7 @@
 #include <opencv2/opencv.hpp>
 #include <array>
 #include <Eigen/Dense>
+#include "include/models/PosOrient.h"
 
 using namespace Eigen;
 
@@ -32,9 +33,7 @@ public:
 
     Plane(std::array<Eigen::Vector3d, 3>, const Mat &colorImage);
 
-    Plane(Vector3d normalVec, Vector3d point, const vector<Point3D> &points, const ImageCoords &imageCoords);
-
-    Plane(Vector3d normalVec, double D, vector<Point3D> points, vector<ImageCoords> imageCoordsVec, HSVColor color);
+    Plane(Vector3d normalVec, Vector3d meanPoint, const vector<Point3D> &points, const ImageCoords &imageCoords);
 
     Plane(double D, const Vector3d &planeNormalVec);
 
@@ -102,6 +101,10 @@ public:
                && this->getC() == plane.getC() && this->getD() == plane.getD());
     }
 
+    const Vector3d &getMeanPoint() const;
+
+    void updatePlaneParameters(Plane &plane);
+    Plane getPlaneSeenFromGlobalCamera(PosOrient &posOrient);
 private:
     long id = -1;
     double A, B, D, C;
@@ -109,9 +112,11 @@ private:
     vector<ImageCoords> imageCoordsVec;
     Vector3d planeNormalVec;
     HSVColor color = HSVColor();
-    bool valid = false;
 
+    bool valid = false;
     void computePlaneEquation(const Vector3d &point1, const Vector3d &point2, const Vector3d &point3);
+
+    Vector3d meanPoint = Vector3d(0, 0, 0);
 };
 
 #endif /* Plane_h */

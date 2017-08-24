@@ -2,15 +2,6 @@
 
 namespace planeUtils {
 
-    void setPlaneId(vector<Plane> &currentFrames, Plane &currentFrame, Plane &previousFrame) {
-        for (Plane &plane : currentFrames) {
-            if (currentFrame == plane) {
-                plane.setId(previousFrame.getId());
-                break;
-            }
-        }
-    }
-
     vector<pair<Plane, Plane>> getSimilarPlanes(vector<Plane> &previousFrame, vector<Plane> &currentFrame) {
 
         vector<pair<Plane, Plane>> toReturn;
@@ -27,9 +18,7 @@ namespace planeUtils {
         for (PlaneSimilarity &outerPlaneSimilarity : planeSimilarityVec) {
             if (!outerPlaneSimilarity.isAnyOfFramesTaken()) {
                 if (outerPlaneSimilarity.isSimilarityValid()) {
-                    if (outerPlaneSimilarity.isAngleBetweenPlanesValid() /*&& outerPlaneSimilarity.isDistanceBetweenPlanesValid()*/) {
-                        setPlaneId(currentFrame, outerPlaneSimilarity.getCurrentFrame(),
-                                   outerPlaneSimilarity.getLastFrame());
+                    if (outerPlaneSimilarity.isAngleBetweenPlanesValid() && outerPlaneSimilarity.isDistanceBetweenPlanesValid()) {
 
                         toReturn.push_back(pair<Plane, Plane>(outerPlaneSimilarity.getLastFrame(),
                                                               outerPlaneSimilarity.getCurrentFrame()));
@@ -105,7 +94,7 @@ namespace planeUtils {
             Point centerPoint = ((previousPlanePoint + currentPlanePoint) / 2);
             centerPoint.x = centerPoint.x - 50;
             putText(merged,
-                    "num: " + to_string(pointNumber) + " ang: " + angleStream.str() + " hue: " + to_string(colorDiff),
+                    "num: " + to_string(pointNumber) + " ang: " + angleStream.str() + " dist: " + distanceStream.str() + " hue: " + to_string(colorDiff),
                     centerPoint,
                     FONT_HERSHEY_SIMPLEX, 0.5, color, 2);
 
