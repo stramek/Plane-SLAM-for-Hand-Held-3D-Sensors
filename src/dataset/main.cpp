@@ -7,12 +7,24 @@
 //
 
 #include "include/dataset/main.h"
+#include <Eigen/Dense>
 
 int main(int argc, char **argv) {
     QApplication application(argc, argv);
     glutInit(&argc, argv);
 
-    ImageLoader imageLoader(50);
+    Eigen::Vector3d point1 = Eigen::Vector3d(0, 0, 0);
+    Eigen::Vector3d point2 = Eigen::Vector3d(0, 1, 2);
+    Eigen::Vector3d point3 = Eigen::Vector3d(0, 3, 4);
+    Plane plane = Plane(point1, point2, point3, ImageCoords());
+
+    Eigen::Vector3d position = Eigen::Vector3d(1, 2, 3);
+    Eigen::Vector4d orientation = Eigen::Vector4d(0, 0, 0.707, 0.707);
+
+    PosOrient posOrient = PosOrient(position, orientation);
+    Plane newPlane = plane.getPlaneSeenFromGlobalCamera(posOrient);
+
+    /*ImageLoader imageLoader(50);
 
     vector<Plane> planeVectorPreviousFrame;
     vector<Plane> planeVectorCurrentFrame;
@@ -32,7 +44,7 @@ int main(int argc, char **argv) {
 
         make_unique<PlaneFillerBuilder>()
                 ->withDataset(&currentFrame)
-                ->withPlaneDetector(new RansacPlaneDetector())
+                ->withPlaneDetector(new PcaPlaneDetector())
                 ->withAreaSize(35)
                 ->withNumberOfPoints(600)
                 ->withPreviousPlanePercent(&planeVectorPreviousFrame, 0.0)
@@ -60,7 +72,7 @@ int main(int argc, char **argv) {
         } else {
             cout<<"Frame number"<<i + 1<<"is NOT valid!";
         }
-    }
+    }*/
 
     return application.exec();
 }

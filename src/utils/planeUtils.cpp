@@ -2,15 +2,6 @@
 
 namespace planeUtils {
 
-    void setPlaneId(vector<Plane> &currentFrames, Plane &currentFrame, Plane &previousFrame) {
-        for (Plane &plane : currentFrames) {
-            if (currentFrame == plane) {
-                plane.setId(previousFrame.getId());
-                break;
-            }
-        }
-    }
-
     vector<pair<Plane, Plane>> getSimilarPlanes(vector<Plane> &previousFrame, vector<Plane> &currentFrame) {
 
         vector<pair<Plane, Plane>> toReturn;
@@ -28,8 +19,6 @@ namespace planeUtils {
             if (!outerPlaneSimilarity.isAnyOfFramesTaken()) {
                 if (outerPlaneSimilarity.isSimilarityValid()) {
                     if (outerPlaneSimilarity.isAngleBetweenPlanesValid() && outerPlaneSimilarity.isDistanceBetweenPlanesValid()) {
-                        setPlaneId(currentFrame, outerPlaneSimilarity.getCurrentFrame(),
-                                   outerPlaneSimilarity.getLastFrame());
 
                         toReturn.push_back(pair<Plane, Plane>(outerPlaneSimilarity.getLastFrame(),
                                                               outerPlaneSimilarity.getCurrentFrame()));

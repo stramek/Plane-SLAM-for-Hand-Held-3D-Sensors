@@ -12,40 +12,24 @@ Plane::Plane() {}
 Plane::Plane(const Vector3d &point1, const Vector3d &point2, const Vector3d &point3, const ImageCoords &imageCoords) {
     this->imageCoordsVec.push_back(imageCoords);
     computePlaneEquation(point1, point2, point3);
-    id = generatePlaneId();
 }
 
 Plane::Plane(std::array<Vector3d, 3>, const Mat &colorImage) {
     color = HSVColor(colorImage);
-    id = generatePlaneId();
 }
 
-Plane::Plane(Vector3d normalVec, Vector3d point, const vector<Point3D> &points, const ImageCoords &imageCoords) {
+Plane::Plane(Vector3d normalVec, Vector3d meanPoint, const vector<Point3D> &points, const ImageCoords &imageCoords) {
     planeNormalVec = normalVec;
     planeNormalVec.normalize();
     A = normalVec(0);
     B = normalVec(1);
     C = normalVec(2);
-    D = A * point(0) + B * point(1) + C * point(2);
+    D = A * meanPoint(0) + B * meanPoint(1) + C * meanPoint(2);
     this->points = points;
     this->imageCoordsVec.push_back(imageCoords);
     valid = true;
-    id = generatePlaneId();
+    this->meanPoint = meanPoint;
 }
-
-Plane::Plane(Vector3d normalVec, double D, vector<Point3D> points, vector<ImageCoords> imageCoordsVec, HSVColor color) {
-    this->planeNormalVec = normalVec;
-    this->D = D;
-    this->A = normalVec(0);
-    this->B = normalVec(1);
-    this->C = normalVec(2);
-    this->points = points;
-    this->imageCoordsVec = imageCoordsVec;
-    this->color = color;
-    valid = true;
-    id = generatePlaneId();
-}
-
 
 double Plane::getA() const {
     return A;
@@ -149,9 +133,6 @@ unsigned int Plane::getNumberOfPoints() const {
 }
 
 double Plane::getAngleBetweenTwoPlanes(const Plane &plane) const {
-//    cout<<"=========================================================================="<<endl;
-
-
     Eigen::Vector3d planeNormalVec = plane.getPlaneNormalVec();
 
     double angleCos = (this->planeNormalVec(0) * plane.getPlaneNormalVec()(0) +
@@ -160,20 +141,7 @@ double Plane::getAngleBetweenTwoPlanes(const Plane &plane) const {
                         this->planeNormalVec.norm() / planeNormalVec.norm();
     if (angleCos < -1) angleCos = -1.0;
     if (angleCos > 1) angleCos = 1.0;
-    double angle = acos(angleCos) * 180.0 / (double) M_PI;
-
-/*    cout<<"First plane D: "<<getD()<<" Second plane D: "<<plane.getD()<<" Calculated angle is: "<<angle<<endl;
-    cout<<"Plane 1 "<<*this<<" Plane 2: "<<plane<<" Calculated angle is: "<<angle<<endl;
-    cout<<"Dot product: "<<(this->planeNormalVec(0) * plane.getPlaneNormalVec()(0) +
-                            this->planeNormalVec(1) * plane.getPlaneNormalVec()(1) +
-                            this->planeNormalVec(2) * plane.getPlaneNormalVec()(2)) <<endl;
-    cout<<"Multiplication 1: "<< this->planeNormalVec(0) << " * "<< plane.getPlaneNormalVec()(0)<< " = " << this->planeNormalVec(0) * plane.getPlaneNormalVec()(0) <<endl;
-    cout<<"Multiplication 2: "<< this->planeNormalVec(1) << " * "<< plane.getPlaneNormalVec()(1)<< " = " << this->planeNormalVec(1) * plane.getPlaneNormalVec()(1) <<endl;
-    cout<<"Multiplication 3: "<< this->planeNormalVec(2) << " * "<< plane.getPlaneNormalVec()(2)<< " = " << this->planeNormalVec(2) * plane.getPlaneNormalVec()(2) <<endl;
-    cout<<"Norm 1: "<<this->planeNormalVec.norm()<<" Norm 2: "<<planeNormalVec.norm()<<endl;
-    cout<<"Planes cos: "<<angleCos<<endl;
-    cout<<"=========================================================================="<<endl;*/
-    return angle;
+    return acos(angleCos) * 180.0 / (double) M_PI;
 }
 
 void Plane::setColor(const HSVColor &color) {
@@ -245,5 +213,63 @@ void Plane::setId(long id) {
 
 void Plane::print() {
     std::cout << "A: " << A << " B: " << B << " C: " << C << " D: " << D << std::endl;
+}
+
+const Vector3d &Plane::getMeanPoint() const {
+    return meanPoint;
+}
+
+Plane Plane::getPlaneSeenFromGlobalCamera(PosOrient &posOrient) {
+    Quaterniond q = posOrient.getQuaternion();
+    auto rotMatrix = q.toRotationMatrix();
+    Matrix4d matrix4d;
+    Vector3d meanPoint = getMeanPoint();
+    Vector4d meanPoint4;
+    matrix4d.setZero();
+
+    matrix4d.topLeftCorner(3, 3) = rotMatrix;
+    matrix4d.topRightCorner(3, 1) = posOrient.getPosition();
+    matrix4d(3, 3) = 1;
+    meanPoint4.topRightCorner(3, 1) = meanPoint;
+    meanPoint4(3) = 1;
+    Vector3d norm = rotMatrix * getPlaneNormalVec();
+    Vector4d newPosition = matrix4d * meanPoint4;
+
+    cout<<"Normal vec"<<endl;
+    cout<<getPlaneNormalVec()<<endl;
+
+    cout<<"Rotmatrix"<<endl;
+    cout<<rotMatrix<<endl;
+
+    cout<<"Position"<<endl;
+    cout<<posOrient.getPosition()<<endl;
+
+    cout<<"Matrix4d"<<endl;
+    cout<<matrix4d<<endl;
+
+    cout<<"Calculated norm"<<endl;
+    cout<<norm<<endl;
+
+    cout<<"Calculated new position"<<endl;
+    cout<<newPosition<<endl;
+
+    Plane plane = Plane();
+    plane.A = norm(0);
+    plane.B = norm(1);
+    plane.C = norm(2);
+    plane.D = A * newPosition(0) + B * newPosition(1) + C * newPosition(2);
+    plane.planeNormalVec(0) = plane.A;
+    plane.planeNormalVec(1) = plane.B;
+    plane.planeNormalVec(2) = plane.C;
+
+    return plane;
+}
+
+void Plane::updatePlaneParameters(Plane &plane) {
+    A = plane.getA();
+    B = plane.getB();
+    C = plane.getC();
+    D = plane.getD();
+    planeNormalVec = plane.getPlaneNormalVec();
 }
 

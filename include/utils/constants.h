@@ -16,6 +16,10 @@ const static int MAX_ANGLE_BETWEEN_PLANES = 15;
 const static double MAX_DISTANCE_BETWEEN_PLANES = 0.5;
 const static int VALID_ANGLE_BETWEEN_PLANES = 70;
 
+const static int MAX_SIMILARITY_GLOBAL_MAP_VALUE = 10;
+const static int MAX_ANGLE_BETWEEN_PLANES_GLOBAL_MAP = 5;
+const static double MAX_DISTANCE_BETWEEN_PLANES_GLOBAL_MAP = 0.3;
+
 const static float MAX_PERCENT_OF_NAN_PIXELS_INSIDE_PLAIN = 20.0f;
 
 const double FOCAL_LENGTH_X = 525;
