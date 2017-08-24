@@ -22,6 +22,10 @@ public:
     Plane getPlaneById(long id);
 
 private:
+
+    GlobalMap();
+    ~GlobalMap(){};
+
     long currentId = 0;
 
     std::unordered_map<long, Plane> globalMapPlanes;

@@ -58,3 +58,7 @@ void GlobalMap::updatePlane(Plane &plane) {
 const unordered_map<long, Plane> &GlobalMap::getGlobalMapPlanes() const {
     return globalMapPlanes;
 }
+
+GlobalMap::GlobalMap() {
+
+}
