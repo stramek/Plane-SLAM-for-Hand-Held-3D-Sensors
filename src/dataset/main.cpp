@@ -42,7 +42,7 @@ int main(int argc, char **argv) {
     //
 
     for (int i = 0; i < 50; ++i) {
-        ImagePair currentFrame = imageLoader.getNextPair(40);
+        ImagePair currentFrame = imageLoader.getNextPair();
 
         make_unique<PlaneFillerBuilder>()
                 ->withDataset(&currentFrame)
@@ -61,6 +61,7 @@ int main(int argc, char **argv) {
                 //similarPlanes = planeUtils::getSimilarPlanes(planeVectorPreviousFrame, planeVectorCurrentFrame);
                 MatchPlanesG2o matchPlanesG2o;
                 similarPlanes = matchPlanesG2o.getSimilarPlanes(planeVectorPreviousFrame, planeVectorCurrentFrame);
+                std::cout << "After match" << std::endl;
 /*                planeG2o.ComputeCameraPos(similarPlanes);
                 cout << "Frame " << i << "-" << i + 1 << " found: " << similarPlanes.size() << " similar planes." << endl;
                 cout << endl << "Ideal slam position" << endl;
