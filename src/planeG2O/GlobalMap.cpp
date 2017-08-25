@@ -15,7 +15,7 @@ long GlobalMap::addPlaneToMap(Plane &plane, PosOrient &posOrient) {
         globalMapPlanes.insert(pair<long, Plane>(transformedPlane.getId(), transformedPlane));
         return currentId;
     } else {
-        return -1;
+        return numeric_limits<long>::quiet_NaN();
     }
 }
 
