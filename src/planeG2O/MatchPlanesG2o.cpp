@@ -113,8 +113,10 @@ void MatchPlanesG2o::matchRemainingPlanes(vector<pair<Plane, Plane>> &matchedPla
                 if (matchedIndexesCurPlane(0) != curPlaneIterCounter && matchedIndexesCurPlane(1) != curPlaneIterCounter &&
                     matchedIndexesCurPlane(2) != curPlaneIterCounter) {
                     if (getAngleBetweenTwoVectors(prevPlane.getPlaneNormalVec(), curPlane.getPlaneNormalVec()) <  MaxAngleDiffrence) {
-                        pair<Plane, Plane> planesPair(prevPlane, curPlane);
-                        matchedPlanes.push_back(planesPair);
+                        if (planeUtils::getDistanceBetweenTwoPlanes(prevPlane, curPlane) < CLUSTERING_MAX_DISTANCE_THRESHOLD) {
+                            pair<Plane, Plane> planesPair(prevPlane, curPlane);
+                            matchedPlanes.push_back(planesPair);
+                        }
                     }
                 }
             }
