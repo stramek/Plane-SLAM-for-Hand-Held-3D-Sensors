@@ -9,13 +9,15 @@ GlobalMap &GlobalMap::getInstance() {
 }
 
 pair<long, bool> GlobalMap::addPlaneToMap(Plane &plane, PosOrient &posOrient) {
-    pair<long, bool> foundId = getIdByPlane(plane);
+    Plane transformedPlane = plane.getPlaneSeenFromGlobalCamera(posOrient);
+    pair<long, bool> foundId = getIdByPlane(transformedPlane);
     if (!foundId.second) {
-        Plane transformedPlane = plane.getPlaneSeenFromGlobalCamera(posOrient);
         assignIdToPlane(transformedPlane);
         globalMapPlanes.insert(pair<long, Plane>(transformedPlane.getId(), transformedPlane));
+        cout<<"New plane detected! Assigned id = "<<currentId<<endl;
         return pair<long, bool>(currentId, true);
     } else {
+        cout<<"Plane already exists! id: "<<foundId.first<<endl;
         return pair<long, bool>(foundId.first, false);
     }
 }
