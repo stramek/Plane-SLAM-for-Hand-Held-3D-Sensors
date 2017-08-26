@@ -247,11 +247,19 @@ Plane Plane::getPlaneSeenFromGlobalCamera(PosOrient &posOrient) {
     plane.planeNormalVec(0) = plane.A;
     plane.planeNormalVec(1) = plane.B;
     plane.planeNormalVec(2) = plane.C;
+    plane.transformPointsToGlobal(posOrient);
 
     return plane;
 }
 
-
+void Plane::transformPointsToGlobal(PosOrient &posOrient) {
+    Quaterniond q = posOrient.getQuaternion().conjugate();
+    auto rotMatrix = q.toRotationMatrix();
+    auto translation = posOrient.getPosition();
+    for (auto &point : points) {
+        point.position = rotMatrix * point.position + translation;
+    }
+}
 
 void Plane::updatePlaneParameters(Plane &plane) {
     A = plane.getA();

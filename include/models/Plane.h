@@ -105,6 +105,7 @@ public:
 
     void updatePlaneParameters(Plane &plane);
     Plane getPlaneSeenFromGlobalCamera(PosOrient &posOrient);
+    void transformPointsToGlobal(PosOrient &posOrient);
 private:
     long id = -1;
     double A, B, D, C;
