@@ -250,9 +250,12 @@ Plane Plane::getPlaneSeenFromGlobalCamera(PosOrient &posOrient) {
 
 
 void Plane::updatePlaneParameters(Plane &plane) {
-    A = plane.getA();
-    B = plane.getB();
-    C = plane.getC();
+    //A = plane.getA();
+    //B = plane.getB();
+    //C = plane.getC();
+    A = plane.getPlaneNormalVec()(0);
+    B = plane.getPlaneNormalVec()(1);
+    C = plane.getPlaneNormalVec()(2);
     D = plane.getD();
     planeNormalVec = plane.getPlaneNormalVec();
 }
