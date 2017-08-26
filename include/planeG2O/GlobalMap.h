@@ -13,17 +13,23 @@ class GlobalMap {
 public:
     static GlobalMap &getInstance();
 
-    long addPlaneToMap(Plane &plane, PosOrient &posOrient);
+    pair<long, bool> addPlaneToMap(Plane &plane, PosOrient &posOrient);
 
     const unordered_map<long, Plane> &getGlobalMapPlanes() const;
+
+    vector<Plane> getGlobalMapVector() const;
 
     void updatePlane(Plane &plane);
 
     Plane getPlaneById(long id);
 
-private:
+    pair<long, bool> getIdByPlane(Plane &plane);
 
+    long getCurrentId() const;
+
+private:
     GlobalMap();
+
     ~GlobalMap(){};
 
     long currentId = -1;

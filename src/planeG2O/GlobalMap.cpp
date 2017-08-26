@@ -8,14 +8,15 @@ GlobalMap &GlobalMap::getInstance() {
     return instance;
 }
 
-long GlobalMap::addPlaneToMap(Plane &plane, PosOrient &posOrient) {
-    Plane transformedPlane = plane.getPlaneSeenFromGlobalCamera(posOrient);
-    if (!isSimilarPlaneExists(transformedPlane)) {
+pair<long, bool> GlobalMap::addPlaneToMap(Plane &plane, PosOrient &posOrient) {
+    pair<long, bool> foundId = getIdByPlane(plane);
+    if (!foundId.second) {
+        Plane transformedPlane = plane.getPlaneSeenFromGlobalCamera(posOrient);
         assignIdToPlane(transformedPlane);
         globalMapPlanes.insert(pair<long, Plane>(transformedPlane.getId(), transformedPlane));
-        return currentId;
+        return pair<long, bool>(currentId, true);
     } else {
-        return -1;
+        return pair<long, bool>(foundId.first, false);
     }
 }
 
@@ -32,6 +33,17 @@ bool GlobalMap::isSimilarPlaneExists(Plane &plane) {
         }
     }
     return false;
+}
+
+pair<long, bool> GlobalMap::getIdByPlane(Plane &plane) {
+    for (auto &mapPlane : globalMapPlanes) {
+        if (isAngleBetweenPlanesValid(plane, mapPlane.second)
+            && isDistanceBetweenPlanesValid(plane, mapPlane.second)
+            && isHueDiffValid(plane, mapPlane.second)) {
+            return pair<long, bool>(mapPlane.second.getId(), true);
+        }
+    }
+    return pair<long, bool>(-1, false);
 }
 
 bool GlobalMap::isAngleBetweenPlanesValid(Plane &plane1, Plane &plane2) {
@@ -59,6 +71,18 @@ const unordered_map<long, Plane> &GlobalMap::getGlobalMapPlanes() const {
     return globalMapPlanes;
 }
 
+vector<Plane> GlobalMap::getGlobalMapVector() const {
+    vector<Plane> planeVector;
+    for (auto &mapPlane : globalMapPlanes) {
+        planeVector.push_back(mapPlane.second);
+    }
+    return planeVector;
+}
+
 GlobalMap::GlobalMap() {
 
+}
+
+long GlobalMap::getCurrentId() const {
+    return currentId;
 }
