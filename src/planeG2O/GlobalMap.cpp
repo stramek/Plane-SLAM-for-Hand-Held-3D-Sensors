@@ -8,17 +8,17 @@ GlobalMap &GlobalMap::getInstance() {
     return instance;
 }
 
-pair<long, bool> GlobalMap::addPlaneToMap(Plane &plane, PosOrient &posOrient) {
+pair<Plane, bool> GlobalMap::addPlaneToMap(Plane &plane, PosOrient &posOrient) {
     Plane transformedPlane = plane.getPlaneSeenFromGlobalCamera(posOrient);
-    pair<long, bool> foundId = getIdByPlane(transformedPlane);
-    if (!foundId.second) {
+    long foundId = getIdByPlane(transformedPlane);
+    if (foundId == -1) {
         assignIdToPlane(transformedPlane);
         globalMapPlanes.insert(pair<long, Plane>(transformedPlane.getId(), transformedPlane));
         cout<<"New plane detected! Assigned id = "<<currentId<<endl;
-        return pair<long, bool>(currentId, true);
+        return pair<Plane, bool>(transformedPlane, true);
     } else {
-        cout<<"Plane already exists! id: "<<foundId.first<<endl;
-        return pair<long, bool>(foundId.first, false);
+        cout<<"Plane already exists! id: "<<foundId<<endl;
+        return pair<Plane, bool>(Plane(), false);
     }
 }
 
@@ -37,15 +37,15 @@ bool GlobalMap::isSimilarPlaneExists(Plane &plane) {
     return false;
 }
 
-pair<long, bool> GlobalMap::getIdByPlane(Plane &plane) {
+long GlobalMap::getIdByPlane(Plane &plane) {
     for (auto &mapPlane : globalMapPlanes) {
         if (isAngleBetweenPlanesValid(plane, mapPlane.second)
             && isDistanceBetweenPlanesValid(plane, mapPlane.second)
             && isHueDiffValid(plane, mapPlane.second)) {
-            return pair<long, bool>(mapPlane.second.getId(), true);
+            return mapPlane.second.getId();
         }
     }
-    return pair<long, bool>(-1, false);
+    return -1;
 }
 
 bool GlobalMap::isAngleBetweenPlanesValid(Plane &plane1, Plane &plane2) {
@@ -67,7 +67,6 @@ void GlobalMap::assignIdToPlane(Plane &plane) {
 void GlobalMap::updatePlane(Plane &plane) {
     if (plane.getId() == -1) throw runtime_error("MICHAU NIE PRZYDZIELIŁ ID XDDDDDDD");
     globalMapPlanes.at(plane.getId()).updatePlaneParameters(plane);
-    //cout<<"updated"<<endl;
 }
 
 const unordered_map<long, Plane> &GlobalMap::getGlobalMapPlanes() const {

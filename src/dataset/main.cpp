@@ -31,6 +31,7 @@ int main(int argc, char **argv) {
     trajectoryFile.open("trajectoryMap.txt", ofstream::out | ofstream::trunc);
     GlobalG2oMap globalG2oMap;
 
+    bool initialized = false;
     for (int i = 0; i < 50; ++i) {
         ImagePair currentFrame = imageLoader.getNextPair();
 
@@ -38,7 +39,7 @@ int main(int argc, char **argv) {
                 ->withDataset(&currentFrame)
                 ->withPlaneDetector(new PcaPlaneDetector())
                 ->withAreaSize(35)
-                ->withNumberOfPoints(1000)
+                ->withNumberOfPoints(500)
                 ->withPreviousPlanePercent(&planeVectorPreviousFrame, 0.5)
                 ->build()
                 ->fillVector(&planeVectorCurrentFrame);
@@ -46,8 +47,9 @@ int main(int argc, char **argv) {
         planeUtils::mergePlanes(planeVectorCurrentFrame, new PcaPlaneDetector());
 
         if (planeUtils::arePlanesValid(planeVectorCurrentFrame)) {
-            if (i == 0) {
+            if (!initialized) {
                 globalG2oMap.initializeFirstFrame(planeVectorCurrentFrame);
+                initialized = true;
             } else {
                 globalG2oMap.addNextFramePlanes(planeVectorCurrentFrame);
             }

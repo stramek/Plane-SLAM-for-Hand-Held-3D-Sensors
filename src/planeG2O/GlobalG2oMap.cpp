@@ -41,20 +41,20 @@ void GlobalG2oMap::initializeFirstFrame(vector<Plane> &planes) {
 
     for (Plane &plane : planes) {
 
-        pair<long, bool> status = GlobalMap::getInstance().addPlaneToMap(plane, lastPosOrient);
+        pair<Plane, bool> status = GlobalMap::getInstance().addPlaneToMap(plane, lastPosOrient);
 
         if (status.second) {
             //add planes to graph
             g2o::VertexPlaneQuat *curV2 = new g2o::VertexPlaneQuat();
             curV2->setEstimate(normAndDToQuat(plane.getD(), plane.getPlaneNormalVec()));
             cout<<"Adding VertexPlaneQuat id = " << status.first <<endl;
-            curV2->setId((int) status.first);
+            curV2->setId((int) status.first.getId());
             optimizerMin.addVertex(curV2);
 
             //add edge to graph
             g2o::EdgeSE3Plane *curEdge = new g2o::EdgeSE3Plane();
             curEdge->setVertex(0, optimizerMin.vertex(CAMERA_POS_INDEXES_SHIFT + positionNumber));
-            curEdge->setVertex(1, optimizerMin.vertex((int) status.first));
+            curEdge->setVertex(1, optimizerMin.vertex((int) status.first.getId()));
 
             curEdge->setMeasurement(normAndDToQuat(plane.getD(), plane.getPlaneNormalVec()));
 
@@ -79,29 +79,20 @@ void GlobalG2oMap::addNextFramePlanes(vector<Plane> &planes) {
 
     optimizerMin.addVertex(curV);
 
-    vector<Plane> globalPlanes = GlobalMap::getInstance().getGlobalMapVector();
-
-//    vector<Plane> framePlanesConv;
-
-    //cout << "Initial posOrient is: " << endl;
-    //lastPosOrient.print();
-
     for (auto &plane : planes) {
-//        framePlanesConv.push_back(plane.getPlaneSeenFromGlobalCamera(lastPosOrient));
-        pair<long, bool> status = GlobalMap::getInstance().addPlaneToMap(plane, lastPosOrient);
+        pair<Plane, bool> status = GlobalMap::getInstance().addPlaneToMap(plane, lastPosOrient);
         if (status.second) {
-            Plane tmpPlane = plane.getPlaneSeenFromGlobalCamera(lastPosOrient);
             g2o::VertexPlaneQuat *curV1 = new g2o::VertexPlaneQuat();
-            curV1->setEstimate(normAndDToQuat(tmpPlane.getD(), tmpPlane.getPlaneNormalVec()));
+            curV1->setEstimate(normAndDToQuat(status.first.getD(), status.first.getPlaneNormalVec()));
             cout<<"Adding VertexPlaneQuat id = " << status.first <<endl;
-            curV1->setId((int) status.first);
+            curV1->setId((int) status.first.getId());
             optimizerMin.addVertex(curV1);
         }
 
         //add edge to graph
         g2o::EdgeSE3Plane *curEdge = new g2o::EdgeSE3Plane();
         curEdge->setVertex(0, optimizerMin.vertex(CAMERA_POS_INDEXES_SHIFT + positionNumber));
-        curEdge->setVertex(1, optimizerMin.vertex((int) status.first));
+        curEdge->setVertex(1, optimizerMin.vertex((int) status.first.getId()));
 
         curEdge->setMeasurement(normAndDToQuat(plane.getD(), plane.getPlaneNormalVec()));
 
