@@ -220,7 +220,7 @@ const Vector3d &Plane::getMeanPoint() const {
 }
 
 Plane Plane::getPlaneSeenFromGlobalCamera(PosOrient &posOrient) {
-    Quaterniond q = posOrient.getQuaternion();
+    Quaterniond q = posOrient.getQuaternion().conjugate();
     auto rotMatrix = q.toRotationMatrix();
     Matrix4d matrix4d;
     Vector3d meanPoint = getMeanPoint();
@@ -228,7 +228,7 @@ Plane Plane::getPlaneSeenFromGlobalCamera(PosOrient &posOrient) {
     matrix4d.setZero();
 
     matrix4d.topLeftCorner(3, 3) = rotMatrix;
-    matrix4d.topRightCorner(3, 1) = posOrient.getPosition();
+    matrix4d.topRightCorner(3, 1) = -posOrient.getPosition();
     matrix4d(3, 3) = 1;
     meanPoint4.topRightCorner(3, 1) = meanPoint;
     meanPoint4(3) = 1;

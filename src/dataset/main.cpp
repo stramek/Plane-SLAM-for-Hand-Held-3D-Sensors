@@ -27,8 +27,6 @@ int main(int argc, char **argv) {
 
     utils::loadDatasetPositions(idealSlamPositions);
 
-    PlaneG2oModule &planeG2o = PlaneG2oModule::getInstance();
-
     ofstream trajectoryFile;
     trajectoryFile.open("trajectoryMap.txt", ofstream::out | ofstream::trunc);
     GlobalG2oMap globalG2oMap;
