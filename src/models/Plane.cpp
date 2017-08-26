@@ -235,10 +235,6 @@ Plane Plane::getPlaneSeenFromGlobalCamera(PosOrient &posOrient) {
     Vector3d norm = rotMatrix * getPlaneNormalVec();
     Vector4d newPosition = matrix4d * meanPoint4;
 
-    if (A != norm(0)) {
-        cout<<"LOL"<<endl;
-    }
-
     Plane plane = *this;
     plane.A = norm(0);
     plane.B = norm(1);
@@ -254,9 +250,12 @@ Plane Plane::getPlaneSeenFromGlobalCamera(PosOrient &posOrient) {
 
 
 void Plane::updatePlaneParameters(Plane &plane) {
-    A = plane.getA();
-    B = plane.getB();
-    C = plane.getC();
+    //A = plane.getA();
+    //B = plane.getB();
+    //C = plane.getC();
+    A = plane.getPlaneNormalVec()(0);
+    B = plane.getPlaneNormalVec()(1);
+    C = plane.getPlaneNormalVec()(2);
     D = plane.getD();
     planeNormalVec = plane.getPlaneNormalVec();
 }
