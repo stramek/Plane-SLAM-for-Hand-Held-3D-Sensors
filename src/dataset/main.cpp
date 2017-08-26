@@ -48,9 +48,9 @@ int main(int argc, char **argv) {
         if (planeUtils::arePlanesValid(planeVectorCurrentFrame)) {
             globalG2oMap.addNewFrames(planeVectorCurrentFrame);
         } else {
-            cout<<"**********************************"<<endl;
-            cout<<"Planes are not valid! SKIPPING!"<<endl;
-            cout<<"**********************************"<<endl;
+            cout<<"*********************************************"<<endl;
+            cout<<"Planes are not valid! SKIPPING FRAME "<<i<<"!"<<endl;
+            cout<<"*********************************************"<<endl;
         }
 
         PosOrient posOrient = globalG2oMap.getLastPosOrient();
