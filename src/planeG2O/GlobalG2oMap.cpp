@@ -134,14 +134,15 @@ void GlobalG2oMap::addNextFramePlanes(vector<Plane> &planes) {
         g2o::VertexPlaneQuat *curPlaneVert = static_cast<g2o::VertexPlaneQuat *>(optimizerMin.vertex(i));
         Eigen::Quaterniond quaternion = curPlaneVert->estimate();
 
-        double eps = 1e-9;
-        if(!(quaternion.w() < 0.0 ||
+        //quaternion.normalize();
+        /*double eps = 1e-9;
+        if((quaternion.w() < 0.0 ||
            (fabs(quaternion.w()) < eps && quaternion.z() < 0.0) ||
            (fabs(quaternion.w()) < eps && fabs(quaternion.z()) < eps && quaternion.y() < 0.0) ||
            (fabs(quaternion.w()) < eps && fabs(quaternion.z()) < eps && fabs(quaternion.y()) < eps && quaternion.x() < 0.0)))
         {
             quaternion.coeffs() = -quaternion.coeffs();
-        }
+        }*/
 
         Plane plane(-quaternion.w(), Eigen::Vector3d(quaternion.x(), quaternion.y(), quaternion.z()));
         plane.setId(curPlaneVert->id());
