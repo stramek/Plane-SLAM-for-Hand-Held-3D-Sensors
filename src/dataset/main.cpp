@@ -8,6 +8,7 @@
 
 #include "include/dataset/main.h"
 #include <Eigen/Dense>
+#include <include/planeG2O/GlobalG2oMap.h>
 
 int main(int argc, char **argv) {
     QApplication application(argc, argv);
@@ -28,8 +29,12 @@ int main(int argc, char **argv) {
 
     PlaneG2oModule &planeG2o = PlaneG2oModule::getInstance();
 
-    for (int i = 0; i < 2; ++i) {
-        ImagePair currentFrame = imageLoader.getNextPair(40);
+    ofstream trajectoryFile;
+    trajectoryFile.open("trajectoryMap.txt", ofstream::out | ofstream::trunc);
+    GlobalG2oMap globalG2oMap;
+
+    for (int i = 0; i < 50; ++i) {
+        ImagePair currentFrame = imageLoader.getNextPair();
 
         make_unique<PlaneFillerBuilder>()
                 ->withDataset(&currentFrame)
@@ -42,7 +47,20 @@ int main(int argc, char **argv) {
 
         planeUtils::mergePlanes(planeVectorCurrentFrame, new PcaPlaneDetector());
 
-        if (planeUtils::arePlanesValid(planeVectorCurrentFrame)) {
+        if (i == 0) {
+            globalG2oMap.initializeFirstFrame(planeVectorCurrentFrame);
+        } else {
+            globalG2oMap.addNextFramePlanes(planeVectorCurrentFrame);
+        }
+
+        PosOrient posOrient = globalG2oMap.getLastPosOrient();
+        Vector3d position = posOrient.getPosition();
+        Quaterniond q  = posOrient.getQuaternion();
+
+        trajectoryFile << position[0] << " " << position[1] << " " << position[2] << " " << q.w() << " " << q.x()
+                       << " " << q.y() << " " << q.z() << "\n";
+
+/*        if (planeUtils::arePlanesValid(planeVectorCurrentFrame)) {
             cout<<"Frame number "<<i + 1<<" is valid!"<<endl;
             if (!planeVectorPreviousFrame.empty()) {
                 similarPlanes = planeUtils::getSimilarPlanes(planeVectorPreviousFrame, planeVectorCurrentFrame);
@@ -60,8 +78,10 @@ int main(int argc, char **argv) {
             if (visualize) previousRgbImage = currentFrame.getRgb().clone();
         } else {
             cout<<"Frame number"<<i + 1<<"is NOT valid!";
-        }
+        }*/
     }
+    trajectoryFile.close();
+    cout<<"Done XD"<<endl;
 
     return application.exec();
 }
