@@ -17,15 +17,15 @@ class GlobalG2oMap {
 public:
     GlobalG2oMap();
     const PosOrient &getLastPosOrient() const;
+    void addNewFrames(vector<Plane> &planes);
+private:
+    bool initialized = false;
     void initializeFirstFrame(vector<Plane> &planes);
     void addNextFramePlanes(vector<Plane> &planes);
-private:
     g2o::SparseOptimizer optimizerMin;
     int positionNumber;
     PosOrient lastPosOrient = PosOrient(Eigen::Vector3d(0, 0, 0), Eigen::Vector4d(0, 0, 0, 1));
-
     const int CAMERA_POS_INDEXES_SHIFT = 100000;
-
     Eigen::Quaterniond normAndDToQuat(double d, Eigen::Vector3d norm);
 };
 

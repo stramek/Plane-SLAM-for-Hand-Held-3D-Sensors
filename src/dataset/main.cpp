@@ -46,18 +46,12 @@ int main(int argc, char **argv) {
         planeUtils::mergePlanes(planeVectorCurrentFrame, new PcaPlaneDetector());
 
         if (planeUtils::arePlanesValid(planeVectorCurrentFrame)) {
-            if (i == 0) {
-                globalG2oMap.initializeFirstFrame(planeVectorCurrentFrame);
-            } else {
-                globalG2oMap.addNextFramePlanes(planeVectorCurrentFrame);
-            }
+            globalG2oMap.addNewFrames(planeVectorCurrentFrame);
         } else {
             cout<<"**********************************"<<endl;
             cout<<"Planes are not valid! SKIPPING!"<<endl;
             cout<<"**********************************"<<endl;
         }
-
-
 
         PosOrient posOrient = globalG2oMap.getLastPosOrient();
         Vector3d position = posOrient.getPosition();
