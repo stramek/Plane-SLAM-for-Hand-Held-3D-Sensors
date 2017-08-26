@@ -80,8 +80,8 @@ void GlobalG2oMap::addNextFramePlanes(vector<Plane> &planes) {
     //set init camera pose
     g2o::VertexSE3Quat *curV = new g2o::VertexSE3Quat();
     Vector3d trans(lastPosOrient.getPosition());
-    Quaterniond q(lastPosOrient.getQuaternion());
-    g2o::SE3Quat poseSE3Quat(q, trans);
+    Quaterniond res(lastPosOrient.getQuaternion());
+    g2o::SE3Quat poseSE3Quat(res, trans);
     curV->setEstimate(poseSE3Quat);
     cout<<"Adding VertexSE3Quat id = " << CAMERA_POS_INDEXES_SHIFT + positionNumber <<endl;
     curV->setId(CAMERA_POS_INDEXES_SHIFT + positionNumber);
@@ -132,8 +132,18 @@ void GlobalG2oMap::addNextFramePlanes(vector<Plane> &planes) {
 
     for (int i = 0; i < GlobalMap::getInstance().getCurrentId(); ++i) {
         g2o::VertexPlaneQuat *curPlaneVert = static_cast<g2o::VertexPlaneQuat *>(optimizerMin.vertex(i));
-        Eigen::Quaterniond res = curPlaneVert->estimate();
-        Plane plane(-res.w(), Eigen::Vector3d(res.x(), res.y(), res.z()));
+        Eigen::Quaterniond quaternion = curPlaneVert->estimate();
+
+        double eps = 1e-9;
+        if(!(quaternion.w() < 0.0 ||
+           (fabs(quaternion.w()) < eps && quaternion.z() < 0.0) ||
+           (fabs(quaternion.w()) < eps && fabs(quaternion.z()) < eps && quaternion.y() < 0.0) ||
+           (fabs(quaternion.w()) < eps && fabs(quaternion.z()) < eps && fabs(quaternion.y()) < eps && quaternion.x() < 0.0)))
+        {
+            quaternion.coeffs() = -quaternion.coeffs();
+        }
+
+        Plane plane(-quaternion.w(), Eigen::Vector3d(quaternion.x(), quaternion.y(), quaternion.z()));
         plane.setId(curPlaneVert->id());
         GlobalMap::getInstance().updatePlane(plane);
     }

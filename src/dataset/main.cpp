@@ -31,14 +31,15 @@ int main(int argc, char **argv) {
     trajectoryFile.open("trajectoryMap.txt", ofstream::out | ofstream::trunc);
     GlobalG2oMap globalG2oMap;
 
-    for (int i = 0; i < 50; ++i) {
+    int numberOfIterations = 50;
+    for (int i = 0; i < numberOfIterations; ++i) {
         ImagePair currentFrame = imageLoader.getNextPair();
 
         make_unique<PlaneFillerBuilder>()
                 ->withDataset(&currentFrame)
                 ->withPlaneDetector(new PcaPlaneDetector())
                 ->withAreaSize(35)
-                ->withNumberOfPoints(1000)
+                ->withNumberOfPoints(200)
                 ->withPreviousPlanePercent(&planeVectorPreviousFrame, 0.5)
                 ->build()
                 ->fillVector(&planeVectorCurrentFrame);
@@ -59,6 +60,8 @@ int main(int argc, char **argv) {
 
         trajectoryFile << position[0] << " " << position[1] << " " << position[2] << " " << q.w() << " " << q.x()
                        << " " << q.y() << " " << q.z() << "\n";
+
+        cout<<">>>>> Iteration "<<i+1<<" of " <<numberOfIterations<<" finished."<<endl;
 
 /*        if (planeUtils::arePlanesValid(planeVectorCurrentFrame)) {
             cout<<"Frame number "<<i + 1<<" is valid!"<<endl;
