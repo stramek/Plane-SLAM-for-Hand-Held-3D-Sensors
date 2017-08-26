@@ -201,7 +201,11 @@ void Plane::computeNormalVecDirection(){
 
 }
 
-Plane::Plane(double D, const Vector3d &planeNormalVec) : D(D), planeNormalVec(planeNormalVec) {}
+Plane::Plane(double D, const Vector3d &planeNormalVec) : D(D), planeNormalVec(planeNormalVec) {
+    A = planeNormalVec(0);
+    B = planeNormalVec(1);
+    C = planeNormalVec(2);
+}
 
 long Plane::getId() {
     return id;
@@ -250,12 +254,9 @@ Plane Plane::getPlaneSeenFromGlobalCamera(PosOrient &posOrient) {
 
 
 void Plane::updatePlaneParameters(Plane &plane) {
-    //A = plane.getA();
-    //B = plane.getB();
-    //C = plane.getC();
-    A = plane.getPlaneNormalVec()(0);
-    B = plane.getPlaneNormalVec()(1);
-    C = plane.getPlaneNormalVec()(2);
+    A = plane.getA();
+    B = plane.getB();
+    C = plane.getC();
     D = plane.getD();
     planeNormalVec = plane.getPlaneNormalVec();
 }
