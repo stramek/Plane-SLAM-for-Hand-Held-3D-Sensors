@@ -4,6 +4,7 @@
 
 #include "include/planeG2O/GlobalG2oMap.h"
 
+
 Eigen::Quaterniond GlobalG2oMap::normAndDToQuat(double d, Eigen::Vector3d norm) {
     Eigen::Quaterniond res;
     norm.normalize();
@@ -121,7 +122,7 @@ void GlobalG2oMap::addNextFramePlanes(vector<Plane> &planes) {
 
     optimizerMin.setVerbose(false);
     optimizerMin.initializeOptimization();
-    optimizerMin.optimize(1000);
+    optimizerMin.optimize(300);
 
     g2o::VertexSE3Quat *curPoseVert = static_cast<g2o::VertexSE3Quat *>(optimizerMin.vertex(
             CAMERA_POS_INDEXES_SHIFT + positionNumber));
@@ -144,7 +145,10 @@ void GlobalG2oMap::addNextFramePlanes(vector<Plane> &planes) {
             quaternion.coeffs() = -quaternion.coeffs();
         }*/
 
-        Plane plane(-quaternion.w(), Eigen::Vector3d(quaternion.x(), quaternion.y(), quaternion.z()));
+        Eigen::Vector3d normVec(quaternion.x(), quaternion.y(), quaternion.z());
+        double norm = normVec.norm();
+        normVec.normalize();
+        Plane plane(-quaternion.w() / norm, normVec);
         plane.setId(curPlaneVert->id());
         GlobalMap::getInstance().updatePlane(plane);
     }

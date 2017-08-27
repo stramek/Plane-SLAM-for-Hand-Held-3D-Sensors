@@ -24,11 +24,10 @@ int main(int argc, char **argv) {
 
     const bool visualize = true;
 
-
     utils::loadDatasetPositions(idealSlamPositions);
-
     ofstream trajectoryFile;
-    trajectoryFile.open("trajectoryMap.txt", ofstream::out | ofstream::trunc);
+
+    trajectoryFile.open("trajectories/trajectory_" + utils::getCurrentDate() + ".txt", ofstream::out | ofstream::trunc);
     GlobalG2oMap globalG2oMap;
 
     int numberOfIterations = 50;

@@ -56,7 +56,6 @@ void GlobalMap::assignIdToPlane(Plane &plane) {
 void GlobalMap::updatePlane(Plane &plane) {
     if (plane.getId() == -1) throw runtime_error("MICHAU NIE PRZYDZIELIŁ ID XDDDDDDD");
     globalMapPlanes.at(plane.getId()).updatePlaneParameters(plane);
-    //cout<<"updated"<<endl;
 }
 
 const unordered_map<long, Plane> &GlobalMap::getGlobalMapPlanes() const {

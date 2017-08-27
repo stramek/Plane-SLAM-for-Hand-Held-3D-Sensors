@@ -27,6 +27,7 @@ namespace utils {
     void generateOctoMap(const std::string fileName, const std::vector<Point3D> pointCloud, const float resolution = 0.05);
     void loadDatasetPositions(vector<PosOrient> &positions);
     void movePlanesToPreviousVector(vector<Plane> &planeVectorPreviousFrame, vector<Plane> &planeVectorCurrentFrame);
+    string getCurrentDate();
 }
 
 #endif //PROJEKTMAGISTERSKI_UTILS_H

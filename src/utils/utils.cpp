@@ -67,6 +67,17 @@ namespace utils {
         }
     }
 
+    string getCurrentDate() {
+        time_t rawtime;
+        struct tm * timeinfo;
+        char buffer[80];
+        time (&rawtime);
+        timeinfo = localtime(&rawtime);
+        strftime(buffer,sizeof(buffer),"%d-%m-%Y_%I:%M:%S",timeinfo);
+        std::string str(buffer);
+        return str;
+    }
+
     void movePlanesToPreviousVector(vector<Plane> &planeVectorPreviousFrame, vector<Plane> &planeVectorCurrentFrame) {
 //        cout<<"before"<<endl<<endl;
 //        cout<<"previous size: "<<planeVectorPreviousFrame.size()<<endl;
