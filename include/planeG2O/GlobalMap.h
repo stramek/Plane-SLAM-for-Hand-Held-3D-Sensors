@@ -36,8 +36,6 @@ private:
 
     std::unordered_map<long, Plane> globalMapPlanes;
 
-    bool isSimilarPlaneExists(Plane &plane);
-
     bool isAngleBetweenPlanesValid(Plane &plane1, Plane &plane2);
 
     bool isDistanceBetweenPlanesValid(Plane &plane1, Plane &plane2);
