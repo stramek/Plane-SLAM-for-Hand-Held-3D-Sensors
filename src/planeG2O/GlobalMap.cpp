@@ -29,7 +29,7 @@ Plane GlobalMap::getPlaneById(long id) {
 long GlobalMap::getIdByPlane(Plane &plane) {
     for (auto &mapPlane : globalMapPlanes) {
         if (isAngleBetweenPlanesValid(plane, mapPlane.second)
-            && isDistanceBetweenPlanesValid(plane, mapPlane.second)
+            /*&& isDistanceBetweenPlanesValid(plane, mapPlane.second)*/
             && isHueDiffValid(plane, mapPlane.second)) {
             return mapPlane.second.getId();
         }
