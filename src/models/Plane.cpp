@@ -269,3 +269,11 @@ void Plane::updatePlaneParameters(Plane &plane) {
     planeNormalVec = plane.getPlaneNormalVec();
 }
 
+bool Plane::isWasMatched() const {
+    return wasMatched;
+}
+
+void Plane::setWasMatched(bool wasMatched) {
+    Plane::wasMatched = wasMatched;
+}
+

@@ -117,6 +117,15 @@ private:
     bool valid = false;
     void computePlaneEquation(const Vector3d &point1, const Vector3d &point2, const Vector3d &point3);
 
+    bool wasMatched = false;
+public:
+    void setWasMatched(bool wasMatched);
+
+public:
+    bool isWasMatched() const;
+
+private:
+
     Vector3d meanPoint = Vector3d(0, 0, 0);
 };
 
