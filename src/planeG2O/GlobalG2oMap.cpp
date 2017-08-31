@@ -2,6 +2,7 @@
 // Created by stramek on 25.08.17.
 //
 
+#include <include/planeG2O/MatchPlanesG2o.h>
 #include "include/planeG2O/GlobalG2oMap.h"
 
 
@@ -89,36 +90,30 @@ void GlobalG2oMap::addNextFramePlanes(vector<Plane> &planes) {
 
     optimizerMin.addVertex(curV);
 
+    MatchPlanesG2o matchPlanesG2o;
+    matchPlanesG2o.setLastPosOrient(lastPosOrient);
+
     vector<Plane> globalPlanes = GlobalMap::getInstance().getGlobalMapVector();
+    vector<pair<Plane, Plane>> matchedPlanes = matchPlanesG2o.getSimilarPlanes(globalPlanes, planes);
 
 //    vector<Plane> framePlanesConv;
 
-    //cout << "Initial posOrient is: " << endl;
+    //cout << "Initial lastPosOrient is: " << endl;
     //lastPosOrient.print();
 
-    for (auto &plane : planes) {
-//        framePlanesConv.push_back(plane.getPlaneSeenFromGlobalCamera(lastPosOrient));
-        tuple<long, bool, Plane> status = GlobalMap::getInstance().addPlaneToMap(plane, lastPosOrient, positionNumber);
-        if (get<1>(status)) {
-            //Plane tmpPlane = plane.getPlaneSeenFromGlobalCamera(lastPosOrient);
-            g2o::VertexPlaneQuat *curV1 = new g2o::VertexPlaneQuat();
-            curV1->setEstimate(normAndDToQuat(get<2>(status).getD(), get<2>(status).getPlaneNormalVec()));
-            cout<<"Adding VertexPlaneQuat id = " << get<0>(status) <<endl;
-            curV1->setId((int) get<0>(status));
-            optimizerMin.addVertex(curV1);
-        }
-
+    for (auto &planePair : matchedPlanes) {
         //add edge to graph
         g2o::EdgeSE3Plane *curEdge = new g2o::EdgeSE3Plane();
         curEdge->setVertex(0, optimizerMin.vertex(CAMERA_POS_INDEXES_SHIFT + positionNumber));
-        curEdge->setVertex(1, optimizerMin.vertex((int) get<0>(status)));
+        curEdge->setVertex(1, optimizerMin.vertex(planePair.first.getId()));
 
-        curEdge->setMeasurement(normAndDToQuat(plane.getD(), plane.getPlaneNormalVec()));
+        curEdge->setMeasurement(normAndDToQuat(planePair.second.getD(), planePair.second.getPlaneNormalVec()));
 
         curEdge->setInformation(Eigen::Matrix<double, 3, 3>::Identity());
 
         optimizerMin.addEdge(curEdge);
     }
+
 
     optimizerMin.setVerbose(false);
     optimizerMin.initializeOptimization();
@@ -130,7 +125,7 @@ void GlobalG2oMap::addNextFramePlanes(vector<Plane> &planes) {
     //poseVect = -poseVect;
     //poseVect[6] = -poseVect[6];
     lastPosOrient.setPosOrient(poseVect);
-    cout << endl << "Setting new posOrient to..." << endl;
+    cout << endl << "Setting new lastPosOrient to..." << endl;
     lastPosOrient.print();
 
     for (int i = 0; i < GlobalMap::getInstance().getCurrentId(); ++i) {

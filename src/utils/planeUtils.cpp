@@ -212,11 +212,14 @@ namespace planeUtils {
         double angle12 = plane1.getAngleBetweenTwoPlanes(plane2);
         double angle13 = plane1.getAngleBetweenTwoPlanes(plane3);
         double angle23 = plane2.getAngleBetweenTwoPlanes(plane3);
-        if ((angle12 >= VALID_ANGLE_BETWEEN_PLANES && angle12 <= (180 - VALID_ANGLE_BETWEEN_PLANES)) &&
-            (angle13 >= VALID_ANGLE_BETWEEN_PLANES && angle13 <= (180 - VALID_ANGLE_BETWEEN_PLANES)) &&
-            (angle23 >= VALID_ANGLE_BETWEEN_PLANES && angle23 <= (180 - VALID_ANGLE_BETWEEN_PLANES))) {
-            return true;
-        }
-        return false;
+        float colorDifference12 = abs(plane1.getColor().getHue() - plane2.getColor().getHue());
+        float colorDifference13 = abs(plane1.getColor().getHue() - plane3.getColor().getHue());
+        float colorDifference23 = abs(plane2.getColor().getHue() - plane3.getColor().getHue());
+        return (angle12 >= VALID_ANGLE_BETWEEN_PLANES && angle12 <= (180 - VALID_ANGLE_BETWEEN_PLANES)) &&
+               (angle13 >= VALID_ANGLE_BETWEEN_PLANES && angle13 <= (180 - VALID_ANGLE_BETWEEN_PLANES)) &&
+               (angle23 >= VALID_ANGLE_BETWEEN_PLANES && angle23 <= (180 - VALID_ANGLE_BETWEEN_PLANES)) &&
+         colorDifference12 <= MAX_SIMILARITY_GLOBAL_MAP_VALUE &&
+         colorDifference13 <= MAX_SIMILARITY_GLOBAL_MAP_VALUE &&
+         colorDifference23 <= MAX_SIMILARITY_GLOBAL_MAP_VALUE;
     }
 }

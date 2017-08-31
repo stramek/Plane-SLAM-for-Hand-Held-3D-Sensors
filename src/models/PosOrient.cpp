@@ -49,3 +49,23 @@ Quaterniond PosOrient::getQuaternion() {
 Vector3d PosOrient::getPosition() {
     return position;
 }
+
+pair<Vector3d, Vector3d> PosOrient::minus(PosOrient &posOrient) {
+    Vector3d positionDif = position - posOrient.getPosition();
+    Matrix<double, 3, 3> rotDifMat = posOrient.getQuaternion().toRotationMatrix().inverse() * getQuaternion().toRotationMatrix();
+    Vector3d rotationDiff = fromRotationMat(rotDifMat);
+    for (int i = 0; i < 3; ++i) {
+        rotationDiff(i) = abs(rotationDiff(i));
+        positionDif(i) = abs(positionDif(i));
+    }
+    return pair<Vector3d, Vector3d>(positionDif, rotationDiff);
+}
+
+/// compute roll/pitch/yaw from rotation matrix
+Vector3d PosOrient::fromRotationMat(const Matrix<double, 3, 3>& pose){
+    Vector3d rpy(Vector3d::Identity());
+    rpy.x() = atan2(pose(2,1), pose(2,2)) * 180.0 / (double) M_PI;
+    rpy.y() = -asin(pose(2,0)) * 180.0 / (double) M_PI;
+    rpy.z() = atan2(pose(1,0), pose(0,0)) * 180.0 / (double) M_PI;
+    return rpy;
+}

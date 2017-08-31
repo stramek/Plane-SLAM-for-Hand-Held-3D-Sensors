@@ -27,9 +27,12 @@ public:
     void printDiff(const PosOrient &posOrient);
     Quaterniond getQuaternion();
     Vector3d getPosition();
+    pair<Vector3d, Vector3d> minus(PosOrient &posOrient);
 private:
     Vector3d position;
     Vector4d orientation;
+
+    Vector3d fromRotationMat(const Matrix<double, 3, 3>& pose);
 };
 
 #endif //PROJEKTMAGISTERSKI_POSORIENT_H
