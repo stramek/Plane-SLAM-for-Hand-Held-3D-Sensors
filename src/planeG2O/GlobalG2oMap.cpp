@@ -51,7 +51,7 @@ void GlobalG2oMap::initializeFirstFrame(vector<Plane> &planes) {
 
     for (Plane &plane : planes) {
 
-        tuple<long, bool, Plane> status = GlobalMap::getInstance().addPlaneToMap(plane, lastPosOrient);
+        tuple<long, bool, Plane> status = GlobalMap::getInstance().addPlaneToMap(plane, lastPosOrient, positionNumber);
 
         if (get<1>(status)) {
             //add planes to graph
@@ -98,7 +98,7 @@ void GlobalG2oMap::addNextFramePlanes(vector<Plane> &planes) {
 
     for (auto &plane : planes) {
 //        framePlanesConv.push_back(plane.getPlaneSeenFromGlobalCamera(lastPosOrient));
-        tuple<long, bool, Plane> status = GlobalMap::getInstance().addPlaneToMap(plane, lastPosOrient);
+        tuple<long, bool, Plane> status = GlobalMap::getInstance().addPlaneToMap(plane, lastPosOrient, positionNumber);
         if (get<1>(status)) {
             //Plane tmpPlane = plane.getPlaneSeenFromGlobalCamera(lastPosOrient);
             g2o::VertexPlaneQuat *curV1 = new g2o::VertexPlaneQuat();
@@ -120,13 +120,15 @@ void GlobalG2oMap::addNextFramePlanes(vector<Plane> &planes) {
         optimizerMin.addEdge(curEdge);
     }
 
-    optimizerMin.setVerbose(true);
+    optimizerMin.setVerbose(false);
     optimizerMin.initializeOptimization();
-    optimizerMin.optimize(300);
+    optimizerMin.optimize(100);
 
     g2o::VertexSE3Quat *curPoseVert = static_cast<g2o::VertexSE3Quat *>(optimizerMin.vertex(
             CAMERA_POS_INDEXES_SHIFT + positionNumber));
     g2o::Vector7d poseVect = curPoseVert->estimate().toVector();
+    //poseVect = -poseVect;
+    //poseVect[6] = -poseVect[6];
     lastPosOrient.setPosOrient(poseVect);
     cout << endl << "Setting new posOrient to..." << endl;
     lastPosOrient.print();
@@ -154,7 +156,6 @@ void GlobalG2oMap::addNextFramePlanes(vector<Plane> &planes) {
     }
     string s = "output" + to_string(positionNumber) + ".g2o";
     optimizerMin.save(s.c_str());
-    getchar();
 }
 
 const PosOrient &GlobalG2oMap::getLastPosOrient() const {

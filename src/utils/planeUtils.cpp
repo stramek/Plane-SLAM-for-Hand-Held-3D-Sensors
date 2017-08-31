@@ -57,6 +57,39 @@ namespace planeUtils {
         return toReturn;
     }
 
+    void visualizePlaneLocations(vector<Plane> planes, Plane planeToAnalyze, const Mat &previousImage,
+                                const Mat &currentImage, int limitPoints) {
+        Size previousImageSize = previousImage.size();
+        Size currentImageSize = currentImage.size();
+        Mat merged(previousImageSize.height, previousImageSize.width + currentImageSize.width, CV_8UC3);
+        Mat left(merged, Rect(0, 0, previousImageSize.width, previousImageSize.height));
+        previousImage.copyTo(left);
+        Mat right(merged, Rect(previousImageSize.width, 0, currentImageSize.width, currentImageSize.height));
+        currentImage.copyTo(right);
+
+        RNG rng(12345);
+        int pointNumber = 0;
+
+        Scalar color1 = Scalar(rng.uniform(150, 255), rng.uniform(150, 255), rng.uniform(150, 255));
+        Point currentPlanePoint = Point(previousImageSize.width + planeToAnalyze.getImageCoords().getCenterX(),
+                                        planeToAnalyze.getImageCoords().getCenterY());
+        int size1 = planeToAnalyze.getImageCoords().getAreaSize() / 2;
+        circle(merged, currentPlanePoint, size1, color1, 2);
+
+        for (Plane &plane : planes) {
+            ImageCoords previousImageCoords = plane.getImageCoords();
+            Point previousPlanePoint = Point(previousImageCoords.getCenterX(), previousImageCoords.getCenterY());
+            int size = previousImageCoords.getAreaSize() / 2;
+            Scalar color = Scalar(rng.uniform(150, 255), rng.uniform(150, 255), rng.uniform(150, 255));
+            circle(merged, previousPlanePoint, size, color, 2);
+            if (pointNumber >= limitPoints) break;
+        }
+
+        imshow("PlaneLocations", merged);
+
+        waitKey(1);
+    }
+
     void visualizeSimilarPlanes(vector<pair<Plane, Plane>> &similarPlanes, const Mat &previousImage,
                                 const Mat &currentImage, int limitPoints) {
         Size previousImageSize = previousImage.size();

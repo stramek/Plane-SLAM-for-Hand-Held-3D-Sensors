@@ -13,7 +13,7 @@ class GlobalMap {
 public:
     static GlobalMap &getInstance();
 
-    tuple<long, bool, Plane> addPlaneToMap(Plane &plane, PosOrient &posOrient);
+    tuple<long, bool, Plane> addPlaneToMap(Plane &plane, PosOrient &posOrient, int positionNumber = 0);
 
     const unordered_map<long, Plane> &getGlobalMapPlanes() const;
 

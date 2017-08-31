@@ -49,6 +49,7 @@ namespace planeUtils {
     double getDistanceBetweenTwoPlanes(const Plane &firstPlane, const Plane &secondPlane);
     bool arePlanesValid(vector<Plane> &planes);
     bool arePlanesValid(const Plane &plane1, const Plane &plane2, const Plane &plane3);
+    void visualizePlaneLocations(vector<Plane> planes, Plane planeToAnalyze, const Mat &previousImage, const Mat &currentImage, int limitPoints = INT_MAX);
 }
 
 #endif //PROJEKTMAGISTERSKI_PLANEUTILS_H

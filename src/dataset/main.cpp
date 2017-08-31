@@ -14,7 +14,7 @@ int main(int argc, char **argv) {
     QApplication application(argc, argv);
     glutInit(&argc, argv);
 
-    ImageLoader imageLoader(50);
+    ImageLoader imageLoader(881);
 
     vector<Plane> planeVectorPreviousFrame;
     vector<Plane> planeVectorCurrentFrame;
@@ -27,18 +27,20 @@ int main(int argc, char **argv) {
     utils::loadDatasetPositions(idealSlamPositions);
     ofstream trajectoryFile;
 
-    trajectoryFile.open("trajectories/trajectory_" + utils::getCurrentDate() + ".txt", ofstream::out | ofstream::trunc);
+    string currentDate = utils::getCurrentDate();
     GlobalG2oMap globalG2oMap;
 
     int numberOfIterations = 50;
     for (int i = 0; i < numberOfIterations; ++i) {
+        trajectoryFile.open("trajectories/trajectory_" + currentDate + ".txt", std::ios_base::app);
+
         ImagePair currentFrame = imageLoader.getNextPair();
 
         make_unique<PlaneFillerBuilder>()
                 ->withDataset(&currentFrame)
                 ->withPlaneDetector(new PcaPlaneDetector())
                 ->withAreaSize(35)
-                ->withNumberOfPoints(400)
+                ->withNumberOfPoints(2000)
                 ->withPreviousPlanePercent(&planeVectorPreviousFrame, 0.5)
                 ->build()
                 ->fillVector(&planeVectorCurrentFrame);
@@ -81,8 +83,9 @@ int main(int argc, char **argv) {
         } else {
             cout<<"Frame number"<<i + 1<<"is NOT valid!";
         }*/
+        trajectoryFile.close();
     }
-    trajectoryFile.close();
+
     cout<<"Done XD"<<endl;
 
     return application.exec();
