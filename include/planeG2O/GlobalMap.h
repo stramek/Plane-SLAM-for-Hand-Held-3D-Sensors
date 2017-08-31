@@ -15,6 +15,8 @@ public:
 
     pair<long, bool> addPlaneToMap(Plane &plane, PosOrient &posOrient);
 
+    void addPlaneToMapWithoutCheck(Plane &plane);
+
     const unordered_map<long, Plane> &getGlobalMapPlanes() const;
 
     vector<Plane> getGlobalMapVector() const;

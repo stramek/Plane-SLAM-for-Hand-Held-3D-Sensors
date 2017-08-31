@@ -105,6 +105,8 @@ public:
 
     void updatePlaneParameters(Plane &plane);
     Plane getPlaneSeenFromGlobalCamera(PosOrient &posOrient);
+    Vector4d getPlaneParameterInLocalPos(PosOrient &posOrient);
+    void transformPointsToGlobal(PosOrient &posOrient);
 private:
     long id = -1;
     double A, B, D, C;
@@ -117,6 +119,13 @@ private:
     void computePlaneEquation(const Vector3d &point1, const Vector3d &point2, const Vector3d &point3);
 
     Vector3d meanPoint = Vector3d(0, 0, 0);
+
+    bool wasMatched = false;
+public:
+    void setWasMatched(bool wasMatched);
+
+public:
+    bool isWasMatched() const;
 };
 
 #endif /* Plane_h */

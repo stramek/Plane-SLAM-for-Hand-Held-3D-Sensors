@@ -31,14 +31,14 @@ int main(int argc, char **argv) {
     trajectoryFile.open("trajectoryMap.txt", ofstream::out | ofstream::trunc);
     GlobalG2oMap globalG2oMap;
 
-    for (int i = 0; i < 50; ++i) {
+    for (int i = 0; i < 5; ++i) {
         ImagePair currentFrame = imageLoader.getNextPair();
 
         make_unique<PlaneFillerBuilder>()
                 ->withDataset(&currentFrame)
                 ->withPlaneDetector(new PcaPlaneDetector())
                 ->withAreaSize(35)
-                ->withNumberOfPoints(1000)
+                ->withNumberOfPoints(200)
                 ->withPreviousPlanePercent(&planeVectorPreviousFrame, 0.5)
                 ->build()
                 ->fillVector(&planeVectorCurrentFrame);
@@ -50,6 +50,7 @@ int main(int argc, char **argv) {
                 globalG2oMap.initializeFirstFrame(planeVectorCurrentFrame);
             } else {
                 globalG2oMap.addNextFramePlanes(planeVectorCurrentFrame);
+                cout << "Ok!" << endl;
             }
         } else {
             cout<<"**********************************"<<endl;
@@ -58,7 +59,7 @@ int main(int argc, char **argv) {
         }
 
 
-
+        std::cout << "Iteration number: " << i << std::endl;
         PosOrient posOrient = globalG2oMap.getLastPosOrient();
         Vector3d position = posOrient.getPosition();
         Quaterniond q  = posOrient.getQuaternion();

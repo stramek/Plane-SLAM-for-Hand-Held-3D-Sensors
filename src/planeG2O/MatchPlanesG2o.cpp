@@ -22,15 +22,27 @@ vector<pair<Plane, Plane>> MatchPlanesG2o::getSimilarPlanes(vector<Plane> &previ
                         pair<Plane, Plane> planesPair(previousFrame.at(i[k]), currentFrame.at(j[k]));
                         matchedPlanes.push_back(planesPair);
                     }
-                    cout << counter << endl;
+                    //cout << counter << endl;
                     counter++;
                     posOrient = planeG2o.ComputeCameraPos(matchedPlanes);
                     if (validateMatch(matchedPlanes, posOrient)) {
                         matchRemainingPlanes(matchedPlanes, i, j, previousFrame, currentFrame, posOrient);
+                        unmachedPlanes.clear();
+                        for (auto &plane : currentFrame) {
+                            if (!plane.isWasMatched()){
+                                unmachedPlanes.push_back(plane);
+                            }
+                        }
                         return matchedPlanes;
                     }
                 }
             }
+        }
+    }
+    unmachedPlanes.clear();
+    for (auto &plane : currentFrame) {
+        if (!plane.isWasMatched()){
+            unmachedPlanes.push_back(plane);
         }
     }
     cout << "Matched failed!" << endl;
@@ -75,7 +87,7 @@ bool MatchPlanesG2o::validateMatch(vector<pair<Plane, Plane>> &matchedPlanes, Po
     for(auto &pair : matchedPlanes) {
         Vector3d vectorAfterRot;
         vectorAfterRot = q.toRotationMatrix() * pair.first.getPlaneNormalVec();
-        cout<< "Angle between vectors: " << getAngleBetweenTwoVectors(vectorAfterRot, pair.second.getPlaneNormalVec()) << endl;
+        //cout<< "Angle between vectors: " << getAngleBetweenTwoVectors(vectorAfterRot, pair.second.getPlaneNormalVec()) << endl;
         if (getAngleBetweenTwoVectors(vectorAfterRot, pair.second.getPlaneNormalVec()) >  MaxAngleDiffrence)
             return false;
     }
@@ -103,25 +115,32 @@ Vector3d MatchPlanesG2o::fromRotationMat(const Mat33& pose){
 
 void MatchPlanesG2o::matchRemainingPlanes(vector<pair<Plane, Plane>> &matchedPlanes, Eigen::Vector3i &matchedIndexesPrevPlane,
                                           Eigen::Vector3i &matchedIndexesCurPlane, const vector<Plane> &previousFrame,
-                                          const vector<Plane> &currentFrame, const PosOrient &posOrient){
+                                          vector<Plane> &currentFrame, const PosOrient &posOrient){
     int prevPlaneIterCounter = 0;
-    for (auto prevPlane : previousFrame) {
+    for (auto &prevPlane : previousFrame) {
         int curPlaneIterCounter = 0;
-        for (auto curPlane : currentFrame) {
+        for (auto &curPlane : currentFrame) {
             if (matchedIndexesPrevPlane(0) != prevPlaneIterCounter && matchedIndexesPrevPlane(1) != prevPlaneIterCounter &&
                 matchedIndexesPrevPlane(2) != prevPlaneIterCounter) {
                 if (matchedIndexesCurPlane(0) != curPlaneIterCounter && matchedIndexesCurPlane(1) != curPlaneIterCounter &&
                     matchedIndexesCurPlane(2) != curPlaneIterCounter) {
                     if (getAngleBetweenTwoVectors(prevPlane.getPlaneNormalVec(), curPlane.getPlaneNormalVec()) <  MaxAngleDiffrence) {
-                        if (planeUtils::getDistanceBetweenTwoPlanes(prevPlane, curPlane) < CLUSTERING_MAX_DISTANCE_THRESHOLD) {
+                        //if (planeUtils::getDistanceBetweenTwoPlanes(prevPlane, curPlane) < CLUSTERING_MAX_DISTANCE_THRESHOLD) {
                             pair<Plane, Plane> planesPair(prevPlane, curPlane);
                             matchedPlanes.push_back(planesPair);
-                        }
+                            curPlane.setWasMatched(true);
+                        //}
                     }
+                } else{
+                    curPlane.setWasMatched(true);
                 }
             }
             ++curPlaneIterCounter;
         }
         ++prevPlaneIterCounter;
     }
+}
+
+vector<Plane> &MatchPlanesG2o::getUnmachedPlanes() {
+    return unmachedPlanes;
 }

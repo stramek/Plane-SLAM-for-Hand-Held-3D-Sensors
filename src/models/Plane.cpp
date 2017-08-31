@@ -248,9 +248,37 @@ Plane Plane::getPlaneSeenFromGlobalCamera(PosOrient &posOrient) {
     plane.planeNormalVec(1) = plane.B;
     plane.planeNormalVec(2) = plane.C;
 
+    plane.transformPointsToGlobal(posOrient);
+
     return plane;
 }
 
+Vector4d Plane::getPlaneParameterInLocalPos(PosOrient &posOrient) {
+    Quaterniond q = posOrient.getQuaternion();
+    auto rotMatrix = q.toRotationMatrix();
+    Matrix4d matrix4d;
+    Vector3d meanPoint = getMeanPoint();
+    Vector4d meanPoint4;
+    matrix4d.setZero();
+
+    matrix4d.topLeftCorner(3, 3) = rotMatrix;
+    matrix4d.topRightCorner(3, 1) = posOrient.getPosition();
+    matrix4d(3, 3) = 1;
+    meanPoint4.topRightCorner(3, 1) = meanPoint;
+    meanPoint4(3) = 1;
+    Vector3d norm = rotMatrix * getPlaneNormalVec();
+    Vector4d newPosition = matrix4d * meanPoint4;
+
+    Vector4d toReturn;
+
+    toReturn(0) = norm(0);
+    toReturn(1)= norm(1);
+    toReturn(2) = norm(2);
+    toReturn(3) = A * newPosition(0) + B * newPosition(1) + C * newPosition(2);
+
+
+    return toReturn;
+}
 
 
 void Plane::updatePlaneParameters(Plane &plane) {
@@ -261,3 +289,20 @@ void Plane::updatePlaneParameters(Plane &plane) {
     planeNormalVec = plane.getPlaneNormalVec();
 }
 
+
+void Plane::transformPointsToGlobal(PosOrient &posOrient) {
+    Quaterniond q = posOrient.getQuaternion().conjugate();
+    auto rotMatrix = q.toRotationMatrix();
+    auto translation = -posOrient.getPosition();
+    for (auto &point : points) {
+        point.position = rotMatrix * point.position + translation;
+    }
+}
+
+bool Plane::isWasMatched() const {
+    return wasMatched;
+}
+
+void Plane::setWasMatched(bool wasMatched) {
+    Plane::wasMatched = wasMatched;
+}

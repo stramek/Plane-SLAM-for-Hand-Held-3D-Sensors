@@ -22,6 +22,11 @@ pair<long, bool> GlobalMap::addPlaneToMap(Plane &plane, PosOrient &posOrient) {
     }
 }
 
+void GlobalMap::addPlaneToMapWithoutCheck(Plane &plane) {
+    assignIdToPlane(plane);
+    globalMapPlanes.insert(pair<long, Plane>(plane.getId(), plane));
+}
+
 Plane GlobalMap::getPlaneById(long id) {
     return getGlobalMapPlanes().at(id);
 }

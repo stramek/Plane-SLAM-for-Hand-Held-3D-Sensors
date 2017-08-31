@@ -18,6 +18,11 @@ public:
 private:
     vector<Eigen::Vector3i> previousFramePlanesIndexes;
     vector<Eigen::Vector3i> currentFramePlanesIndexes;
+    vector<Plane> unmachedPlanes;
+public:
+    vector<Plane> &getUnmachedPlanes();
+
+private:
 
     void computePreviousFramePlanesIndexes(vector<Plane> &previousFrame);
     void computeCurrentFramePlanesIndexes(vector<Plane> &currentFrame);
@@ -26,11 +31,11 @@ private:
     Vector3d fromRotationMat(const Mat33& pose);
     void matchRemainingPlanes(vector<pair<Plane, Plane>> &matchedPlanes, Eigen::Vector3i &matchedIndexesPrevPlane,
                               Eigen::Vector3i &matchedIndexesCurPlane, const vector<Plane> &previousFrame,
-                              const vector<Plane> &currentFrame, const PosOrient &posOrient);
+                              vector<Plane> &currentFrame, const PosOrient &posOrient);
 
-    const double MaxAngleDiffrence = 5.0;
-    const double MaxRotTransformation = 5.0;
-    const double MaxPosTransformation = 0.05;
+    const double MaxAngleDiffrence = 7.0;
+    const double MaxRotTransformation = 7.0;
+    const double MaxPosTransformation = 0.08;
 };
 
 
