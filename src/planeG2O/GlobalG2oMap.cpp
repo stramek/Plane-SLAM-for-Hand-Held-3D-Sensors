@@ -120,7 +120,7 @@ void GlobalG2oMap::addNextFramePlanes(vector<Plane> &planes) {
         optimizerMin.addEdge(curEdge);
     }
 
-    optimizerMin.setVerbose(false);
+    optimizerMin.setVerbose(true);
     optimizerMin.initializeOptimization();
     optimizerMin.optimize(300);
 
@@ -152,7 +152,9 @@ void GlobalG2oMap::addNextFramePlanes(vector<Plane> &planes) {
         plane.setId(curPlaneVert->id());
         GlobalMap::getInstance().updatePlane(plane);
     }
-    optimizerMin.save("output.txt");
+    string s = "output" + to_string(positionNumber) + ".g2o";
+    optimizerMin.save(s.c_str());
+    getchar();
 }
 
 const PosOrient &GlobalG2oMap::getLastPosOrient() const {
