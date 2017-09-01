@@ -106,14 +106,18 @@ void MatchPlanesG2o::matchRemainingPlanes(vector<pair<Plane, Plane>> &matchedPla
                     matchedIndexesCurPlane(2) != curPlaneIterCounter) {
                     if (getAngleBetweenTwoVectors(prevPlane.getPlaneNormalVec(), curPlane.getPlaneNormalVec()) <  MAX_ANGLE_BETWEEN_PLANES_GLOBAL_MAP) {
                         if (abs(prevPlane.getColor().getHue() - curPlane.getColor().getHue())) {
-                            pair<Plane, Plane> planesPair(prevPlane, curPlane);
-                            matchedPlanes.push_back(planesPair);
-                            curPlane.setWasMatched(true);
+                            if(!curPlane.isWasMatched()){
+                                curPlane.setWasMatched(true);
+                                pair<Plane, Plane> planesPair(prevPlane, curPlane);
+                                matchedPlanes.push_back(planesPair);
+                            }
                         }
                     }
                 } else {
                     curPlane.setWasMatched(true);
                 }
+            } else {
+                curPlane.setWasMatched(true);
             }
             ++curPlaneIterCounter;
         }
