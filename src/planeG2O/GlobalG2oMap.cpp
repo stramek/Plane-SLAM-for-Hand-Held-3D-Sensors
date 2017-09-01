@@ -95,6 +95,17 @@ void GlobalG2oMap::addNextFramePlanes(vector<Plane> &planes) {
 
     vector<Plane> globalPlanes = GlobalMap::getInstance().getGlobalMapVector();
     vector<pair<Plane, Plane>> matchedPlanes = matchPlanesG2o.getSimilarPlanes(globalPlanes, planes);
+    vector<Plane> unmatchedPlanes = matchPlanesG2o.getUnmatchedPlanes();
+
+    ImageLoader imageLoader(50);
+    imageLoader.getNextPair();
+    ImagePair currentFrame = imageLoader.getNextPair(positionNumber);
+
+    planeUtils::visualizeSimilarPlanes(matchedPlanes, currentFrame.getRgb(), currentFrame.getRgb());
+    if (unmatchedPlanes.size() > 0)
+        planeUtils::visualizePlaneLocations(unmatchedPlanes, unmatchedPlanes.at(0), currentFrame.getRgb(), currentFrame.getRgb());
+
+    waitKey();
 
 //    vector<Plane> framePlanesConv;
 
@@ -114,7 +125,6 @@ void GlobalG2oMap::addNextFramePlanes(vector<Plane> &planes) {
         optimizerMin.addEdge(curEdge);
     }
 
-    vector<Plane> unmatchedPlanes = matchPlanesG2o.getUnmatchedPlanes();
 
     for(auto &plane : unmatchedPlanes) {
         tuple<long, bool, Plane> status = GlobalMap::getInstance().addPlaneToMap(plane, lastPosOrient, positionNumber);
