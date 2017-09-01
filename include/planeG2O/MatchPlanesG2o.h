@@ -22,6 +22,7 @@ private:
     vector<Plane> unmatchedPlanes;
 public:
     vector<Plane> &getUnmatchedPlanes();
+    bool areColorValid(vector<pair<Plane, Plane>> &matchedPlanes);
 
 private:
 
@@ -30,8 +31,8 @@ private:
     bool validateMatch(vector<pair<Plane, Plane>> &matchedPlanes, PosOrient &posOrient);
     double getAngleBetweenTwoVectors(const Vector3d &v1, const Vector3d &v2);
     void matchRemainingPlanes(vector<pair<Plane, Plane>> &matchedPlanes, Eigen::Vector3i &matchedIndexesPrevPlane,
-                              Eigen::Vector3i &matchedIndexesCurPlane, const vector<Plane> &previousFrame,
-                              const vector<Plane> &currentFrame, const PosOrient &posOrient);
+                              Eigen::Vector3i &matchedIndexesCurPlane, vector<Plane> &previousFrame,
+                              vector<Plane> &currentFrame, const PosOrient &posOrient);
 
     PosOrient lastPosOrient;
 public:

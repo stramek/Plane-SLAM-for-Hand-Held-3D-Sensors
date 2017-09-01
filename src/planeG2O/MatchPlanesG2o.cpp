@@ -15,36 +15,36 @@ vector<pair<Plane, Plane>> MatchPlanesG2o::getSimilarPlanes(vector<Plane> &previ
     for (auto i : previousFramePlanesIndexes) {
         if (planeUtils::arePlanesValid(previousFrame.at(i[0]), previousFrame.at(i[1]), previousFrame.at(i[2]))) {
             for (auto j : currentFramePlanesIndexes) {
-                if (planeUtils::arePlanesValid(currentFrame.at(j[0]), currentFrame.at(j[1]),
-                                               currentFrame.at(j[2]))) {
+                if (planeUtils::arePlanesValid(currentFrame.at(j[0]), currentFrame.at(j[1]), currentFrame.at(j[2])) &&
+                    planeUtils::arePlanesValid(previousFrame.at(i[0]), previousFrame.at(i[1]), previousFrame.at(i[2]))) {
                     vector<pair<Plane, Plane>> matchedPlanes;
                     for (int k = 0; k < 3; ++k) {
                         pair<Plane, Plane> planesPair(previousFrame.at(i[k]), currentFrame.at(j[k]));
                         matchedPlanes.push_back(planesPair);
                     }
-                    cout << counter << endl;
-                    counter++;
-                    posOrient = planeG2o.ComputeCameraPos(matchedPlanes);
-                    if (validateMatch(matchedPlanes, posOrient)) {
-                        matchRemainingPlanes(matchedPlanes, i, j, previousFrame, currentFrame, posOrient);
-                        unmatchedPlanes.clear();
-                        for (auto &plane : currentFrame) {
-                            if (!plane.isWasMatched()){
-                                unmatchedPlanes.push_back(plane);
+                    if(areColorValid(matchedPlanes)){
+                        posOrient = planeG2o.ComputeCameraPos(matchedPlanes);
+                        if (validateMatch(matchedPlanes, posOrient)) {
+                            matchRemainingPlanes(matchedPlanes, i, j, previousFrame, currentFrame, posOrient);
+                            unmatchedPlanes.clear();
+                            for (auto &plane : currentFrame) {
+                                if (!plane.isWasMatched()){
+                                    unmatchedPlanes.push_back(plane);
+                                }
                             }
+                            return matchedPlanes;
                         }
-                        return matchedPlanes;
                     }
                 }
             }
         }
     }
-    unmatchedPlanes.clear();
+/*    unmatchedPlanes.clear();
     for (auto &plane : currentFrame) {
         if (!plane.isWasMatched()){
             unmatchedPlanes.push_back(plane);
         }
-    }
+    }*/
     cout << "Matched failed!" << endl;
     vector<pair<Plane, Plane>> matchedPlanes;
     return matchedPlanes;
@@ -94,18 +94,18 @@ double MatchPlanesG2o::getAngleBetweenTwoVectors(const Vector3d &v1, const Vecto
 }
 
 void MatchPlanesG2o::matchRemainingPlanes(vector<pair<Plane, Plane>> &matchedPlanes, Eigen::Vector3i &matchedIndexesPrevPlane,
-                                          Eigen::Vector3i &matchedIndexesCurPlane, const vector<Plane> &previousFrame,
-                                          const vector<Plane> &currentFrame, const PosOrient &posOrient){
+                                          Eigen::Vector3i &matchedIndexesCurPlane,  vector<Plane> &previousFrame,
+                                           vector<Plane> &currentFrame, const PosOrient &posOrient){
     int prevPlaneIterCounter = 0;
-    for (auto prevPlane : previousFrame) {
+    for (auto &prevPlane : previousFrame) {
         int curPlaneIterCounter = 0;
-        for (auto curPlane : currentFrame) {
+        for (auto &curPlane : currentFrame) {
             if (matchedIndexesPrevPlane(0) != prevPlaneIterCounter && matchedIndexesPrevPlane(1) != prevPlaneIterCounter &&
                 matchedIndexesPrevPlane(2) != prevPlaneIterCounter) {
                 if (matchedIndexesCurPlane(0) != curPlaneIterCounter && matchedIndexesCurPlane(1) != curPlaneIterCounter &&
                     matchedIndexesCurPlane(2) != curPlaneIterCounter) {
                     if (getAngleBetweenTwoVectors(prevPlane.getPlaneNormalVec(), curPlane.getPlaneNormalVec()) <  MAX_ANGLE_BETWEEN_PLANES_GLOBAL_MAP) {
-                        if (abs(prevPlane.getColor().getHue() - curPlane.getColor().getHue())) {
+                        if (abs(prevPlane.getColor().getHue() - curPlane.getColor().getHue()) < MAX_SIMILARITY_GLOBAL_MAP_VALUE) {
                             if(!curPlane.isWasMatched()){
                                 curPlane.setWasMatched(true);
                                 pair<Plane, Plane> planesPair(prevPlane, curPlane);
@@ -116,8 +116,6 @@ void MatchPlanesG2o::matchRemainingPlanes(vector<pair<Plane, Plane>> &matchedPla
                 } else {
                     curPlane.setWasMatched(true);
                 }
-            } else {
-                curPlane.setWasMatched(true);
             }
             ++curPlaneIterCounter;
         }
@@ -131,4 +129,12 @@ void MatchPlanesG2o::setLastPosOrient(const PosOrient &posOrient) {
 
 vector<Plane> &MatchPlanesG2o::getUnmatchedPlanes() {
     return unmatchedPlanes;
+}
+
+bool MatchPlanesG2o::areColorValid(vector<pair<Plane, Plane>> &matchedPlanes) {
+    for(auto &planePair : matchedPlanes) {
+         if(abs(planePair.first.getColor().getHue() - planePair.second.getColor().getHue()) > MAX_SIMILARITY_GLOBAL_MAP_VALUE)
+             return false;
+    }
+    return true;
 }

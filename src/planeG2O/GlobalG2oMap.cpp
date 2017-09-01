@@ -101,9 +101,8 @@ void GlobalG2oMap::addNextFramePlanes(vector<Plane> &planes) {
     imageLoader.getNextPair();
     ImagePair currentFrame = imageLoader.getNextPair(positionNumber);
 
-    planeUtils::visualizeSimilarPlanes(matchedPlanes, currentFrame.getRgb(), currentFrame.getRgb());
-    if (unmatchedPlanes.size() > 0)
-        planeUtils::visualizePlaneLocations(unmatchedPlanes, unmatchedPlanes.at(0), currentFrame.getRgb(), currentFrame.getRgb());
+    planeUtils::visualizeSimilarPlanes(matchedPlanes, currentFrame.getRgb(), currentFrame.getRgb())
+    planeUtils::visualizePlaneLocations(unmatchedPlanes, globalPlanes, currentFrame.getRgb(), currentFrame.getRgb());
 
     waitKey();
 
