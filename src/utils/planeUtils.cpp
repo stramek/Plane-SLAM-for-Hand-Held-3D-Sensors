@@ -57,7 +57,7 @@ namespace planeUtils {
         return toReturn;
     }
 
-    void visualizePlaneLocations(vector<Plane> planes, Plane planeToAnalyze, const Mat &previousImage,
+    void visualizePlaneLocations(vector<Plane> planes, vector<Plane> planes2, const Mat &previousImage,
                                 const Mat &currentImage, int limitPoints) {
         Size previousImageSize = previousImage.size();
         Size currentImageSize = currentImage.size();
@@ -70,11 +70,15 @@ namespace planeUtils {
         RNG rng(12345);
         int pointNumber = 0;
 
-        Scalar color1 = Scalar(rng.uniform(150, 255), rng.uniform(150, 255), rng.uniform(150, 255));
-        Point currentPlanePoint = Point(previousImageSize.width + planeToAnalyze.getImageCoords().getCenterX(),
-                                        planeToAnalyze.getImageCoords().getCenterY());
-        int size1 = planeToAnalyze.getImageCoords().getAreaSize() / 2;
-        circle(merged, currentPlanePoint, size1, color1, 2);
+        for (Plane &plane : planes) {
+            Scalar color1 = Scalar(rng.uniform(150, 255), rng.uniform(150, 255), rng.uniform(150, 255));
+            Point currentPlanePoint = Point(previousImageSize.width + plane.getImageCoords().getCenterX(),
+                                            plane.getImageCoords().getCenterY());
+            int size1 = plane.getImageCoords().getAreaSize() / 2;
+            circle(merged, currentPlanePoint, size1, color1, 2);
+            if (pointNumber >= limitPoints) break;
+        }
+
 
         for (Plane &plane : planes) {
             ImageCoords previousImageCoords = plane.getImageCoords();
