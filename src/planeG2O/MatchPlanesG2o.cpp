@@ -27,10 +27,22 @@ vector<pair<Plane, Plane>> MatchPlanesG2o::getSimilarPlanes(vector<Plane> &previ
                     posOrient = planeG2o.ComputeCameraPos(matchedPlanes);
                     if (validateMatch(matchedPlanes, posOrient)) {
                         matchRemainingPlanes(matchedPlanes, i, j, previousFrame, currentFrame, posOrient);
+                        unmatchedPlanes.clear();
+                        for (auto &plane : currentFrame) {
+                            if (!plane.isWasMatched()){
+                                unmatchedPlanes.push_back(plane);
+                            }
+                        }
                         return matchedPlanes;
                     }
                 }
             }
+        }
+    }
+    unmatchedPlanes.clear();
+    for (auto &plane : currentFrame) {
+        if (!plane.isWasMatched()){
+            unmatchedPlanes.push_back(plane);
         }
     }
     cout << "Matched failed!" << endl;
@@ -96,8 +108,11 @@ void MatchPlanesG2o::matchRemainingPlanes(vector<pair<Plane, Plane>> &matchedPla
                         if (abs(prevPlane.getColor().getHue() - curPlane.getColor().getHue())) {
                             pair<Plane, Plane> planesPair(prevPlane, curPlane);
                             matchedPlanes.push_back(planesPair);
+                            curPlane.setWasMatched(true);
                         }
                     }
+                } else {
+                    curPlane.setWasMatched(true);
                 }
             }
             ++curPlaneIterCounter;
@@ -108,4 +123,8 @@ void MatchPlanesG2o::matchRemainingPlanes(vector<pair<Plane, Plane>> &matchedPla
 
 void MatchPlanesG2o::setLastPosOrient(const PosOrient &posOrient) {
     MatchPlanesG2o::lastPosOrient = posOrient;
+}
+
+vector<Plane> &MatchPlanesG2o::getUnmatchedPlanes() {
+    return unmatchedPlanes;
 }

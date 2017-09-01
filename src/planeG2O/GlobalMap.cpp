@@ -11,31 +11,16 @@ GlobalMap &GlobalMap::getInstance() {
 
 tuple<long, bool, Plane> GlobalMap::addPlaneToMap(Plane &plane, PosOrient &posOrient, int positionNumber) {
     Plane transformedPlane = plane.getPlaneSeenFromGlobalCamera(posOrient);
-    long foundId = getIdByPlane(transformedPlane);
 
-    ImageLoader imageLoader(500);
-    imageLoader.getNextPair();
-    ImagePair currentFrame = imageLoader.getNextPair(positionNumber + 1);
 
-    if (foundId == -1) {
-        assignIdToPlane(transformedPlane);
-        planeUtils::visualizePlaneLocations(getGlobalMapVector(), transformedPlane, currentFrame.getRgb(), currentFrame.getRgb());
-        waitKey();
-        globalMapPlanes.insert(pair<long, Plane>(transformedPlane.getId(), transformedPlane));
-        planeUtils::visualizePlaneLocations(getGlobalMapVector(), transformedPlane, currentFrame.getRgb(), currentFrame.getRgb());
-        cout<<"New plane detected! Assigned id = "<<currentId<<endl;
-        return tuple<long, bool, Plane>(currentId, true, transformedPlane);
-    } else {
-        vector<pair<Plane,Plane>> vec;
-        Plane foundPlane = getPlaneById(foundId);
-        vec.push_back(pair<Plane, Plane>(transformedPlane, foundPlane));
-        planeUtils::visualizeSimilarPlanes(vec, currentFrame.getRgb(), currentFrame.getRgb());
-        waitKey();
+    assignIdToPlane(transformedPlane);
 
-        cout<<"Plane already exists! id: "<<foundId<<endl;
-        return tuple<long, bool, Plane>(foundId, false, Plane());
-    }
+    globalMapPlanes.insert(pair<long, Plane>(transformedPlane.getId(), transformedPlane));
+
+
+    return tuple<long, bool, Plane>(transformedPlane.getId(), true, transformedPlane);
 }
+
 
 Plane GlobalMap::getPlaneById(long id) {
     return getGlobalMapPlanes().at(id);

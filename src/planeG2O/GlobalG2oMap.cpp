@@ -114,6 +114,28 @@ void GlobalG2oMap::addNextFramePlanes(vector<Plane> &planes) {
         optimizerMin.addEdge(curEdge);
     }
 
+    vector<Plane> unmatchedPlanes = matchPlanesG2o.getUnmatchedPlanes();
+
+    for(auto &plane : unmatchedPlanes) {
+        tuple<long, bool, Plane> status = GlobalMap::getInstance().addPlaneToMap(plane, lastPosOrient, positionNumber);
+
+        g2o::VertexPlaneQuat *curV2 = new g2o::VertexPlaneQuat();
+        curV2->setEstimate(normAndDToQuat(get<2>(status).getD(), get<2>(status).getPlaneNormalVec()));
+        cout<<"Adding VertexPlaneQuat id = " << get<0>(status) <<endl;
+        curV2->setId((int) get<0>(status));
+        optimizerMin.addVertex(curV2);
+
+        //add edge to graph
+        g2o::EdgeSE3Plane *curEdge = new g2o::EdgeSE3Plane();
+        curEdge->setVertex(0, optimizerMin.vertex(CAMERA_POS_INDEXES_SHIFT + positionNumber));
+        curEdge->setVertex(1, optimizerMin.vertex((int) get<0>(status)));
+
+        curEdge->setMeasurement(normAndDToQuat(plane.getD(), plane.getPlaneNormalVec()));
+
+        curEdge->setInformation(Eigen::Matrix<double, 3, 3>::Identity());
+
+        optimizerMin.addEdge(curEdge);
+    }
 
     optimizerMin.setVerbose(false);
     optimizerMin.initializeOptimization();

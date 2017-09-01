@@ -19,6 +19,12 @@ private:
     vector<Eigen::Vector3i> previousFramePlanesIndexes;
     vector<Eigen::Vector3i> currentFramePlanesIndexes;
 
+    vector<Plane> unmatchedPlanes;
+public:
+    vector<Plane> &getUnmatchedPlanes();
+
+private:
+
     void computePreviousFramePlanesIndexes(vector<Plane> &previousFrame);
     void computeCurrentFramePlanesIndexes(vector<Plane> &currentFrame);
     bool validateMatch(vector<pair<Plane, Plane>> &matchedPlanes, PosOrient &posOrient);
