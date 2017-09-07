@@ -58,3 +58,7 @@ ImagePair ImageLoader::loadNextImage(int offset) {
 int ImageLoader::getNumberOfPhotos() const {
     return numberOfPhotos;
 }
+
+void ImageLoader::setCurrentPhoto(int currentPhoto) {
+    ImageLoader::currentPhoto = currentPhoto;
+}

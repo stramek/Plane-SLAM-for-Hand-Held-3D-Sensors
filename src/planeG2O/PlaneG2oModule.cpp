@@ -74,8 +74,8 @@ PosOrient PlaneG2oModule::ComputeCameraPos(vector<pair<Plane, Plane>> &matchedPl
                 curEdge->setVertex(0, optimizerMin.vertex(j));
                 curEdge->setVertex(1, optimizerMin.vertex(PLANES_INDEXES_SHIFT + i));
                 if(j == 0){
-                    matchedPlanes.at(i).first.print();
-                    matchedPlanes.at(i).second.print();
+//                    matchedPlanes.at(i).first.print();
+//                    matchedPlanes.at(i).second.print();
                     curEdge->setMeasurement(normAndDToQuat(matchedPlanes.at(i).first.getD(), matchedPlanes.at(i).first.getPlaneNormalVec()));
                 }
                 else {
@@ -90,11 +90,11 @@ PosOrient PlaneG2oModule::ComputeCameraPos(vector<pair<Plane, Plane>> &matchedPl
 
         optimizerMin.save("before.g2o");
         optimizerMin.initializeOptimization();
-        cout << "optimization initialized" << endl;
-        optimizerMin.setVerbose(true);
+        //cout << "optimization initialized" << endl;
+        optimizerMin.setVerbose(false);
         optimizerMin.optimize(50);
         optimizerMin.save("after.g2o");
-        cout << "optimization ended" << endl;
+        //cout << "optimization ended" << endl;
 
 
         PosOrient posOrient[2];
@@ -102,7 +102,7 @@ PosOrient PlaneG2oModule::ComputeCameraPos(vector<pair<Plane, Plane>> &matchedPl
             g2o::VertexSE3Quat* curPoseVert = static_cast<g2o::VertexSE3Quat*>(optimizerMin.vertex(i));
             g2o::Vector7d poseVect = curPoseVert->estimate().toVector();
             posOrient[i].setPosOrient(poseVect);
-            posOrient[i].print();
+            //posOrient[i].print();
         }
 
         return posOrient[1];
