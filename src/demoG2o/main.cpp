@@ -121,7 +121,7 @@ int main(int argc, const char *argv[]) {
     cout << "optimizerMin.edges.size() = " << optimizerMin.edges().size() << endl;
     optimizerMin.initializeOptimization();
     cout << "optimization initialized" << endl;
-    optimizerMin.setVerbose(true);
+    optimizerMin.setVerbose(false);
     optimizerMin.optimize(10);
     cout << "optimized" << endl;
     optimizerMin.save("after.g2o");

@@ -26,6 +26,7 @@ void GlobalG2oMap::addNewFrames(vector<Plane> &planes) {
         initialized = true;
     } else {
         addNextFramePlanes(planes);
+        cout<<"Number of planes inside global map: "<<GlobalMap::getInstance().getGlobalMapPlanes().size()<<endl;
     }
 }
 
@@ -44,7 +45,7 @@ void GlobalG2oMap::initializeFirstFrame(vector<Plane> &planes) {
     q.setIdentity();
     g2o::SE3Quat poseSE3Quat(q, trans);
     curV->setEstimate(poseSE3Quat);
-    cout<<"Adding VertexSE3Quat id = " << CAMERA_POS_INDEXES_SHIFT + positionNumber <<endl;
+//    cout<<"Adding VertexSE3Quat id = " << CAMERA_POS_INDEXES_SHIFT + positionNumber <<endl;
     curV->setId(CAMERA_POS_INDEXES_SHIFT + positionNumber);
     curV->setFixed(true);
 
@@ -85,7 +86,7 @@ void GlobalG2oMap::addNextFramePlanes(vector<Plane> &planes) {
     Quaterniond res(lastPosOrient.getQuaternion());
     g2o::SE3Quat poseSE3Quat(res, trans);
     curV->setEstimate(poseSE3Quat);
-    cout<<"Adding VertexSE3Quat id = " << CAMERA_POS_INDEXES_SHIFT + positionNumber <<endl;
+    //cout<<"Adding VertexSE3Quat id = " << CAMERA_POS_INDEXES_SHIFT + positionNumber <<endl;
     curV->setId(CAMERA_POS_INDEXES_SHIFT + positionNumber);
 
     optimizerMin.addVertex(curV);
@@ -93,18 +94,28 @@ void GlobalG2oMap::addNextFramePlanes(vector<Plane> &planes) {
     MatchPlanesG2o matchPlanesG2o;
     matchPlanesG2o.setLastPosOrient(lastPosOrient);
 
+
     vector<Plane> globalPlanes = GlobalMap::getInstance().getGlobalMapVector();
+    for (Plane &plane: globalPlanes) {
+        plane.print();
+    }
+    cout<<"----------------------------------"<<endl;
+    cout<<"Global plane size: "<<globalPlanes.size()<<endl;
     vector<pair<Plane, Plane>> matchedPlanes = matchPlanesG2o.getSimilarPlanes(globalPlanes, planes);
     vector<Plane> unmatchedPlanes = matchPlanesG2o.getUnmatchedPlanes();
+    for (Plane &plane: unmatchedPlanes) {
+        plane.print();
+    }
+    cout<<"Unmatched planes size: "<<unmatchedPlanes.size()<<endl;
 
-    ImageLoader imageLoader(50);
-    imageLoader.getNextPair();
-    ImagePair currentFrame = imageLoader.getNextPair(positionNumber);
+    //ImageLoader imageLoader(50);
+    //imageLoader.getNextPair();
+    //ImagePair currentFrame = imageLoader.getNextPair(positionNumber);
 
-    planeUtils::visualizeSimilarPlanes(matchedPlanes, currentFrame.getRgb(), currentFrame.getRgb())
-    planeUtils::visualizePlaneLocations(unmatchedPlanes, globalPlanes, currentFrame.getRgb(), currentFrame.getRgb());
+    //planeUtils::visualizeSimilarPlanes(matchedPlanes, currentFrame.getRgb(), currentFrame.getRgb());
+    //planeUtils::visualizePlaneLocations(unmatchedPlanes, globalPlanes, currentFrame.getRgb(), currentFrame.getRgb());
 
-    waitKey();
+    //waitKey();
 
 //    vector<Plane> framePlanesConv;
 
@@ -130,7 +141,7 @@ void GlobalG2oMap::addNextFramePlanes(vector<Plane> &planes) {
 
         g2o::VertexPlaneQuat *curV2 = new g2o::VertexPlaneQuat();
         curV2->setEstimate(normAndDToQuat(get<2>(status).getD(), get<2>(status).getPlaneNormalVec()));
-        cout<<"Adding VertexPlaneQuat id = " << get<0>(status) <<endl;
+        //cout<<"Adding VertexPlaneQuat id = " << get<0>(status) <<endl;
         curV2->setId((int) get<0>(status));
         optimizerMin.addVertex(curV2);
 

@@ -23,14 +23,14 @@ int main(int argc, char **argv) {
                         ->withKinect(kinectModule.getRegistration(), kinectFrames.getUndistorted(),
                                      kinectFrames.getRegistered())
                         ->withPlaneDetector(planeDetectorMethod)
-                        ->withAreaSize(31)
-                        ->withNumberOfPoints(400)
+                        ->withAreaSize(51)
+                        ->withNumberOfPoints(300)
                         ->withPreviousPlanePercent(&kinectModule.getPlaneVectorPreviousFrame(), 0.5)
                         ->build()
                         ->fillVector(&kinectModule.getPlaneVectorCurrentFrame());
 
-                kinectModule.visualizePlanes(kinectFrames);
-                kinectModule.notifyNumberOfSimilarPlanes();
+//                kinectModule.visualizePlanes(kinectFrames);
+                //kinectModule.notifyNumberOfSimilarPlanes();
             }
     ));
 

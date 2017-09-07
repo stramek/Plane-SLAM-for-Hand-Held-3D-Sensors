@@ -20,6 +20,8 @@ public:
 
     int getNumberOfPhotos() const;
 
+    void setCurrentPhoto(int currentPhoto);
+
 private:
 
     int numberOfPhotos;

@@ -17,8 +17,8 @@ tuple<long, bool, Plane> GlobalMap::addPlaneToMap(Plane &plane, PosOrient &posOr
 
     globalMapPlanes.insert(pair<long, Plane>(transformedPlane.getId(), transformedPlane));
 
-
     return tuple<long, bool, Plane>(transformedPlane.getId(), true, transformedPlane);
+
 }
 
 
@@ -75,11 +75,11 @@ void GlobalMap::assignIdToPlane(Plane &plane) {
 
 void GlobalMap::updatePlane(Plane &plane) {
     if (plane.getId() == -1) throw runtime_error("MICHAU NIE PRZYDZIELIŁ ID XDDDDDDD");
-    cout<<"------------------------------ Before plane update: ";
-    globalMapPlanes.at(plane.getId()).print();
+    //cout<<"------------------------------ Before plane update: ";
+    //globalMapPlanes.at(plane.getId()).print();
     globalMapPlanes.at(plane.getId()).updatePlaneParameters(plane);
-    cout<<"------------------------------- After plane update: ";
-    globalMapPlanes.at(plane.getId()).print();
+    //cout<<"------------------------------- After plane update: ";
+    //globalMapPlanes.at(plane.getId()).print();
 }
 
 const unordered_map<long, Plane> &GlobalMap::getGlobalMapPlanes() const {

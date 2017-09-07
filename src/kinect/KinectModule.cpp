@@ -2,6 +2,7 @@
 // Created by stramek on 31.05.17.
 //
 #include "include/kinect/KinectModule.h"
+#include <include/planeG2O/GlobalG2oMap.h>
 
 KinectModule::KinectModule() {
 
@@ -40,8 +41,10 @@ void KinectModule::start() {
     registration = new Registration(dev->getIrCameraParams(), dev->getColorCameraParams());
     Frame undistorted(512, 424, 4), registered(512, 424, 4);
 
+    GlobalG2oMap globalG2oMap;
+    ofstream trajectoryFile;
     while (!finishedProgram) {
-        copyPlanesToPreviousFrames();
+        trajectoryFile.open("trajectories/trajectory_SAME_POINT.txt", std::ios_base::app);
 
         listener.waitForNewFrame(frames);
         Frame *rgb = frames[Frame::Color];
@@ -55,11 +58,29 @@ void KinectModule::start() {
 
         mergePlanes(planeDetector);
         lastFrameValid = planeUtils::arePlanesValid(planeVectorCurrentFrame);
-        //if (lastFrameValid) {
+
+        if (lastFrameValid) {
             calculateSimilarPlanes();
-        //} else {
-          //  similarPlanes.clear();
-        //}
+
+//            cout<<"before"<<endl;
+            cout<<"SIZE: "<<planeVectorCurrentFrame.size()<<endl;
+            globalG2oMap.addNewFrames(planeVectorCurrentFrame);
+//            cout<<"after"<<endl;
+            PosOrient posOrient = globalG2oMap.getLastPosOrient();
+            Vector3d position = posOrient.getPosition();
+            Quaterniond q  = posOrient.getQuaternion();
+
+            trajectoryFile << position[0] << " " << position[1] << " " << position[2] << " " << q.w() << " " << q.x()
+                           << " " << q.y() << " " << q.z() << "\n";
+            trajectoryFile.close();
+
+            copyPlanesToPreviousFrames();
+            //cout<<pos
+
+//            cout<<"Copying frames..."<<endl;
+        } else {
+//            cout<<"Doing nothing"<<endl;
+        }
     }
 
     dev->stop();
@@ -83,11 +104,11 @@ void KinectModule::copyPlanesToPreviousFrames() {
 }
 
 void KinectModule::notifyNumberOfSimilarPlanes() {
-    cout << "Found " << similarPlanes.size() << " planes.";
+//    cout << "Found " << similarPlanes.size() << " planes.";
     if (similarPlanes.size() >= 3) {
-        cout << " Ok!" << endl;
+//        cout << " Ok!" << endl;
     } else {
-        cout << " Not too much..." << endl;
+//        cout << " Not too much..." << endl;
     }
 }
 
