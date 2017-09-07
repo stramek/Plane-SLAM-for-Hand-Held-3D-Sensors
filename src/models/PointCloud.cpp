@@ -20,8 +20,8 @@ void PointCloud::depth2cloud(cv::Mat &depthImage, cv::Mat RGB, unsigned int imgS
             getPoint(j + imgStartX, i + imgStartY, depthM, point);
             Point3D pointPCL;
             pointPCL.position(0) = point(0);
-            pointPCL.position(1) = -point(1);
-            pointPCL.position(2) = -point(2);
+            pointPCL.position(1) = point(1);
+            pointPCL.position(2) = point(2);
 
             pointPCL.red = RGB.at<cv::Vec<uchar, 3>>(i, j).val[2];
             pointPCL.green = RGB.at<cv::Vec<uchar, 3>>(i, j).val[1];
