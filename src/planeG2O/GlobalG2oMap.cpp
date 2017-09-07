@@ -101,10 +101,10 @@ void GlobalG2oMap::addNextFramePlanes(vector<Plane> &planes) {
     imageLoader.getNextPair();
     ImagePair currentFrame = imageLoader.getNextPair(positionNumber);
 
-    planeUtils::visualizeSimilarPlanes(matchedPlanes, currentFrame.getRgb(), currentFrame.getRgb())
-    planeUtils::visualizePlaneLocations(unmatchedPlanes, globalPlanes, currentFrame.getRgb(), currentFrame.getRgb());
+    //planeUtils::visualizeSimilarPlanes(matchedPlanes, currentFrame.getRgb(), currentFrame.getRgb());
+    //planeUtils::visualizePlaneLocations(unmatchedPlanes, globalPlanes, currentFrame.getRgb(), currentFrame.getRgb());
 
-    waitKey();
+    //waitKey();
 
 //    vector<Plane> framePlanesConv;
 
@@ -186,4 +186,17 @@ void GlobalG2oMap::addNextFramePlanes(vector<Plane> &planes) {
 
 const PosOrient &GlobalG2oMap::getLastPosOrient() const {
     return lastPosOrient;
+}
+
+void GlobalG2oMap::saveTrajectoryToFile() {
+    ofstream trajectoryFile;
+    trajectoryFile.open("trajectories/trajectory.txt", ios::trunc | ios::out);
+    for (int i = 0; i <= positionNumber; ++i){
+        g2o::VertexSE3Quat *curPoseVert = static_cast<g2o::VertexSE3Quat *>(optimizerMin.vertex(
+                CAMERA_POS_INDEXES_SHIFT + i));
+        g2o::Vector7d poseVect = curPoseVert->estimate().toVector();
+        trajectoryFile << poseVect[0] << " " << poseVect[1] << " " << poseVect[2] << " " << poseVect[6] << " "
+                       << poseVect[3] << " " << poseVect[4] << " " << poseVect[5] << "\n";
+    }
+    trajectoryFile.close();
 }
