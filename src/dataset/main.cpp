@@ -87,6 +87,8 @@ int main(int argc, char **argv) {
         trajectoryFile.close();
     }
 
+    globalG2oMap.saveTrajectoryToFile();
+
     cout<<"Done XD"<<endl;
 
     return application.exec();

@@ -18,6 +18,7 @@ public:
     GlobalG2oMap();
     const PosOrient &getLastPosOrient() const;
     void addNewFrames(vector<Plane> &planes);
+    void saveTrajectoryToFile();
 private:
     bool initialized = false;
     void initializeFirstFrame(vector<Plane> &planes);
