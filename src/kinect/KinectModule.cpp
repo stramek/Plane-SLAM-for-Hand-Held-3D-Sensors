@@ -63,7 +63,6 @@ void KinectModule::start() {
             calculateSimilarPlanes();
 
 //            cout<<"before"<<endl;
-            cout<<"SIZE: "<<planeVectorCurrentFrame.size()<<endl;
             globalG2oMap.addNewFrames(planeVectorCurrentFrame);
 //            cout<<"after"<<endl;
             PosOrient posOrient = globalG2oMap.getLastPosOrient();

@@ -100,10 +100,10 @@ void MatchPlanesG2o::matchRemainingPlanes(vector<pair<Plane, Plane>> &matchedPla
     for (auto &prevPlane : previousFrame) {
         int curPlaneIterCounter = 0;
         for (auto &curPlane : currentFrame) {
-            if (matchedIndexesPrevPlane(0) != prevPlaneIterCounter && matchedIndexesPrevPlane(1) != prevPlaneIterCounter &&
-                matchedIndexesPrevPlane(2) != prevPlaneIterCounter) {
-                if (matchedIndexesCurPlane(0) != curPlaneIterCounter && matchedIndexesCurPlane(1) != curPlaneIterCounter &&
-                    matchedIndexesCurPlane(2) != curPlaneIterCounter) {
+            if (matchedIndexesCurPlane(0) != curPlaneIterCounter && matchedIndexesCurPlane(1) != curPlaneIterCounter &&
+                matchedIndexesCurPlane(2) != curPlaneIterCounter) {
+                if (matchedIndexesPrevPlane(0) != prevPlaneIterCounter && matchedIndexesPrevPlane(1) != prevPlaneIterCounter &&
+                    matchedIndexesPrevPlane(2) != prevPlaneIterCounter) {
                     if (getAngleBetweenTwoVectors(prevPlane.getPlaneNormalVec(), curPlane.getPlaneNormalVec()) <  MAX_ANGLE_BETWEEN_PLANES_GLOBAL_MAP) {
                         if (abs(prevPlane.getColor().getHue() - curPlane.getColor().getHue()) < MAX_SIMILARITY_GLOBAL_MAP_VALUE) {
                             if(!curPlane.isWasMatched()){
@@ -113,9 +113,9 @@ void MatchPlanesG2o::matchRemainingPlanes(vector<pair<Plane, Plane>> &matchedPla
                             }
                         }
                     }
-                } else {
-                    curPlane.setWasMatched(true);
                 }
+            } else {
+                curPlane.setWasMatched(true);
             }
             ++curPlaneIterCounter;
         }
