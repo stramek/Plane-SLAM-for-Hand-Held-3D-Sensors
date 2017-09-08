@@ -43,6 +43,7 @@ void KinectModule::start() {
 
     GlobalG2oMap globalG2oMap;
     ofstream trajectoryFile;
+    remove("trajectories/trajectory_SAME_POINT.txt");
     while (!finishedProgram) {
         trajectoryFile.open("trajectories/trajectory_SAME_POINT.txt", std::ios_base::app);
 
@@ -69,7 +70,7 @@ void KinectModule::start() {
             Vector3d position = posOrient.getPosition();
             Quaterniond q  = posOrient.getQuaternion();
 
-            trajectoryFile << position[0] << " " << position[1] << " " << position[2] << " " << q.w() << " " << q.x()
+            trajectoryFile << utils::getCurrentDate() << " " << position[0] << " " << position[1] << " " << position[2] << " " << q.w() << " " << q.x()
                            << " " << q.y() << " " << q.z() << "\n";
             trajectoryFile.close();
 

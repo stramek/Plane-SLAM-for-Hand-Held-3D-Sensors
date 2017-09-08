@@ -99,14 +99,10 @@ void GlobalG2oMap::addNextFramePlanes(vector<Plane> &planes) {
     for (Plane &plane: globalPlanes) {
         plane.print();
     }
-    cout<<"----------------------------------"<<endl;
-    cout<<"Global plane size: "<<globalPlanes.size()<<endl;
+//    cout<<"----------------------------------"<<endl;
+//    cout<<"Global plane size: "<<globalPlanes.size()<<endl;
     vector<pair<Plane, Plane>> matchedPlanes = matchPlanesG2o.getSimilarPlanes(globalPlanes, planes);
     vector<Plane> unmatchedPlanes = matchPlanesG2o.getUnmatchedPlanes();
-    for (Plane &plane: unmatchedPlanes) {
-        plane.print();
-    }
-    cout<<"Unmatched planes size: "<<unmatchedPlanes.size()<<endl;
 
     //ImageLoader imageLoader(50);
     //imageLoader.getNextPair();
