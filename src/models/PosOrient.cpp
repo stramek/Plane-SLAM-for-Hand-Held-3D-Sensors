@@ -21,10 +21,12 @@ void PosOrient::setPosOrient(const g2o::Vector7d &posOrient) {
     orientation[3] = posOrient[6];
 }
 
-void PosOrient::print() {
+const void PosOrient::print() const {
     cout << "x: " << position[0] << " y: " << position[1] << " z: " << position[2] << endl;
     cout << "q1: " << orientation[0] << " q2: " << orientation[1] << " q3: " << orientation[2] << " q4: "
          << orientation[3] << endl;
+    const Vector3d euler = fromRotationMat(getQuaternion().toRotationMatrix());
+    cout<<"alpha: "<<euler(0)<<" betta: "<<euler(1)<<" gamma: "<<euler(2)<<endl;
 }
 
 void PosOrient::printDiff(const PosOrient &posOrient) {
@@ -41,12 +43,12 @@ PosOrient::PosOrient() {
 
 }
 
-Quaterniond PosOrient::getQuaternion() {
+Quaterniond PosOrient::getQuaternion() const {
     Quaterniond q(orientation[3], orientation[0], orientation[1], orientation[2]);
     return q;
 }
 
-Vector3d PosOrient::getPosition() {
+Vector3d PosOrient::getPosition() const {
     return position;
 }
 
@@ -62,7 +64,7 @@ pair<Vector3d, Vector3d> PosOrient::minus(PosOrient &posOrient) {
 }
 
 /// compute roll/pitch/yaw from rotation matrix
-Vector3d PosOrient::fromRotationMat(const Matrix<double, 3, 3>& pose){
+Vector3d PosOrient::fromRotationMat(const Matrix<double, 3, 3>& pose) const {
     Vector3d rpy(Vector3d::Identity());
     rpy.x() = atan2(pose(2,1), pose(2,2)) * 180.0 / (double) M_PI;
     rpy.y() = -asin(pose(2,0)) * 180.0 / (double) M_PI;

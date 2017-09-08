@@ -16,6 +16,7 @@
 #include "include/models/Plane.h"
 #include "include/utils/planeUtils.h"
 #include <thread>
+#include <include/planeG2O/GlobalG2oMap.h>
 
 using namespace libfreenect2;
 using namespace std;
@@ -25,13 +26,13 @@ public:
 
     class KinectFramesListener {
     public:
-        typedef function<void(KinectFrames &)> KinectFramesCallback;
+        typedef function<void(KinectFrames&, bool, const PosOrient&)> KinectFramesCallback;
 
     public:
         KinectFramesListener(KinectFramesCallback kinectFramesCallback) : callback(kinectFramesCallback) {}
 
-        void onFramesChange(KinectFrames &kinectFrames) {
-            callback(kinectFrames);
+        void onFramesChange(KinectFrames &kinectFrames, bool didLocationChanged, const PosOrient& lastKnownPosition) {
+            callback(kinectFrames, didLocationChanged, lastKnownPosition);
         }
 
     private:
@@ -45,7 +46,6 @@ public:
     vector<Plane> &getPlaneVectorCurrentFrame();
     Registration *getRegistration() const;
     void visualizePlanes(KinectFrames &kinectFrames);
-    void notifyNumberOfSimilarPlanes();
     void setPlaneDetector(PlaneDetector *planeDetector);
 
 private:
@@ -65,6 +65,7 @@ private:
 
     bool finishedProgram = false;
     bool lastFrameValid = false;
+    bool didLocationChanged = false;
 
     void quitIfDeviceNotConnected();
     void copyPlanesToPreviousFrames();
@@ -72,8 +73,6 @@ private:
     void calculateSimilarPlanes();
     void mergePlanes(PlaneDetector *planeDetector);
     void start();
-
-    void setMergePlaneDetector(PlaneDetector *planeDetector);
 };
 
 
