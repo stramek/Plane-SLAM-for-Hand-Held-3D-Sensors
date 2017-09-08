@@ -24,10 +24,12 @@ namespace utils {
     void paintPixel(cv::Mat &rgb, const Eigen::Vector3f &vector, cv::Vec3b &color);
     pair<int, int> getRandomPosition(const cv::Mat &mat, int areaSize);
     pair<int, int> getRandomPosition(const int cols, const int rows, int areaSize);
-    void generateOctoMap(const std::string fileName, const std::vector<Point3D> pointCloud, const float resolution = 0.05);
+    void updateOctoMap(const string filename, const vector<Point3D> pointCloud);
+    void createOctoMap(const string filename, float resolution = 0.05);
     void loadDatasetPositions(vector<PosOrient> &positions);
     void movePlanesToPreviousVector(vector<Plane> &planeVectorPreviousFrame, vector<Plane> &planeVectorCurrentFrame);
     string getCurrentDate();
+    void appendTrajectoryRecord(string fileName, const PosOrient &posOrient);
 }
 
 #endif //PROJEKTMAGISTERSKI_UTILS_H

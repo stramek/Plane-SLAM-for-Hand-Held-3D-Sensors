@@ -29,7 +29,6 @@ void GlobalG2oMap::addNewFrames(vector<Plane> &planes) {
         initialized = true;
     } else {
         addNextFramePlanes(planes);
-        cout<<"Number of planes inside global map: "<<GlobalMap::getInstance().getGlobalMapPlanes().size()<<endl;
     }
 }
 
@@ -96,34 +95,9 @@ void GlobalG2oMap::addNextFramePlanes(vector<Plane> &planes) {
 
     MatchPlanesG2o matchPlanesG2o;
     matchPlanesG2o.setLastPosOrient(lastPosOrient);
-
-
     vector<Plane> globalPlanes = GlobalMap::getInstance().getGlobalMapVector();
-    for (Plane &plane: globalPlanes) {
-        plane.print();
-    }
-    cout<<"----------------------------------"<<endl;
-    cout<<"Global plane size: "<<globalPlanes.size()<<endl;
     vector<pair<Plane, Plane>> matchedPlanes = matchPlanesG2o.getSimilarPlanes(globalPlanes, planes);
     vector<Plane> unmatchedPlanes = matchPlanesG2o.getUnmatchedPlanes();
-    for (Plane &plane: unmatchedPlanes) {
-        plane.print();
-    }
-    cout<<"Unmatched planes size: "<<unmatchedPlanes.size()<<endl;
-
-    //ImageLoader imageLoader(50);
-    //imageLoader.getNextPair();
-    //ImagePair currentFrame = imageLoader.getNextPair(positionNumber);
-
-    //planeUtils::visualizeSimilarPlanes(matchedPlanes, currentFrame.getRgb(), currentFrame.getRgb());
-    //planeUtils::visualizePlaneLocations(unmatchedPlanes, globalPlanes, currentFrame.getRgb(), currentFrame.getRgb());
-
-    //waitKey();
-
-//    vector<Plane> framePlanesConv;
-
-    //cout << "Initial lastPosOrient is: " << endl;
-    //lastPosOrient.print();
 
     for (auto &planePair : matchedPlanes) {
         //add edge to graph
@@ -167,26 +141,11 @@ void GlobalG2oMap::addNextFramePlanes(vector<Plane> &planes) {
     g2o::VertexSE3Quat *curPoseVert = static_cast<g2o::VertexSE3Quat *>(optimizerMin.vertex(
             CAMERA_POS_INDEXES_SHIFT + positionNumber));
     g2o::Vector7d poseVect = curPoseVert->estimate().toVector();
-    //poseVect = -poseVect;
-    //poseVect[6] = -poseVect[6];
     lastPosOrient.setPosOrient(poseVect);
-    cout << endl << "Setting new lastPosOrient to..." << endl;
-    lastPosOrient.print();
 
     for (int i = 0; i < GlobalMap::getInstance().getCurrentId(); ++i) {
         g2o::VertexPlaneQuat *curPlaneVert = static_cast<g2o::VertexPlaneQuat *>(optimizerMin.vertex(i));
         Eigen::Quaterniond quaternion = curPlaneVert->estimate();
-
-        //quaternion.normalize();
-        /*double eps = 1e-9;
-        if((quaternion.w() < 0.0 ||
-           (fabs(quaternion.w()) < eps && quaternion.z() < 0.0) ||
-           (fabs(quaternion.w()) < eps && fabs(quaternion.z()) < eps && quaternion.y() < 0.0) ||
-           (fabs(quaternion.w()) < eps && fabs(quaternion.z()) < eps && fabs(quaternion.y()) < eps && quaternion.x() < 0.0)))
-        {
-            quaternion.coeffs() = -quaternion.coeffs();
-        }*/
-
         Eigen::Vector3d normVec(quaternion.x(), quaternion.y(), quaternion.z());
         double norm = normVec.norm();
         normVec.normalize();
