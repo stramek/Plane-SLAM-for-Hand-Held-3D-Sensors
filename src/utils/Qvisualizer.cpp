@@ -16,7 +16,7 @@ void QGLVisualizer::draw() {
     std::vector<Point3D> points = pointCloud.getPoints3D();
     for (Point3D i : points) {
         glColor3f(i.red / 255.0f, i.green / 255.0f, i.blue / 255.0f);
-        glVertex3f(i.position(0), i.position(1), i.position(2));
+        glVertex3f(i.position(0), -i.position(1), -i.position(2));
     }
     glEnd();
 
@@ -28,8 +28,8 @@ void QGLVisualizer::draw() {
         glLineWidth(2);
         glBegin(GL_LINES);
         glColor3f(1.0, 1.0, 1.0);
-        glVertex3f(point(0), point(1), point(2));
-        glVertex3f(point(0) + normalVec(0), point(1) + normalVec(1), point(2) + normalVec(2));
+        glVertex3f(point(0), -point(1), -point(2));
+        glVertex3f(point(0) + normalVec(0), -point(1) + normalVec(1), -point(2) + normalVec(2));
         glEnd();
     }
 

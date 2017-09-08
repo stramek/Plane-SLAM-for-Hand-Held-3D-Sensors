@@ -172,7 +172,7 @@ Point3D Plane::getCentralPoint() const {
 }
 
 void Plane::computeNormalVecDirection(){
-    Vector3d cameraAxisVec(0.0f, 0.0f, 1.0f);
+    Vector3d cameraAxisVec(0.0f, 0.0f, -1.0f);
     planeNormalVec.normalize();
     double normalVecCameraAxisAngle = acos(planeNormalVec.dot(cameraAxisVec)) * 180.0 / M_PI;
 

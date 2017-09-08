@@ -31,7 +31,7 @@ int main(int argc, char **argv) {
     string currentDate = utils::getCurrentDate();
     GlobalG2oMap globalG2oMap;
 
-    int numberOfIterations = 1500;
+    int numberOfIterations = 50;
     for (int i = 0; i < numberOfIterations; ++i) {
         trajectoryFile.open("trajectories/trajectory_" + currentDate + ".txt", std::ios_base::app);
 
@@ -47,6 +47,7 @@ int main(int argc, char **argv) {
                 ->fillVector(&planeVectorCurrentFrame);
 
         planeUtils::mergePlanes(planeVectorCurrentFrame, new PcaPlaneDetector());
+
 
         if (planeUtils::arePlanesValid(planeVectorCurrentFrame)) {
             globalG2oMap.addNewFrames(planeVectorCurrentFrame);

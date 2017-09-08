@@ -40,6 +40,8 @@ const Matrix<double, 3, 3> PHCP_MODEL = [] {
     return matrix;
 }();
 
+const  int IMAGE_HEIGHT = 480;
+
 static int SCREENSHOT_HELPER = 1;
 
 #endif //PROJEKTMAGISTERSKI_CONSTANTS_H

@@ -34,3 +34,4 @@ build/*
 *.autosave
 *.idea
 cmake-build-debug/
+dataset_photos_v2/

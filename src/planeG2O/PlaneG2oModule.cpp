@@ -69,7 +69,6 @@ PosOrient PlaneG2oModule::ComputeCameraPos(vector<pair<Plane, Plane>> &matchedPl
 
         for(int j=0; j<2; ++j){
             for(int i=0; i<matchedPlanes.size(); ++i){
-                std::cout<< std::endl << std::endl;
                 g2o::EdgeSE3Plane* curEdge = new g2o::EdgeSE3Plane();
                 curEdge->setVertex(0, optimizerMin.vertex(j));
                 curEdge->setVertex(1, optimizerMin.vertex(PLANES_INDEXES_SHIFT + i));
