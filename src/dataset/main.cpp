@@ -14,7 +14,7 @@ int main(int argc, char **argv) {
     QApplication application(argc, argv);
     glutInit(&argc, argv);
 
-    ImageLoader imageLoader(881);
+    ImageLoader imageLoader(500);
     imageLoader.setCurrentPhoto(1);
 
     vector<Plane> planeVectorPreviousFrame;
@@ -31,7 +31,7 @@ int main(int argc, char **argv) {
     string currentDate = utils::getCurrentDate();
     GlobalG2oMap globalG2oMap;
 
-    int numberOfIterations = 1500;
+    int numberOfIterations = 500;
     for (int i = 0; i < numberOfIterations; ++i) {
         trajectoryFile.open("trajectories/trajectory_" + currentDate + ".txt", std::ios_base::app);
 
@@ -64,6 +64,13 @@ int main(int argc, char **argv) {
                        << " " << q.y() << " " << q.z() << "\n";
 
         cout<<">>>>> Iteration "<<i+1<<" of " <<numberOfIterations<<" finished."<<endl;
+        if (i != 0) {
+            globalG2oMap.printLastPoseOrient();
+            //planeUtils::visualizeSimilarPlanes(globalG2oMap.getMatchedPlanes(), previousRgbImage, currentFrame.getRgb());
+            //waitKey();
+        }
+        //previousRgbImage = currentFrame.getRgb().clone();
+
 
 /*        if (planeUtils::arePlanesValid(planeVectorCurrentFrame)) {
             cout<<"Frame number "<<i + 1<<" is valid!"<<endl;

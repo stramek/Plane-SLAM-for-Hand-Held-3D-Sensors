@@ -41,7 +41,7 @@ namespace planeUtils {
                          double previousPlanePercent = 0.5, bool colorPlanes = true);
     void fillPlaneVector(int numberOfPoints, int areaSize, vector<Plane> *planeVector, vector<Plane> *previousPlaneVector, double previousPlanePercent,
                          libfreenect2::Registration *registration, libfreenect2::Frame *undistorted, libfreenect2::Frame *registered);
-    void visualizeSimilarPlanes(vector<pair<Plane, Plane>> &similarPlanes, const Mat &previousImage,
+    void visualizeSimilarPlanes(const vector<pair<Plane, Plane>> &similarPlanes, const Mat &previousImage,
                                 const Mat &currentImage, int limitPoints = INT_MAX);
     void mergePlanes(vector<Plane> &planeVector, PlaneDetector *planeDetector);
     void displayClusteredPlanes(ImagePair &imagePair, vector<Plane> planes);

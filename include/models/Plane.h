@@ -65,6 +65,8 @@ public:
 
     void setPoints(const vector<Point3D> &points);
 
+    void clearPoints();
+
     unsigned int getNumberOfPoints() const;
 
     double getAngleBetweenTwoPlanes(const Plane &plane) const;

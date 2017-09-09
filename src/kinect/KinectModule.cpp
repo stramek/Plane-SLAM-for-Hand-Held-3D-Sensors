@@ -57,8 +57,9 @@ void KinectModule::start() {
         lastFrameValid = planeUtils::arePlanesValid(planeVectorCurrentFrame);
 
         if (lastFrameValid) {
-            calculateSimilarPlanes();
+            //calculateSimilarPlanes();
             globalG2oMap.addNewFrames(planeVectorCurrentFrame);
+
             copyPlanesToPreviousFrames();
             didLocationChanged = true;
         } else {
@@ -105,7 +106,9 @@ void KinectModule::mergePlanes(PlaneDetector *planeDetector) {
 }
 
 void KinectModule::visualizePlanes(KinectFrames &kinectFrames) {
-    if (similarPlanes.size() >= 3) {
+    vector<pair<Plane,Plane>> matchedPlanes = globalG2oMap.getMatchedPlanes();
+
+    if (matchedPlanes.size() >= 3) {
         circle(currentFrame, Point(30, 30), 15, Scalar(0, 255, 0), CV_FILLED);
     } else {
         circle(currentFrame, Point(30, 30), 15, Scalar(0, 0, 255), CV_FILLED);
@@ -115,8 +118,7 @@ void KinectModule::visualizePlanes(KinectFrames &kinectFrames) {
                                               kinectFrames.getRegistered());
 
     if (!previousFrame.empty()) {
-        planeUtils::visualizeSimilarPlanes(similarPlanes, previousFrame, currentFrame);
-        similarPlanes.clear();
+        planeUtils::visualizeSimilarPlanes(matchedPlanes, previousFrame, currentFrame);
     }
 }
 

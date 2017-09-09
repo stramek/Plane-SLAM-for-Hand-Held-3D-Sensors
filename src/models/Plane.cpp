@@ -128,6 +128,10 @@ void Plane::setPoints(const vector<Point3D> &points) {
     Plane::points = points;
 }
 
+void Plane::clearPoints() {
+    points.clear();
+}
+
 unsigned int Plane::getNumberOfPoints() const {
     return (unsigned int) points.size();
 }

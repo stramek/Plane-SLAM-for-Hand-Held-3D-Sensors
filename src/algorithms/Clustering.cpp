@@ -27,6 +27,7 @@ vector<Plane> Clustering::getAveragedPlanes(vector<vector<Plane>> &clusteredPlan
                                              imageCoordsVec.end());
         }
         Plane averagedPlane = planeDetector->getPlane(points_new, mergedPlaneImageCoordsVec.at(0), nullptr, true);
+        averagedPlane.clearPoints();
         averagedPlanesVec.push_back(averagedPlane);
     }
     return averagedPlanesVec;
