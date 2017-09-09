@@ -27,16 +27,16 @@ int main(int argc, char **argv) {
                         ->withKinect(kinectModule.getRegistration(), kinectFrames.getUndistorted(),
                                      kinectFrames.getRegistered())
                         ->withPlaneDetector(planeDetectorMethod)
-                        ->withAreaSize(35)
-                        ->withNumberOfPoints(300)
+                        ->withAreaSize(51)
+                        ->withNumberOfPoints(800)
                         ->withPreviousPlanePercent(&kinectModule.getPlaneVectorPreviousFrame(), 0.5)
                         ->build()
                         ->fillVector(&kinectModule.getPlaneVectorCurrentFrame());
 
                 if (didLocationChanged) {
-                    visualizer.updateCloud(kinectModule.getRegistration(), kinectFrames.getUndistorted(), kinectFrames.getRegistered(), lastKnownPosition);
+                    //visualizer.updateCloud(kinectModule.getRegistration(), kinectFrames.getUndistorted(), kinectFrames.getRegistered(), lastKnownPosition);
                     utils::appendTrajectoryRecord("trajectories/trajectory_SAME_POINT.txt", lastKnownPosition);
-                    utils::updateOctoMap("Kinect", visualizer.getPointCloud().getPoints3D());
+                    //utils::updateOctoMap("Kinect", visualizer.getPointCloud().getPoints3D());
                     cout<<"*********"<<endl;
                     lastKnownPosition.print();
                     cout<<"*********"<<endl;
