@@ -22,7 +22,7 @@ const static double MAX_DISTANCE_BETWEEN_PLANES_GLOBAL_MAP = 0.3;
 
 const static float MAX_PERCENT_OF_NAN_PIXELS_INSIDE_PLAIN = 20.0f;
 
-const static float G2O_MAX_DISPLACEMENT = 0.1;
+const static float G2O_MAX_DISPLACEMENT = 0.05;
 const static float G2O_MAX_ROTATION = 5;
 
 const double FOCAL_LENGTH_X = 525;
@@ -41,6 +41,8 @@ const Matrix<double, 3, 3> PHCP_MODEL = [] {
 }();
 
 const  int IMAGE_HEIGHT = 480;
+
+const float G2O_Z_OFFSET = -2.5;
 
 static int SCREENSHOT_HELPER = 1;
 

@@ -14,8 +14,8 @@ int main(int argc, char **argv) {
     QApplication application(argc, argv);
     glutInit(&argc, argv);
 
-    ImageLoader imageLoader(881);
-    imageLoader.setCurrentPhoto(1);
+    ImageLoader imageLoader(965);
+    imageLoader.setCurrentPhoto(0);
 
     vector<Plane> planeVectorPreviousFrame;
     vector<Plane> planeVectorCurrentFrame;

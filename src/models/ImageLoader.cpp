@@ -38,8 +38,8 @@ ImagePair ImageLoader::loadNextImage(int offset) {
         currentPhoto = 0;
     }
 
-    String rgbImagePath = "../dataset_photos//rgb//" + to_string(currentPhoto) + ".png";
-    String depthImagePath = "../dataset_photos//depth//" + to_string(currentPhoto) + ".png";
+    String rgbImagePath = "../dataset//rgb//" + to_string(currentPhoto) + ".png";
+    String depthImagePath = "../dataset//depth//" + to_string(currentPhoto) + ".png";
 
     ImagePair imagePair;
     imagePair.setRgb(imread(rgbImagePath));

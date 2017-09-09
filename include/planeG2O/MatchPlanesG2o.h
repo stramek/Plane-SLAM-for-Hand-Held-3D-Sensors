@@ -34,7 +34,7 @@ private:
                               Eigen::Vector3i &matchedIndexesCurPlane, vector<Plane> &previousFrame,
                               vector<Plane> &currentFrame, const PosOrient &posOrient);
 
-    PosOrient lastPosOrient;
+    PosOrient lastPosOrient = PosOrient(Eigen::Vector3d(0, 0, 0), Eigen::Vector4d(0, 0, 0, 1));
 public:
     void setLastPosOrient(const PosOrient &posOrient);
 };

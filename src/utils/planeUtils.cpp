@@ -39,7 +39,7 @@ namespace planeUtils {
         return toReturn;
     };
 
-    Mat getRGBFrameMat(libfreenect2::Registration *registration, libfreenect2::Frame *undistorted,
+/*    Mat getRGBFrameMat(libfreenect2::Registration *registration, libfreenect2::Frame *undistorted,
                        libfreenect2::Frame *registered) {
         Mat toReturn(Size(registered->width, registered->height), CV_8UC3);
         toReturn = 0;
@@ -55,7 +55,7 @@ namespace planeUtils {
             }
         }
         return toReturn;
-    }
+    }*/
 
     void visualizePlaneLocations(vector<Plane> planes, vector<Plane> planes2, const Mat &previousImage,
                                 const Mat &currentImage, int limitPoints) {
@@ -80,7 +80,7 @@ namespace planeUtils {
         }
 
 
-        for (Plane &plane : planes) {
+        for (Plane &plane : planes2) {
             ImageCoords previousImageCoords = plane.getImageCoords();
             Point previousPlanePoint = Point(previousImageCoords.getCenterX(), previousImageCoords.getCenterY());
             int size = previousImageCoords.getAreaSize() / 2;
