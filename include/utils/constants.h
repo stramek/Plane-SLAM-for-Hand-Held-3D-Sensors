@@ -10,7 +10,7 @@ using namespace Eigen;
 
 const static float PCA_MAX_ACCEPTED_DISTANCE = 0.005f;
 const static float CLUSTERING_MAX_ANGLE_THRESHOLD = 20.0;
-const static double CLUSTERING_MAX_DISTANCE_THRESHOLD = 1.0;
+const static double CLUSTERING_MAX_DISTANCE_THRESHOLD = 0.5;
 const static int MAX_SIMILARITY_VALUE = 15;
 const static int MAX_ANGLE_BETWEEN_PLANES = 15;
 const static double MAX_DISTANCE_BETWEEN_PLANES = 0.5;
