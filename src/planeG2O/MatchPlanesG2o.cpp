@@ -156,3 +156,4 @@ void MatchPlanesG2o::resetWasMatch(vector<Plane> &planes){
         plane.setWasMatched(false);
     }
 }
+

@@ -46,4 +46,6 @@ const  int IMAGE_HEIGHT = 480;
 
 static int SCREENSHOT_HELPER = 1;
 
+const double G2O_Z_OFFSET = -2.5;
+
 #endif //PROJEKTMAGISTERSKI_CONSTANTS_H
