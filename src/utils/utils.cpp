@@ -25,21 +25,44 @@ namespace utils {
         return pair<int, int>(rowUni(rng), colUni(rng));
     }
 
-    void generateOctoMap(const string filename, const vector<Point3D> pointCloud, const float resolution) {
-        if (pointCloud.empty()) throw runtime_error("Passed pointcloud is empty! Did you forget to call updateCloud() method?");
-        ColorOcTree tree(resolution);
-        for (Point3D p : pointCloud) {
-            tree.updateNode(point3d((float)p.position(0), (float)p.position(1), (float)p.position(2)), true);
-        }
-        for (Point3D p : pointCloud) {
-            tree.integrateNodeColor((float)p.position(0), (float)p.position(1), (float)p.position(2), p.red, p.green, p.blue);
-        }
-        tree.updateInnerOccupancy();
-        if (tree.write(filename + ".ot")) {
+    void createOctoMap(const string filename, float resolution) {
+        remove((filename + ".ot").c_str());
+        ColorOcTree octree(resolution);
+        if (octree.write(filename + ".ot")) {
             cout << filename << ".ot generated with success!" << endl;
         } else {
             cout << filename << ".ot generation failed!" << endl;
         }
+    }
+
+    void updateOctoMap(const string filename, const vector<Point3D> pointCloud) {
+        if (pointCloud.empty()) throw runtime_error("Passed pointcloud is empty! Did you forget to call updateCloud() method?");
+
+        AbstractOcTree* tree = AbstractOcTree::read(filename + ".ot");
+        ColorOcTree* octree = dynamic_cast<ColorOcTree*>(tree);
+
+        for (Point3D p : pointCloud) {
+            octree->updateNode(point3d((float)p.position(0), (float)p.position(1), (float)p.position(2)), true);
+        }
+        for (Point3D p : pointCloud) {
+            octree->integrateNodeColor((float)p.position(0), (float)p.position(1), (float)p.position(2), p.red, p.green, p.blue);
+        }
+        octree->updateInnerOccupancy();
+        if (octree->write(filename + ".ot")) {
+            cout << filename << ".ot UPDATED with success!" << endl;
+        } else {
+            cout << filename << ".ot UPDATE failed!" << endl;
+        }
+    }
+
+    void appendTrajectoryRecord(string fileName, const PosOrient &posOrient) {
+        ofstream stream;
+        stream.open(fileName, std::ios_base::app);
+        Vector3d position = posOrient.getPosition();
+        Quaterniond q  = posOrient.getQuaternion();
+        stream << utils::getCurrentDate() << " " << position[0] << " " << position[1] << " " << position[2] << " " << q.w() << " " << q.x()
+                       << " " << q.y() << " " << q.z() << "\n";
+        stream.close();
     }
 
     double sTod(string s) {
@@ -78,37 +101,20 @@ namespace utils {
         return str;
     }
 
-    void movePlanesToPreviousVector(vector<Plane> &planeVectorPreviousFrame, vector<Plane> &planeVectorCurrentFrame) {
-//        cout<<"before"<<endl<<endl;
-//        cout<<"previous size: "<<planeVectorPreviousFrame.size()<<endl;
-//        for (Plane plane : planeVectorPreviousFrame) {
-//            cout<<"asd: ";
-//            cout<<plane.getImageCoords().getNumberOfPixels()<<endl;
-//        }
-//        cout<<"end previous"<<endl;
-//        cout<<"start current size: "<<planeVectorCurrentFrame.size()<<endl;
-//        for (Plane plane : planeVectorCurrentFrame) {
-//            cout<<"asd: ";
-//            cout<<plane.getImageCoords().getNumberOfPixels()<<endl;
-//        }
-//        cout<<"end current"<<endl;
+    void rotatePoint(Point3D &point3D, const PosOrient &posOrient) {
+        rotatePoint(point3D.position, posOrient);
+    }
 
+    void rotatePoint(Vector3d &point3D, const PosOrient &posOrient) {
+        Quaterniond q = posOrient.getQuaternion();
+        auto rotMatrix = q.toRotationMatrix();
+        auto translation = posOrient.getPosition();
+        point3D = rotMatrix * point3D + translation;
+    }
+
+    void movePlanesToPreviousVector(vector<Plane> &planeVectorPreviousFrame, vector<Plane> &planeVectorCurrentFrame) {
         planeVectorPreviousFrame.clear();
         copy(planeVectorCurrentFrame.begin(), planeVectorCurrentFrame.end(), back_inserter(planeVectorPreviousFrame));
         planeVectorCurrentFrame.clear();
-
-//        cout<<"after"<<endl<<endl;
-//        cout<<"previous size: "<<planeVectorPreviousFrame.size()<<endl;
-//        for (Plane plane : planeVectorPreviousFrame) {
-//            cout<<"asd: ";
-//            cout<<plane.getImageCoords().getNumberOfPixels()<<endl;
-//        }
-//        cout<<"end previous"<<endl;
-//        cout<<"start current size: "<<planeVectorCurrentFrame.size()<<endl;
-//        for (Plane plane : planeVectorCurrentFrame) {
-//            cout<<"asd: ";
-//            cout<<plane.getImageCoords().getNumberOfPixels()<<endl;
-//        }
-//        cout<<"end current"<<endl;
     }
 }

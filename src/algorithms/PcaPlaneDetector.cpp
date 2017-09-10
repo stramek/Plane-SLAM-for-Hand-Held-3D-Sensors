@@ -4,14 +4,6 @@
 
 #include "include/algorithms/PcaPlaneDetector.h"
 
-Vector3d PcaPlaneDetector::computeMean(const vector<Point3D> &pointsVector) {
-    Vector3d mean(0, 0, 0);
-    for (auto &vector : pointsVector) {
-        mean += vector.position;
-    }
-    mean /= (double) pointsVector.size();
-    return mean;
-}
 
 Mat33 PcaPlaneDetector::computeCovMatrix(const vector<Point3D> &pointsVector, const Vector3d &mean) {
     Mat33 cov(Mat33::Zero());

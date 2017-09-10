@@ -39,7 +39,7 @@ public:
 
     void updatePlanes(std::vector<Plane> &planes);
 
-    void updateCloud(Registration *registration, Frame *undistorted, Frame *registered);
+    void updateCloud(Registration *registration, Frame *undistorted, Frame *registered, const PosOrient &posOrient);
 
     void getPoint(unsigned int u, unsigned int v, double depth, Eigen::Vector3d &point3D);
 

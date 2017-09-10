@@ -24,8 +24,6 @@ private:
 
     Mat33 computeCovMatrix(const vector<Point3D> &pointsVector, const Vector3d &mean);
 
-    Vector3d computeMean(const vector<Point3D> &pointsVector);
-
     Plane computePlane(const vector<Point3D> &pointsVector, const ImageCoords &imageCoords, bool withAcceptedRange = false);
 
 public:

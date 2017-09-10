@@ -94,7 +94,7 @@ namespace planeUtils {
         waitKey(1);
     }
 
-    void visualizeSimilarPlanes(vector<pair<Plane, Plane>> &similarPlanes, const Mat &previousImage,
+    void visualizeSimilarPlanes(const vector<pair<Plane, Plane>> &similarPlanes, const Mat &previousImage,
                                 const Mat &currentImage, int limitPoints) {
         Size previousImageSize = previousImage.size();
         Size currentImageSize = currentImage.size();
@@ -176,6 +176,8 @@ namespace planeUtils {
     }
 
     double getDistanceBetweenTwoPlanes(const Plane &firstPlane, const Plane &secondPlane) {
+
+        if (firstPlane.getPoints().size() == 0 || secondPlane.getPoints().size() == 0) return -1;
 
         random_device rd;
         mt19937 rng(rd());

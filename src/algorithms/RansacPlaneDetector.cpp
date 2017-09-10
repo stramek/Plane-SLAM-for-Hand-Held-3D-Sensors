@@ -8,7 +8,7 @@ Plane RansacPlaneDetector::computePlane(const vector<Point3D> &pointsVector, con
     for (int i = 0; i < MAX_ITERATIONS_NUM; ++i) {
         Vector3d random3Points[3];
         getRandom3Points(pointsVector, random3Points);
-        Plane plane(random3Points[0], random3Points[1], random3Points[2], imageCoords);
+        Plane plane(random3Points[0], random3Points[1], random3Points[2], imageCoords, computeMean(pointsVector));
         int inlairesNumber = 0;
         for(auto point : pointsVector){
             if(plane.getDistanceFromPoint(point.position) < MAX_INLARIES_POINT_PLANE_DISTANCE)

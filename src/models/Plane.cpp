@@ -5,13 +5,15 @@
 //  Created by Marcin Stramowski on 11.02.2017.
 //
 
+#include <include/utils/utils.h>
 #include "include/models/Plane.h"
 
 Plane::Plane() {}
 
-Plane::Plane(const Vector3d &point1, const Vector3d &point2, const Vector3d &point3, const ImageCoords &imageCoords) {
+Plane::Plane(const Vector3d &point1, const Vector3d &point2, const Vector3d &point3, const ImageCoords &imageCoords, Vector3d meanPoint) {
     this->imageCoordsVec.push_back(imageCoords);
     computePlaneEquation(point1, point2, point3);
+    this->meanPoint = meanPoint;
 }
 
 Plane::Plane(std::array<Vector3d, 3>, const Mat &colorImage) {
@@ -128,6 +130,10 @@ void Plane::setPoints(const vector<Point3D> &points) {
     Plane::points = points;
 }
 
+void Plane::clearPoints() {
+    points.clear();
+}
+
 unsigned int Plane::getNumberOfPoints() const {
     return (unsigned int) points.size();
 }
@@ -224,15 +230,16 @@ const Vector3d &Plane::getMeanPoint() const {
 }
 
 Plane Plane::getPlaneSeenFromGlobalCamera(PosOrient &posOrient) {
-    Quaterniond q = posOrient.getQuaternion().conjugate();
+    Quaterniond q = posOrient.getQuaternion();
     auto rotMatrix = q.toRotationMatrix();
     Matrix4d matrix4d;
     Vector3d meanPoint = getMeanPoint();
+    utils::rotatePoint(meanPoint, posOrient);
     Vector4d meanPoint4;
     matrix4d.setZero();
 
     matrix4d.topLeftCorner(3, 3) = rotMatrix;
-    matrix4d.topRightCorner(3, 1) = -posOrient.getPosition();
+    matrix4d.topRightCorner(3, 1) = posOrient.getPosition();
     matrix4d(3, 3) = 1;
     meanPoint4.topRightCorner(3, 1) = meanPoint;
     meanPoint4(3) = 1;
@@ -247,6 +254,7 @@ Plane Plane::getPlaneSeenFromGlobalCamera(PosOrient &posOrient) {
     plane.planeNormalVec(0) = plane.A;
     plane.planeNormalVec(1) = plane.B;
     plane.planeNormalVec(2) = plane.C;
+    plane.meanPoint = meanPoint;
     plane.transformPointsToGlobal(posOrient);
 
     return plane;

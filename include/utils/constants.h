@@ -10,7 +10,7 @@ using namespace Eigen;
 
 const static float PCA_MAX_ACCEPTED_DISTANCE = 0.005f;
 const static float CLUSTERING_MAX_ANGLE_THRESHOLD = 20.0;
-const static double CLUSTERING_MAX_DISTANCE_THRESHOLD = 1.0;
+const static double CLUSTERING_MAX_DISTANCE_THRESHOLD = 0.5;
 const static int MAX_SIMILARITY_VALUE = 15;
 const static int MAX_ANGLE_BETWEEN_PLANES = 15;
 const static double MAX_DISTANCE_BETWEEN_PLANES = 0.5;
@@ -24,6 +24,8 @@ const static float MAX_PERCENT_OF_NAN_PIXELS_INSIDE_PLAIN = 20.0f;
 
 const static float G2O_MAX_DISPLACEMENT = 0.1;
 const static float G2O_MAX_ROTATION = 5;
+
+const float D_THRESHOLD = 0.1;
 
 const double FOCAL_LENGTH_X = 525;
 const double FOCAL_LENGTH_Y = 525;

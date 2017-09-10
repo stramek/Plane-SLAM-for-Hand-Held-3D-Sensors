@@ -16,17 +16,11 @@ vector<Plane> Clustering::getAveragedPlanes(vector<vector<Plane>> &clusteredPlan
     vector<Plane> averagedPlanesVec;
     for (auto &planesFromCluster : clusteredPlanes) {
         vector<Point3D> points_new;
-        vector<Point3D> mergedPlanePoints;
-        vector<ImageCoords> mergedPlaneImageCoordsVec;
         for (auto &plane : planesFromCluster) {
-            points_new.insert(points_new.end(),plane.getPoints().begin(), plane.getPoints().end());
-            vector<Point3D> points = plane.getPoints();
-            vector<ImageCoords> imageCoordsVec = plane.getImageCoordsVec();
-            mergedPlanePoints.insert(mergedPlanePoints.end(), points.begin(), points.end());
-            mergedPlaneImageCoordsVec.insert(mergedPlaneImageCoordsVec.end(), imageCoordsVec.begin(),
-                                             imageCoordsVec.end());
+            points_new.insert(points_new.end(), plane.getPoints().begin(), plane.getPoints().end());
         }
-        Plane averagedPlane = planeDetector->getPlane(points_new, mergedPlaneImageCoordsVec.at(0), nullptr, true);
+        Plane averagedPlane = planeDetector->getPlane(points_new, planesFromCluster.at(0).getImageCoords(), nullptr, true);
+        averagedPlane.clearPoints();
         averagedPlanesVec.push_back(averagedPlane);
     }
     return averagedPlanesVec;

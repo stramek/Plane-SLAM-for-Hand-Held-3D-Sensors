@@ -23,16 +23,16 @@ public:
     PosOrient();
     PosOrient(const Vector3d &position, const Vector4d &orientation);
     void setPosOrient(const g2o::Vector7d &posOrient);
-    void print();
+    const void print() const;
     void printDiff(const PosOrient &posOrient);
-    Quaterniond getQuaternion();
-    Vector3d getPosition();
+    Quaterniond getQuaternion() const;
+    Vector3d getPosition() const;
     pair<Vector3d, Vector3d> minus(PosOrient &posOrient);
 private:
     Vector3d position;
     Vector4d orientation;
 
-    Vector3d fromRotationMat(const Matrix<double, 3, 3>& pose);
+    Vector3d fromRotationMat(const Matrix<double, 3, 3>& pose) const;
 };
 
 #endif //PROJEKTMAGISTERSKI_POSORIENT_H
