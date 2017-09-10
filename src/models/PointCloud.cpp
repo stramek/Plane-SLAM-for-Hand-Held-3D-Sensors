@@ -13,7 +13,6 @@ void PointCloud::depth2cloud(cv::Mat &depthImage, cv::Mat RGB, unsigned int imgS
     Eigen::Vector3d point;
     points3D.clear();
 
-
     for (unsigned int i = 0; i < depthImage.rows; i++) {
         for (unsigned int j = 0; j < depthImage.cols; j++) {
             double depthM = double(depthImage.at<uint16_t>(i, j)) / 5000.0f;

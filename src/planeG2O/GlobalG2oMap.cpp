@@ -107,12 +107,14 @@ void GlobalG2oMap::addNextFramePlanes(vector<Plane> &planes) {
     cout<<"Current plane size: "<<planes.size()<<endl;
     vector<pair<Plane, Plane>> matchedPlanes = matchPlanesG2o.getSimilarPlanes(globalPlanes, planes);
 
-//    ImageLoader imageLoader(50);
-//    imageLoader.getNextPair();
-//    ImagePair currentFrame = imageLoader.getNextPair(positionNumber);
-//
-//    planeUtils::visualizeSimilarPlanes(matchedPlanes, currentFrame.getRgb(), currentFrame.getRgb());
-//    planeUtils::visualizePlaneLocations(globalPlanes, planes, currentFrame.getRgb(), currentFrame.getRgb());
+    ImageLoader imageLoader(60);
+    ImagePair prevPair = imageLoader.getNextPair();
+    ImagePair currentFrame = imageLoader.getNextPair(50);
+
+    planeUtils::visualizeSimilarPlanes(matchedPlanes, prevPair.getRgb(), currentFrame.getRgb());
+    planeUtils::visualizePlaneLocations(globalPlanes, planes, currentFrame.getRgb(), currentFrame.getRgb());
+
+    waitKey();
 
 
     if(matchedPlanes.size() < 3) {
@@ -146,14 +148,6 @@ void GlobalG2oMap::addNextFramePlanes(vector<Plane> &planes) {
         }
         cout<<"Unmatched planes size: "<<unmatchedPlanes.size()<<endl;
 
-        //ImageLoader imageLoader(50);
-        //imageLoader.getNextPair();
-        //ImagePair currentFrame = imageLoader.getNextPair(positionNumber);
-
-        //planeUtils::visualizeSimilarPlanes(matchedPlanes, currentFrame.getRgb(), currentFrame.getRgb());
-        //planeUtils::visualizePlaneLocations(unmatchedPlanes, globalPlanes, currentFrame.getRgb(), currentFrame.getRgb());
-
-        //waitKey();
 
 //    vector<Plane> framePlanesConv;
 
@@ -234,6 +228,14 @@ void GlobalG2oMap::addNextFramePlanes(vector<Plane> &planes) {
     }
     string s = "output" + to_string(positionNumber) + ".g2o";
     optimizerMin.save(s.c_str());
+
+    QGLVisualizer visu;
+    visu.setWindowTitle("Point in cluster");
+    visu.visualizeVectorRot(matchedPlanes, lastPosOrient);
+    visu.show();
+
+    namedWindow("asd");
+    waitKey();
 }
 
 const PosOrient &GlobalG2oMap::getLastPosOrient() const {

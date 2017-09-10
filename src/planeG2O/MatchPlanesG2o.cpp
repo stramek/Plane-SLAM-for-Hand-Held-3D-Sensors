@@ -25,6 +25,13 @@ vector<pair<Plane, Plane>> MatchPlanesG2o::getSimilarPlanes(vector<Plane> &previ
                     if(areColorValid(matchedPlanes)){
                         posOrient = planeG2o.ComputeCameraPos(matchedPlanes);
                         if (validateMatch(matchedPlanes, posOrient)) {
+                            resetWasMatch(previousFrame);
+                            currentFrame.at(j(0)).setWasMatched(true);
+                            currentFrame.at(j(1)).setWasMatched(true);
+                            currentFrame.at(j(2)).setWasMatched(true);
+                            previousFrame.at(i(0)).setWasMatched(true);
+                            previousFrame.at(i(1)).setWasMatched(true);
+                            previousFrame.at(i(2)).setWasMatched(true);
                             matchRemainingPlanes(matchedPlanes, i, j, previousFrame, currentFrame, posOrient);
                             unmatchedPlanes.clear();
                             for (auto &plane : currentFrame) {
@@ -77,6 +84,9 @@ bool MatchPlanesG2o::validateMatch(vector<pair<Plane, Plane>> &matchedPlanes, Po
     pair<Vector3d, Vector3d> diff = posOrient.minus(lastPosOrient);
     Vector3d position = diff.first;
     Vector3d angles = diff.second;
+//    std::cout << "-----------------------------------------------" <<std::endl;
+//    std::cout << "Position diff: " << position[0] << " " << position[1] << " " << position[2] << std::endl;
+//    std::cout << "Angle diff: " << angles[0] << " " << angles[1] << " " << angles[2] << std::endl;
     return !(position[0] > G2O_MAX_DISPLACEMENT || position[1] > G2O_MAX_DISPLACEMENT ||
     position[2] > G2O_MAX_DISPLACEMENT || angles[0] > G2O_MAX_ROTATION ||
     angles[1] > G2O_MAX_ROTATION || angles[2] > G2O_MAX_ROTATION);
@@ -95,7 +105,7 @@ double MatchPlanesG2o::getAngleBetweenTwoVectors(const Vector3d &v1, const Vecto
 
 void MatchPlanesG2o::matchRemainingPlanes(vector<pair<Plane, Plane>> &matchedPlanes, Eigen::Vector3i &matchedIndexesPrevPlane,
                                           Eigen::Vector3i &matchedIndexesCurPlane,  vector<Plane> &previousFrame,
-                                           vector<Plane> &currentFrame, const PosOrient &posOrient){
+                                           vector<Plane> &currentFrame, PosOrient &posOrient){
     int prevPlaneIterCounter = 0;
     for (auto &prevPlane : previousFrame) {
         int curPlaneIterCounter = 0;
@@ -104,18 +114,20 @@ void MatchPlanesG2o::matchRemainingPlanes(vector<pair<Plane, Plane>> &matchedPla
                 matchedIndexesCurPlane(2) != curPlaneIterCounter) {
                 if (matchedIndexesPrevPlane(0) != prevPlaneIterCounter && matchedIndexesPrevPlane(1) != prevPlaneIterCounter &&
                     matchedIndexesPrevPlane(2) != prevPlaneIterCounter) {
-                    if (getAngleBetweenTwoVectors(prevPlane.getPlaneNormalVec(), curPlane.getPlaneNormalVec()) <  MAX_ANGLE_BETWEEN_PLANES_GLOBAL_MAP) {
-                        if (abs(prevPlane.getColor().getHue() - curPlane.getColor().getHue()) < MAX_SIMILARITY_GLOBAL_MAP_VALUE) {
-                            if(!curPlane.isWasMatched()){
-                                curPlane.setWasMatched(true);
-                                pair<Plane, Plane> planesPair(prevPlane, curPlane);
-                                matchedPlanes.push_back(planesPair);
+                    Plane planeConverted = curPlane.getPlaneSeenFromGlobalCamera(posOrient);
+                    if (abs(prevPlane.getD() - planeConverted.getD()) < D_THRESHOLD){
+                        if (getAngleBetweenTwoVectors(prevPlane.getPlaneNormalVec(), planeConverted.getPlaneNormalVec()) <  MAX_ANGLE_BETWEEN_PLANES_GLOBAL_MAP) {
+                            if (abs(prevPlane.getColor().getHue() - curPlane.getColor().getHue()) < MAX_SIMILARITY_GLOBAL_MAP_VALUE) {
+                                if(!curPlane.isWasMatched() && !prevPlane.isWasMatched()){
+                                    curPlane.setWasMatched(true);
+                                    prevPlane.setWasMatched(true);
+                                    pair<Plane, Plane> planesPair(prevPlane, curPlane);
+                                    matchedPlanes.push_back(planesPair);
+                                }
                             }
                         }
                     }
                 }
-            } else {
-                curPlane.setWasMatched(true);
             }
             ++curPlaneIterCounter;
         }
@@ -137,4 +149,10 @@ bool MatchPlanesG2o::areColorValid(vector<pair<Plane, Plane>> &matchedPlanes) {
              return false;
     }
     return true;
+}
+
+void MatchPlanesG2o::resetWasMatch(vector<Plane> &planes){
+    for(auto &plane : planes) {
+        plane.setWasMatched(false);
+    }
 }

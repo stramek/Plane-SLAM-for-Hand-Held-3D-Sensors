@@ -35,7 +35,7 @@ int main(int argc, char **argv) {
     for (int i = 0; i < numberOfIterations; ++i) {
         trajectoryFile.open("trajectories/trajectory_" + currentDate + ".txt", std::ios_base::app);
 
-        ImagePair currentFrame = imageLoader.getNextPair();
+        ImagePair currentFrame = imageLoader.getNextPair(50);
 
         make_unique<PlaneFillerBuilder>()
                 ->withDataset(&currentFrame)
@@ -47,7 +47,6 @@ int main(int argc, char **argv) {
                 ->fillVector(&planeVectorCurrentFrame);
 
         planeUtils::mergePlanes(planeVectorCurrentFrame, new PcaPlaneDetector());
-
 
         if (planeUtils::arePlanesValid(planeVectorCurrentFrame)) {
             globalG2oMap.addNewFrames(planeVectorCurrentFrame);

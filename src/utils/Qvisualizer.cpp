@@ -9,6 +9,14 @@ QGLVisualizer::~QGLVisualizer(void) {}
 
 //}
 
+void QGLVisualizer::visualizeVectorRot(vector<pair<Plane, Plane>> &matchedPlanes, PosOrient posOrient){
+    this->matchedPlanes.clear();
+    for(auto &plane : matchedPlanes){
+        this->matchedPlanes.push_back(plane);
+    }
+    this->posOrient = posOrient;
+}
+
 /// draw objects
 void QGLVisualizer::draw() {
     glPushMatrix();
@@ -16,7 +24,7 @@ void QGLVisualizer::draw() {
     std::vector<Point3D> points = pointCloud.getPoints3D();
     for (Point3D i : points) {
         glColor3f(i.red / 255.0f, i.green / 255.0f, i.blue / 255.0f);
-        glVertex3f(i.position(0), -i.position(1), -i.position(2));
+        glVertex3f(i.position(0), i.position(1), i.position(2));
     }
     glEnd();
 
@@ -28,8 +36,57 @@ void QGLVisualizer::draw() {
         glLineWidth(2);
         glBegin(GL_LINES);
         glColor3f(1.0, 1.0, 1.0);
-        glVertex3f(point(0), -point(1), -point(2));
-        glVertex3f(point(0) + normalVec(0), -point(1) + normalVec(1), -point(2) + normalVec(2));
+        glVertex3f(point(0), point(1), point(2));
+        glVertex3f(point(0) + normalVec(0), point(1) + normalVec(1), point(2) + normalVec(2));
+        glEnd();
+    }
+
+    // Drawing vector rotation
+    for (auto planePair : matchedPlanes){
+        Vector3d point1 = planePair.first.getCentralPoint().position;
+        Vector3d normalVec1 = planePair.first.getPlaneNormalVec() / normalScaleFactor;
+        Vector3d normalVec2 = planePair.second.getPlaneNormalVec() / normalScaleFactor;
+        Vector3d point2 = planePair.second.getMeanPoint();
+        Plane afterRot = planePair.second.getPlaneSeenFromGlobalCamera(posOrient);
+        Vector3d point3 = afterRot.getMeanPoint();
+
+        Vector3d normalVecRot = afterRot.getPlaneNormalVec() / normalScaleFactor;
+
+        glLineWidth(2);
+        glBegin(GL_LINES);
+        glColor3f(0.0, 0.0, 1.0);
+        glVertex3f(point1(0), point1(1), point1(2));
+        glVertex3f(point1(0) + normalVec1(0), point1(1) + normalVec1(1), point1(2) + normalVec1(2));
+        glEnd();
+
+        glLineWidth(2);
+        glBegin(GL_LINES);
+        glColor3f(1.0, 1.0, 1.0);
+        glVertex3f(point2(0), point2(1), point2(2));
+        glVertex3f(point2(0) + normalVec2(0), point2(1) + normalVec2(1), point2(2) + normalVec2(2));
+        glEnd();
+
+        glLineWidth(2);
+        glBegin(GL_LINES);
+        glColor3f(1.0, 0.0, 0.0);
+        glVertex3f(point3(0), point3(1), point3(2));
+        glVertex3f(point3(0) + normalVecRot(0), point3(1) + normalVecRot(1), point3(2) + normalVecRot(2));
+        glEnd();
+
+        glBegin(GL_POINTS);
+        std::vector<Point3D> points = planePair.first.getPoints();
+        for (Point3D i : points) {
+            glColor3f(i.red / 255.0f, i.green / 255.0f, i.blue / 255.0f);
+            glVertex3f(i.position(0), i.position(1), i.position(2));
+        }
+        glEnd();
+
+        glBegin(GL_POINTS);
+        std::vector<Point3D> points2 = planePair.second.getPoints();
+        for (Point3D i : points2) {
+            glColor3f(i.red / 255.0f, i.green / 255.0f, i.blue / 255.0f);
+            glVertex3f(i.position(0), i.position(1), i.position(2));
+        }
         glEnd();
     }
 
@@ -62,6 +119,21 @@ void QGLVisualizer::init() {
 /// Updates cloud
 void QGLVisualizer::updateCloud(cv::Mat RGB, cv::Mat D) {
     depth2cloud(D, RGB);
+}
+
+void QGLVisualizer::updateCloud(vector<Point3D> &points) {
+//    pointCloud.clear();
+    RNG rng(points.size());
+    uchar r = rng.uniform(0, 255);
+    uchar g = rng.uniform(0, 255);
+    uchar b = rng.uniform(0, 255);
+
+    for(auto &i : points){
+        i.red = r;
+        i.green = g;
+        i.blue = b;
+        pointCloud.push_back(i);
+    }
 }
 
 void QGLVisualizer::getPoint(unsigned int u, unsigned int v, double depth, Eigen::Vector3d &point3D) {

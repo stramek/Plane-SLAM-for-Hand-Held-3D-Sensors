@@ -32,9 +32,11 @@ private:
     double getAngleBetweenTwoVectors(const Vector3d &v1, const Vector3d &v2);
     void matchRemainingPlanes(vector<pair<Plane, Plane>> &matchedPlanes, Eigen::Vector3i &matchedIndexesPrevPlane,
                               Eigen::Vector3i &matchedIndexesCurPlane, vector<Plane> &previousFrame,
-                              vector<Plane> &currentFrame, const PosOrient &posOrient);
+                              vector<Plane> &currentFrame, PosOrient &posOrient);
 
     PosOrient lastPosOrient = PosOrient(Eigen::Vector3d(0, 0, 0), Eigen::Vector4d(0, 0, 0, 1));
+
+    void resetWasMatch(vector<Plane> &planes);
 public:
     void setLastPosOrient(const PosOrient &posOrient);
 };

@@ -37,6 +37,8 @@ public:
     /// Updates cloud
     void updateCloud(cv::Mat RGB, cv::Mat D);
 
+    void updateCloud(vector<Point3D> &points);
+
     void updatePlanes(std::vector<Plane> &planes);
 
     void updateCloud(Registration *registration, Frame *undistorted, Frame *registered);
@@ -52,6 +54,8 @@ public:
     bool isProgramFinished() const;
 
     void keyPressEvent(QKeyEvent *event);
+
+    void visualizeVectorRot(vector<pair<Plane, Plane>> &matchedPlanes, PosOrient posOrient);
 
     /// Destruction
     ~QGLVisualizer(void);
@@ -86,6 +90,11 @@ private:
     PointCloud pointCloud;
 
     std::vector<Plane> planes;
+
+
+    // to visualize vector rotation;
+    vector<pair<Plane, Plane>> matchedPlanes;
+    PosOrient posOrient;
 };
 
 #endif // QVISUALIZER_H_INCLUDED

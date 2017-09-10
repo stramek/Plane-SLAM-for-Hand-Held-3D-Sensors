@@ -2,6 +2,7 @@
 // Created by mordimer on 11.03.17.
 //
 
+#include <include/kinect/main.h>
 #include "include/algorithms/Clustering.h"
 
 double Clustering::getSimilarityOfTwoPlanes(const Plane &firstPlane, const Plane &secondPlane) {
@@ -14,6 +15,8 @@ double Clustering::getSimilarityOfTwoPlanes(const Plane &firstPlane, const Plane
 
 vector<Plane> Clustering::getAveragedPlanes(vector<vector<Plane>> &clusteredPlanes, PlaneDetector *planeDetector) {
     vector<Plane> averagedPlanesVec;
+//    QGLVisualizer visu;
+//    visu.setWindowTitle("Point in cluster");
     for (auto &planesFromCluster : clusteredPlanes) {
         vector<Point3D> points_new;
         vector<Point3D> mergedPlanePoints;
@@ -28,6 +31,11 @@ vector<Plane> Clustering::getAveragedPlanes(vector<vector<Plane>> &clusteredPlan
         }
         Plane averagedPlane = planeDetector->getPlane(points_new, mergedPlaneImageCoordsVec.at(0), nullptr, true);
         averagedPlanesVec.push_back(averagedPlane);
+//        visu.updateCloud(points_new);
+//        visu.show();
+//        visu.updatePlanes(averagedPlanesVec);
+//        namedWindow("sdas");
+//        waitKey();
     }
     return averagedPlanesVec;
 }
