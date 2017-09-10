@@ -66,10 +66,10 @@ int main(int argc, char **argv) {
         cout<<">>>>> Iteration "<<i+1<<" of " <<numberOfIterations<<" finished."<<endl;
         if (i != 0) {
             globalG2oMap.printLastPoseOrient();
-            planeUtils::visualizeSimilarPlanes(globalG2oMap.getMatchedPlanes(), previousRgbImage, currentFrame.getRgb());
-            waitKey();
+//            planeUtils::visualizeSimilarPlanes(globalG2oMap.getMatchedPlanes(), previousRgbImage, currentFrame.getRgb());
+//            waitKey();
         }
-        previousRgbImage = currentFrame.getRgb().clone();
+//        previousRgbImage = currentFrame.getRgb().clone();
 
 
 /*        if (planeUtils::arePlanesValid(planeVectorCurrentFrame)) {

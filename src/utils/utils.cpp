@@ -101,37 +101,20 @@ namespace utils {
         return str;
     }
 
-    void movePlanesToPreviousVector(vector<Plane> &planeVectorPreviousFrame, vector<Plane> &planeVectorCurrentFrame) {
-//        cout<<"before"<<endl<<endl;
-//        cout<<"previous size: "<<planeVectorPreviousFrame.size()<<endl;
-//        for (Plane plane : planeVectorPreviousFrame) {
-//            cout<<"asd: ";
-//            cout<<plane.getImageCoords().getNumberOfPixels()<<endl;
-//        }
-//        cout<<"end previous"<<endl;
-//        cout<<"start current size: "<<planeVectorCurrentFrame.size()<<endl;
-//        for (Plane plane : planeVectorCurrentFrame) {
-//            cout<<"asd: ";
-//            cout<<plane.getImageCoords().getNumberOfPixels()<<endl;
-//        }
-//        cout<<"end current"<<endl;
+    void rotatePoint(Point3D &point3D, const PosOrient &posOrient) {
+        rotatePoint(point3D.position, posOrient);
+    }
 
+    void rotatePoint(Vector3d &point3D, const PosOrient &posOrient) {
+        Quaterniond q = posOrient.getQuaternion();
+        auto rotMatrix = q.toRotationMatrix();
+        auto translation = posOrient.getPosition();
+        point3D = rotMatrix * point3D + translation;
+    }
+
+    void movePlanesToPreviousVector(vector<Plane> &planeVectorPreviousFrame, vector<Plane> &planeVectorCurrentFrame) {
         planeVectorPreviousFrame.clear();
         copy(planeVectorCurrentFrame.begin(), planeVectorCurrentFrame.end(), back_inserter(planeVectorPreviousFrame));
         planeVectorCurrentFrame.clear();
-
-//        cout<<"after"<<endl<<endl;
-//        cout<<"previous size: "<<planeVectorPreviousFrame.size()<<endl;
-//        for (Plane plane : planeVectorPreviousFrame) {
-//            cout<<"asd: ";
-//            cout<<plane.getImageCoords().getNumberOfPixels()<<endl;
-//        }
-//        cout<<"end previous"<<endl;
-//        cout<<"start current size: "<<planeVectorCurrentFrame.size()<<endl;
-//        for (Plane plane : planeVectorCurrentFrame) {
-//            cout<<"asd: ";
-//            cout<<plane.getImageCoords().getNumberOfPixels()<<endl;
-//        }
-//        cout<<"end current"<<endl;
     }
 }

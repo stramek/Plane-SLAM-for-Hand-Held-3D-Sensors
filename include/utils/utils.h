@@ -30,6 +30,8 @@ namespace utils {
     void movePlanesToPreviousVector(vector<Plane> &planeVectorPreviousFrame, vector<Plane> &planeVectorCurrentFrame);
     string getCurrentDate();
     void appendTrajectoryRecord(string fileName, const PosOrient &posOrient);
+    void rotatePoint(Point3D &point3D, const PosOrient &posOrient);
+    void rotatePoint(Vector3d &point3D, const PosOrient &posOrient);
 }
 
 #endif //PROJEKTMAGISTERSKI_UTILS_H

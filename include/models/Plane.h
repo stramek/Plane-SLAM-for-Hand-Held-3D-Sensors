@@ -16,10 +16,10 @@
 #include "include/models/HSVColor.h"
 #include "include/models/ImageCoords.h"
 #include "include/models/Point3D.h"
+#include "include/models/PosOrient.h"
 #include <opencv2/opencv.hpp>
 #include <array>
 #include <Eigen/Dense>
-#include "include/models/PosOrient.h"
 
 using namespace Eigen;
 
@@ -29,7 +29,7 @@ class Plane {
 public:
     Plane();
 
-    Plane(const Vector3d &point1, const Vector3d &point2, const Vector3d &point3, const ImageCoords &imageCoords);
+    Plane(const Vector3d &point1, const Vector3d &point2, const Vector3d &point3, const ImageCoords &imageCoords, Vector3d meanPoint);
 
     Plane(std::array<Eigen::Vector3d, 3>, const Mat &colorImage);
 

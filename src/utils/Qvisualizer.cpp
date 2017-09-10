@@ -88,10 +88,7 @@ void QGLVisualizer::updateCloud(Registration *registration, Frame *undistorted,
             const uint8_t *p = reinterpret_cast<uint8_t *>(&color);
             if (!isnanf(z)) {
                 Point3D point3D(-x, -y, -z, p[2], p[1], p[0]);
-                Quaterniond q = posOrient.getQuaternion()/*.conjugate()*/;
-                auto rotMatrix = q.toRotationMatrix();
-                auto translation = /*-*/posOrient.getPosition();
-                point3D.position = rotMatrix * point3D.position + translation;
+                utils::rotatePoint(point3D, posOrient);
                 pointCloud.push_back(point3D);
             }
         }

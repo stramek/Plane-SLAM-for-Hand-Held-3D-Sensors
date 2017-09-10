@@ -25,6 +25,8 @@ const static float MAX_PERCENT_OF_NAN_PIXELS_INSIDE_PLAIN = 20.0f;
 const static float G2O_MAX_DISPLACEMENT = 0.1;
 const static float G2O_MAX_ROTATION = 5;
 
+const float D_THRESHOLD = 0.1;
+
 const double FOCAL_LENGTH_X = 525;
 const double FOCAL_LENGTH_Y = 525;
 const double OPTICAL_CENTER_X = 319.5;
