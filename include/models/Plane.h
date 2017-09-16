@@ -122,6 +122,7 @@ private:
     bool wasMatched = false;
 public:
     void setWasMatched(bool wasMatched);
+    void clearAllPointsExceptSome();
 
 public:
     bool isWasMatched() const;

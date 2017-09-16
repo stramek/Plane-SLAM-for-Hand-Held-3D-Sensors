@@ -22,6 +22,7 @@ Eigen::Quaterniond GlobalG2oMap::normAndDToQuat(double d, Eigen::Vector3d norm) 
 GlobalG2oMap::GlobalG2oMap() {}
 
 void GlobalG2oMap::addNewFrames(vector<Plane> &planes) {
+    HELPER_ITERATION++;
     if (!initialized) {
         initializeFirstFrame(planes);
         initialized = true;
@@ -31,6 +32,7 @@ void GlobalG2oMap::addNewFrames(vector<Plane> &planes) {
 }
 
 void GlobalG2oMap::initializeFirstFrame(vector<Plane> &planes) {
+    loadFile();
     positionNumber = 0;
 
     g2o::BlockSolverX::LinearSolverType *linearSolverMin = new g2o::LinearSolverPCG<g2o::BlockSolverX::PoseMatrixType>();
@@ -98,7 +100,24 @@ void GlobalG2oMap::addNextFramePlanes(vector<Plane> &planes) {
     matchedPlanes = matchPlanesG2o.getSimilarPlanes(globalPlanes, planes);
     vector<Plane> unmatchedPlanes = matchPlanesG2o.getUnmatchedPlanes();
 
-    if(matchedPlanes.size() < 3) {
+
+    // DEBUG
+
+
+    vector<Plane> unmatchedPlanesGlobal;
+    for (Plane &plane:unmatchedPlanes) {
+        unmatchedPlanesGlobal.push_back(plane.getPlaneSeenFromGlobalCamera(lastPosOrient));
+    }
+    //Plane transformedPlane = plane.getPlaneSeenFromGlobalCamera(posOrient);
+
+    //if (positionNumber > 20) {
+
+    //}
+
+
+    //DEBUG
+
+    /*if(matchedPlanes.size() < 3) {
         g2o::EdgeSE3 *edgeSE3 = new g2o::EdgeSE3();
         edgeSE3->setVertex(0, optimizerMin.vertex(0));
         edgeSE3->setVertex(1, optimizerMin.vertex(positionNumber));
@@ -122,7 +141,7 @@ void GlobalG2oMap::addNextFramePlanes(vector<Plane> &planes) {
 
         out.close();
 
-    } else {
+    } else {*/
         for (auto &planePair : matchedPlanes) {
             //add edge to graph
             g2o::EdgeSE3Plane *curEdge = new g2o::EdgeSE3Plane();
@@ -140,24 +159,28 @@ void GlobalG2oMap::addNextFramePlanes(vector<Plane> &planes) {
         for(auto &plane : unmatchedPlanes) {
             tuple<long, bool, Plane> status = GlobalMap::getInstance().addPlaneToMap(plane, lastPosOrient, positionNumber);
 
-            g2o::VertexPlaneQuat *curV2 = new g2o::VertexPlaneQuat();
-            curV2->setEstimate(normAndDToQuat(get<2>(status).getD(), get<2>(status).getPlaneNormalVec()));
-            //cout<<"Adding VertexPlaneQuat id = " << get<0>(status) <<endl;
-            curV2->setId((int) get<0>(status));
-            optimizerMin.addVertex(curV2);
+            if (get<1>(status)) {
+                g2o::VertexPlaneQuat *curV2 = new g2o::VertexPlaneQuat();
+                curV2->setEstimate(normAndDToQuat(get<2>(status).getD(), get<2>(status).getPlaneNormalVec()));
+                //cout<<"Adding VertexPlaneQuat id = " << get<0>(status) <<endl;
+                curV2->setId((int) get<0>(status));
+                optimizerMin.addVertex(curV2);
 
-            //add edge to graph
-            g2o::EdgeSE3Plane *curEdge = new g2o::EdgeSE3Plane();
-            curEdge->setVertex(0, optimizerMin.vertex(CAMERA_POS_INDEXES_SHIFT + positionNumber));
-            curEdge->setVertex(1, optimizerMin.vertex((int) get<0>(status)));
+                //add edge to graph
+                g2o::EdgeSE3Plane *curEdge = new g2o::EdgeSE3Plane();
+                curEdge->setVertex(0, optimizerMin.vertex(CAMERA_POS_INDEXES_SHIFT + positionNumber));
+                curEdge->setVertex(1, optimizerMin.vertex((int) get<0>(status)));
 
-            curEdge->setMeasurement(normAndDToQuat(plane.getD(), plane.getPlaneNormalVec()));
+                curEdge->setMeasurement(normAndDToQuat(plane.getD(), plane.getPlaneNormalVec()));
 
-            curEdge->setInformation(Eigen::Matrix<double, 3, 3>::Identity());
+                curEdge->setInformation(Eigen::Matrix<double, 3, 3>::Identity());
 
-            optimizerMin.addEdge(curEdge);
+                optimizerMin.addEdge(curEdge);
+            }
+
+
         }
-    }
+    //}
 
     optimizerMin.setVerbose(false);
     optimizerMin.initializeOptimization();
@@ -170,6 +193,7 @@ void GlobalG2oMap::addNextFramePlanes(vector<Plane> &planes) {
 
     for (int i = 0; i < GlobalMap::getInstance().getCurrentId(); ++i) {
         g2o::VertexPlaneQuat *curPlaneVert = static_cast<g2o::VertexPlaneQuat *>(optimizerMin.vertex(i));
+        if (curPlaneVert == nullptr) continue;
         Eigen::Quaterniond quaternion = curPlaneVert->estimate();
         Eigen::Vector3d normVec(quaternion.x(), quaternion.y(), quaternion.z());
         double norm = normVec.norm();
@@ -180,6 +204,13 @@ void GlobalG2oMap::addNextFramePlanes(vector<Plane> &planes) {
     }
     string s = "output" + to_string(positionNumber) + ".g2o";
     optimizerMin.save(s.c_str());
+
+    /*ImageLoader imageLoader(500);
+    imageLoader.setCurrentPhoto(positionNumber * 3);
+    ImagePair currentFrame = imageLoader.getNextPair();
+    planeUtils::visualizeSimilarPlanes(matchedPlanes, currentFrame.getRgb(), currentFrame.getRgb());
+    planeUtils::visualizePlaneLocations(GlobalMap::getInstance().getGlobalMapVector(), unmatchedPlanesGlobal, currentFrame.getRgb(), currentFrame.getRgb());
+    waitKey();*/
 }
 
 const PosOrient &GlobalG2oMap::getLastPosOrient() const {
@@ -204,6 +235,7 @@ const vector<pair<Plane, Plane>> &GlobalG2oMap::getMatchedPlanes() const {
 }
 
 void GlobalG2oMap::printLastPoseOrient() {
+    cout<<"Number of planes inside global map: " << GlobalMap::getInstance().getGlobalMapPlanes().size() <<endl;
     lastPosOrient.print();
 }
 

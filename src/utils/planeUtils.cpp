@@ -80,7 +80,7 @@ namespace planeUtils {
         }
 
 
-        for (Plane &plane : planes) {
+        for (Plane &plane : planes2) {
             ImageCoords previousImageCoords = plane.getImageCoords();
             Point previousPlanePoint = Point(previousImageCoords.getCenterX(), previousImageCoords.getCenterY());
             int size = previousImageCoords.getAreaSize() / 2;
@@ -182,17 +182,16 @@ namespace planeUtils {
         random_device rd;
         mt19937 rng(rd());
 
-        const int NUMBER_OF_RANDOM_POINTS = 50;
         double distance = 0;
         vector<Point3D> pointsVec = secondPlane.getPoints();
 
         uniform_int_distribution<unsigned int> pointIndex(0, secondPlane.getNumberOfPoints() - 1);
-        for (int i = 0; i < NUMBER_OF_RANDOM_POINTS; ++i) {
+        for (int i = 0; i < NUMBER_OF_POINTS_TO_COUNT_DISTANCE; ++i) {
             Vector3d randomPointOnSecondPlane = pointsVec[pointIndex(rng)].position;
             distance += firstPlane.getDistanceFromPoint(randomPointOnSecondPlane);
         }
 
-        return distance / NUMBER_OF_RANDOM_POINTS;
+        return distance / NUMBER_OF_POINTS_TO_COUNT_DISTANCE;
     }
 
     bool arePlanesValid(vector<Plane> &planes) {

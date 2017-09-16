@@ -14,7 +14,7 @@ int main(int argc, char **argv) {
     QApplication application(argc, argv);
     glutInit(&argc, argv);
 
-    ImageLoader imageLoader(500);
+    ImageLoader imageLoader(1500);
     imageLoader.setCurrentPhoto(1);
 
     vector<Plane> planeVectorPreviousFrame;
@@ -31,7 +31,7 @@ int main(int argc, char **argv) {
     string currentDate = utils::getCurrentDate();
     GlobalG2oMap globalG2oMap;
 
-    int numberOfIterations = 500;
+    int numberOfIterations = 1500;
     for (int i = 0; i < numberOfIterations; ++i) {
         trajectoryFile.open("trajectories/trajectory_" + currentDate + ".txt", std::ios_base::app);
 
@@ -40,8 +40,8 @@ int main(int argc, char **argv) {
         make_unique<PlaneFillerBuilder>()
                 ->withDataset(&currentFrame)
                 ->withPlaneDetector(new PcaPlaneDetector())
-                ->withAreaSize(35)
-                ->withNumberOfPoints(2000)
+                ->withAreaSize(41)
+                ->withNumberOfPoints(500)
                 ->withPreviousPlanePercent(&planeVectorPreviousFrame, 0.5)
                 ->build()
                 ->fillVector(&planeVectorCurrentFrame);

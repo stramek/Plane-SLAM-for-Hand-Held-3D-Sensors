@@ -134,6 +134,18 @@ void Plane::clearPoints() {
     points.clear();
 }
 
+void Plane::clearAllPointsExceptSome() {
+    random_device rd;
+    mt19937 rng(rd());
+    uniform_int_distribution<unsigned int> pointIndex(0, (unsigned int)(points.size() - 1));
+    vector<Point3D> randomPoints;
+    for (int i = 0; i < NUMBER_OF_POINTS_TO_COUNT_DISTANCE; ++i) {
+        randomPoints.push_back(points[pointIndex(rng)]);
+    }
+    points.clear();
+    points.insert(points.end(), randomPoints.begin(), randomPoints.end());
+}
+
 unsigned int Plane::getNumberOfPoints() const {
     return (unsigned int) points.size();
 }
