@@ -71,6 +71,8 @@ private:
 public:
     void setProgramFinished(bool programFinished);
 
+    void updateCloud(Mat RGB, Mat D, const PosOrient &posOrient);
+
 private:
 
     bool programFinished = false;
@@ -84,6 +86,13 @@ private:
     std::mutex mtxCamera;
 
     PointCloud pointCloud;
+
+    PointCloud globalDatasetPointCloud;
+
+public:
+    const PointCloud &getGlobalDatasetPointCloud() const;
+
+private:
 
     std::vector<Plane> planes;
 };

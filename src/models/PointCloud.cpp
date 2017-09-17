@@ -3,6 +3,8 @@
 //
 
 #include <include/utils/constants.h>
+#include <include/models/PosOrient.h>
+#include <include/utils/utils.h>
 #include "include/models/PointCloud.h"
 
 PointCloud::PointCloud() {
@@ -27,6 +29,30 @@ void PointCloud::depth2cloud(cv::Mat &depthImage, cv::Mat RGB, unsigned int imgS
             pointPCL.green = RGB.at<cv::Vec<uchar, 3>>(i, j).val[1];
             pointPCL.blue = RGB.at<cv::Vec<uchar, 3>>(i, j).val[0];
 
+            points3D.push_back(pointPCL);
+        }
+    }
+}
+
+void PointCloud::depth2cloud(cv::Mat &depthImage, cv::Mat &RGB, const PosOrient &posOrient){
+    Eigen::Vector3d point;
+    points3D.clear();
+
+
+    for (unsigned int i = 0; i < depthImage.rows; i++) {
+        for (unsigned int j = 0; j < depthImage.cols; j++) {
+            double depthM = double(depthImage.at<uint16_t>(i, j)) / 5000.0f;
+            getPoint(j + 0, IMAGE_HEIGHT - (i + 0 + 1), depthM, point);
+            Point3D pointPCL;
+            pointPCL.position(0) = point(0);
+            pointPCL.position(1) = point(1);
+            pointPCL.position(2) = point(2);
+
+            pointPCL.red = RGB.at<cv::Vec<uchar, 3>>(i, j).val[2];
+            pointPCL.green = RGB.at<cv::Vec<uchar, 3>>(i, j).val[1];
+            pointPCL.blue = RGB.at<cv::Vec<uchar, 3>>(i, j).val[0];
+
+            utils::rotatePoint(pointPCL, posOrient);
             points3D.push_back(pointPCL);
         }
     }

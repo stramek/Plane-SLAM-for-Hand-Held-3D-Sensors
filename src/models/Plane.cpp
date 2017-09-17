@@ -273,11 +273,8 @@ Plane Plane::getPlaneSeenFromGlobalCamera(PosOrient &posOrient) {
 }
 
 void Plane::transformPointsToGlobal(PosOrient &posOrient) {
-    Quaterniond q = posOrient.getQuaternion().conjugate();
-    auto rotMatrix = q.toRotationMatrix();
-    auto translation = -posOrient.getPosition();
     for (auto &point : points) {
-        point.position = rotMatrix * point.position + translation;
+        utils::rotatePoint(point, posOrient);
     }
 }
 

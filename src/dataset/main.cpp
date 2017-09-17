@@ -13,6 +13,7 @@
 int main(int argc, char **argv) {
     QApplication application(argc, argv);
     glutInit(&argc, argv);
+    QGLVisualizer visualizer;
 
     ImageLoader imageLoader(1500);
     imageLoader.setCurrentPhoto(1);
@@ -23,6 +24,8 @@ int main(int argc, char **argv) {
     vector<PosOrient> idealSlamPositions;
     Mat previousRgbImage;
 
+    PosOrient lastPosOrient;
+
     const bool visualize = false;
 
     //utils::loadDatasetPositions(idealSlamPositions);
@@ -30,6 +33,9 @@ int main(int argc, char **argv) {
 
     string currentDate = utils::getCurrentDate();
     GlobalG2oMap globalG2oMap;
+
+//    utils::createOctoMap("Dataset", 0.02);
+
 
     int numberOfIterations = 1500;
     for (int i = 0; i < numberOfIterations; ++i) {
@@ -41,20 +47,14 @@ int main(int argc, char **argv) {
                 ->withDataset(&currentFrame)
                 ->withPlaneDetector(new PcaPlaneDetector())
                 ->withAreaSize(41)
-                ->withNumberOfPoints(500)
+                ->withNumberOfPoints(600)
                 ->withPreviousPlanePercent(&planeVectorPreviousFrame, 0.5)
                 ->build()
                 ->fillVector(&planeVectorCurrentFrame);
 
         planeUtils::mergePlanes(planeVectorCurrentFrame, new PcaPlaneDetector());
 
-        if (planeUtils::arePlanesValid(planeVectorCurrentFrame)) {
-            globalG2oMap.addNewFrames(planeVectorCurrentFrame);
-        } else {
-            cout<<"*********************************************"<<endl;
-            cout<<"Planes are not valid! SKIPPING FRAME "<<i<<"!"<<endl;
-            cout<<"*********************************************"<<endl;
-        }
+        globalG2oMap.addNewFrames(planeVectorCurrentFrame);
 
         PosOrient posOrient = globalG2oMap.getLastPosOrient();
         Vector3d position = posOrient.getPosition();
@@ -66,6 +66,16 @@ int main(int argc, char **argv) {
         cout<<">>>>> Iteration "<<i+1<<" of " <<numberOfIterations<<" finished."<<endl;
         if (i != 0) {
             globalG2oMap.printLastPoseOrient();
+            visualizer.updateCloud(currentFrame.getRgb(), currentFrame.getDepth(), globalG2oMap.getLastPosOrient());
+            if (lastPosOrient.getPosition()[0] != globalG2oMap.getLastPosOrient().getPosition()[0]
+                && lastPosOrient.getPosition()[1] != globalG2oMap.getLastPosOrient().getPosition()[1]
+                && lastPosOrient.getPosition()[2] != globalG2oMap.getLastPosOrient().getPosition()[2]) {
+//                utils::updateOctoMap("Dataset", visualizer.getGlobalDatasetPointCloud().getPoints3D());
+                cout<<"Not same"<<endl;
+            } else {
+                cout<<"Same orient"<<endl;
+            }
+            lastPosOrient = globalG2oMap.getLastPosOrient();
 //            planeUtils::visualizeSimilarPlanes(globalG2oMap.getMatchedPlanes(), previousRgbImage, currentFrame.getRgb());
 //            waitKey();
         }

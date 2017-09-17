@@ -123,3 +123,11 @@ void QGLVisualizer::setProgramFinished(bool programFinished) {
 void QGLVisualizer::updatePlanes(std::vector<Plane> &planes){
     this->planes = planes;
 }
+
+void QGLVisualizer::updateCloud(Mat RGB, Mat D, const PosOrient &posOrient) {
+    globalDatasetPointCloud.depth2cloud(D, RGB, posOrient);
+}
+
+const PointCloud &QGLVisualizer::getGlobalDatasetPointCloud() const {
+    return globalDatasetPointCloud;
+}

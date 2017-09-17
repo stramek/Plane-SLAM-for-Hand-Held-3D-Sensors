@@ -106,10 +106,9 @@ namespace utils {
     }
 
     void rotatePoint(Vector3d &point3D, const PosOrient &posOrient) {
-        Quaterniond q = posOrient.getQuaternion();
-        auto rotMatrix = q.toRotationMatrix();
+        auto rotMatrix = posOrient.getQuaternion().toRotationMatrix();
         auto translation = posOrient.getPosition();
-        point3D = rotMatrix * point3D + translation;
+        point3D = (rotMatrix * point3D) + translation;
     }
 
     void movePlanesToPreviousVector(vector<Plane> &planeVectorPreviousFrame, vector<Plane> &planeVectorCurrentFrame) {

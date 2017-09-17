@@ -93,55 +93,47 @@ void GlobalG2oMap::addNextFramePlanes(vector<Plane> &planes) {
 
     optimizerMin.addVertex(curV);
 
-    MatchPlanesG2o matchPlanesG2o;
-    matchPlanesG2o.setLastPosOrient(lastPosOrient);
-    vector<Plane> globalPlanes = GlobalMap::getInstance().getGlobalMapVector();
     matchedPlanes.clear();
-    matchedPlanes = matchPlanesG2o.getSimilarPlanes(globalPlanes, planes);
-    vector<Plane> unmatchedPlanes = matchPlanesG2o.getUnmatchedPlanes();
+    vector<Plane> unmatchedPlanes;
+
+    if (planeUtils::arePlanesValid(planes)) {
+        MatchPlanesG2o matchPlanesG2o;
+        matchPlanesG2o.setLastPosOrient(lastPosOrient);
+        vector<Plane> globalPlanes = GlobalMap::getInstance().getGlobalMapVector();
+        matchedPlanes = matchPlanesG2o.getSimilarPlanes(globalPlanes, planes);
+        unmatchedPlanes = matchPlanesG2o.getUnmatchedPlanes();
+    }
+
 
 
     // DEBUG
 
 
-    vector<Plane> unmatchedPlanesGlobal;
+   /* vector<Plane> unmatchedPlanesGlobal;
     for (Plane &plane:unmatchedPlanes) {
         unmatchedPlanesGlobal.push_back(plane.getPlaneSeenFromGlobalCamera(lastPosOrient));
-    }
-    //Plane transformedPlane = plane.getPlaneSeenFromGlobalCamera(posOrient);
-
-    //if (positionNumber > 20) {
-
-    //}
+    }*/
 
 
     //DEBUG
 
-    /*if(matchedPlanes.size() < 3) {
+    if(matchedPlanes.size() < 3) {
+        cout<<"*********************************************"<<endl;
+        cout<<"FRAME TAKEN FROM BELTER !!!"<<endl;
         g2o::EdgeSE3 *edgeSE3 = new g2o::EdgeSE3();
-        edgeSE3->setVertex(0, optimizerMin.vertex(0));
-        edgeSE3->setVertex(1, optimizerMin.vertex(positionNumber));
+        edgeSE3->setVertex(0, optimizerMin.vertex(CAMERA_POS_INDEXES_SHIFT));
+        edgeSE3->setVertex(1, optimizerMin.vertex(positionNumber + CAMERA_POS_INDEXES_SHIFT));
         PosOrient currentPosOrient = pointSlamPosOrients.at(positionNumber);
         Vector3d position = currentPosOrient.getPosition();
         position[2] = position[2] - G2O_Z_OFFSET;
-        g2o::SE3Quat poseSE3Quat(currentPosOrient.getQuaternion(), position);
-        edgeSE3->setMeasurement(poseSE3Quat);
-
+        g2o::SE3Quat poseSE3Quat1(currentPosOrient.getQuaternion(), position);
+        edgeSE3->setMeasurement(poseSE3Quat1);
         edgeSE3->setInformation(Eigen::Matrix<double, 6, 6>::Identity());
-
         optimizerMin.addEdge(edgeSE3);
+        currentPosOrient.print();
+        cout<<"*********************************************"<<endl;
 
-        std::ofstream out;
-
-        // std::ios::app is the open mode "append" meaning
-        // new data will be written to the end of the file.
-        out.open("indexes.txt", std::ios::app);
-
-        out << positionNumber << std::endl;
-
-        out.close();
-
-    } else {*/
+    } else {
         for (auto &planePair : matchedPlanes) {
             //add edge to graph
             g2o::EdgeSE3Plane *curEdge = new g2o::EdgeSE3Plane();
@@ -180,7 +172,7 @@ void GlobalG2oMap::addNextFramePlanes(vector<Plane> &planes) {
 
 
         }
-    //}
+    }
 
     optimizerMin.setVerbose(false);
     optimizerMin.initializeOptimization();

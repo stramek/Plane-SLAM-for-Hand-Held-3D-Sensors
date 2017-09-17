@@ -26,6 +26,8 @@ public:
     void push_back(Point3D point3D);
     void clear();
     const std::vector<Point3D> &getPoints3D() const;
+
+    void depth2cloud(cv::Mat &depthImage, cv::Mat &RGB, const PosOrient &posOrient);
 };
 
 
