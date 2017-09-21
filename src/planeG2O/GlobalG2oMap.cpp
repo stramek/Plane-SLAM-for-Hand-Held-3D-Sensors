@@ -197,12 +197,35 @@ void GlobalG2oMap::addNextFramePlanes(vector<Plane> &planes) {
     string s = "output" + to_string(positionNumber) + ".g2o";
     optimizerMin.save(s.c_str());
 
-    /*ImageLoader imageLoader(500);
-    imageLoader.setCurrentPhoto(positionNumber * 3);
+//    ImageLoader imageLoader(500);
+//    imageLoader.setCurrentPhoto(positionNumber);
+//    ImagePair currentFrame = imageLoader.getNextPair();
+//    Mat prevMat = currentFrame.getRgb();
+//    Mat curMat = imageLoader.getNextPair(120).getRgb();
+//    planeUtils::visualizeSimilarPlanes(matchedPlanes, prevMat, curMat);
+//    //planeUtils::visualizePlaneLocations(GlobalMap::getInstance().getGlobalMapVector(), unmatchedPlanesGlobal, currentFrame.getRgb(), currentFrame.getRgb());
+//    waitKey();
+
+    PosOrient posOrient(Vector3d(0.301, 0.0047, -0.114), Vector4d(0.027, 0.312, 0.123, 0.942));
+    posOrient.print();
+
+    vector<Plane> asd;
+    for (Plane &plane : planes) {
+        asd.push_back(plane.getPlaneSeenFromGlobalCamera(posOrient));
+    }
+
+    ImageLoader imageLoader(500);
+    imageLoader.setCurrentPhoto(1);
     ImagePair currentFrame = imageLoader.getNextPair();
-    planeUtils::visualizeSimilarPlanes(matchedPlanes, currentFrame.getRgb(), currentFrame.getRgb());
-    planeUtils::visualizePlaneLocations(GlobalMap::getInstance().getGlobalMapVector(), unmatchedPlanesGlobal, currentFrame.getRgb(), currentFrame.getRgb());
-    waitKey();*/
+    QGLVisualizer visualizer;
+    visualizer.updateCloud(currentFrame.getRgb(), currentFrame.getDepth());
+    visualizer.updatePlanes(asd);
+    visualizer.setWindowTitle("visualizer");
+    visualizer.setPHCPModel(PHCP_MODEL);
+    visualizer.show();
+
+    cv::namedWindow("asd");
+    waitKey();
 }
 
 const PosOrient &GlobalG2oMap::getLastPosOrient() const {

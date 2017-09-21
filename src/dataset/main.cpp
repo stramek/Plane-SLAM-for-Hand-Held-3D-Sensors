@@ -35,13 +35,18 @@ int main(int argc, char **argv) {
     GlobalG2oMap globalG2oMap;
 
 //    utils::createOctoMap("Dataset", 0.02);
-
+    //imageLoader.setCurrentPhoto(70);
 
     int numberOfIterations = 950;
     for (int i = 0; i < numberOfIterations; ++i) {
         trajectoryFile.open("trajectories/trajectory_" + currentDate + ".txt", std::ios_base::app);
 
-        ImagePair currentFrame = imageLoader.getNextPair();
+        ImagePair currentFrame;
+        if (i == 0) {
+            currentFrame = imageLoader.getNextPair();
+        } else {
+            currentFrame = imageLoader.getNextPair(120);
+        }
 
         make_unique<PlaneFillerBuilder>()
                 ->withDataset(&currentFrame)
@@ -53,6 +58,7 @@ int main(int argc, char **argv) {
                 ->fillVector(&planeVectorCurrentFrame);
 
         planeUtils::mergePlanes(planeVectorCurrentFrame, new PcaPlaneDetector());
+
 
         globalG2oMap.addNewFrames(planeVectorCurrentFrame);
 
