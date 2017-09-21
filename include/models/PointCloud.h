@@ -11,6 +11,7 @@
 #include <vector>
 #include <opencv2/core/mat.hpp>
 #include <Eigen/Dense>
+#include <include/models/PosOrient.h>
 
 class PointCloud {
 private:

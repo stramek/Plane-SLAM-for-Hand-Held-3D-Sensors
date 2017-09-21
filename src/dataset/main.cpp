@@ -37,7 +37,7 @@ int main(int argc, char **argv) {
 //    utils::createOctoMap("Dataset", 0.02);
 
 
-    int numberOfIterations = 1500;
+    int numberOfIterations = 950;
     for (int i = 0; i < numberOfIterations; ++i) {
         trajectoryFile.open("trajectories/trajectory_" + currentDate + ".txt", std::ios_base::app);
 
@@ -70,7 +70,7 @@ int main(int argc, char **argv) {
             if (lastPosOrient.getPosition()[0] != globalG2oMap.getLastPosOrient().getPosition()[0]
                 && lastPosOrient.getPosition()[1] != globalG2oMap.getLastPosOrient().getPosition()[1]
                 && lastPosOrient.getPosition()[2] != globalG2oMap.getLastPosOrient().getPosition()[2]) {
-//                utils::updateOctoMap("Dataset", visualizer.getGlobalDatasetPointCloud().getPoints3D());
+                //utils::updateOctoMap("Dataset", visualizer.getGlobalDatasetPointCloud().getPoints3D());
                 cout<<"Not same"<<endl;
             } else {
                 cout<<"Same orient"<<endl;
@@ -79,28 +79,7 @@ int main(int argc, char **argv) {
 //            planeUtils::visualizeSimilarPlanes(globalG2oMap.getMatchedPlanes(), previousRgbImage, currentFrame.getRgb());
 //            waitKey();
         }
-//        previousRgbImage = currentFrame.getRgb().clone();
-
-
-/*        if (planeUtils::arePlanesValid(planeVectorCurrentFrame)) {
-            cout<<"Frame number "<<i + 1<<" is valid!"<<endl;
-            if (!planeVectorPreviousFrame.empty()) {
-                similarPlanes = planeUtils::getSimilarPlanes(planeVectorPreviousFrame, planeVectorCurrentFrame);
-                planeG2o.ComputeCameraPos(similarPlanes);
-                cout << "Frame " << i << "-" << i + 1 << " found: " << similarPlanes.size() << " similar planes." << endl;
-                cout << endl << "Ideal slam position" << endl;
-                idealSlamPositions.at((unsigned int) (40)).print();
-                cout << endl;
-                if (visualize) {
-                    planeUtils::visualizeSimilarPlanes(similarPlanes, previousRgbImage, currentFrame.getRgb());
-                    waitKey();
-                }
-            }
-            utils::movePlanesToPreviousVector(planeVectorPreviousFrame, planeVectorCurrentFrame);
-            if (visualize) previousRgbImage = currentFrame.getRgb().clone();
-        } else {
-            cout<<"Frame number"<<i + 1<<"is NOT valid!";
-        }*/
+        previousRgbImage = currentFrame.getRgb().clone();
         trajectoryFile.close();
     }
 

@@ -27,7 +27,7 @@ int main(int argc, char **argv) {
                         ->withKinect(kinectModule.getRegistration(), kinectFrames.getUndistorted(),
                                      kinectFrames.getRegistered())
                         ->withPlaneDetector(planeDetectorMethod)
-                        ->withAreaSize(51)
+                        ->withAreaSize(35)
                         ->withNumberOfPoints(800)
                         ->withPreviousPlanePercent(&kinectModule.getPlaneVectorPreviousFrame(), 0.5)
                         ->build()

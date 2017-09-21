@@ -3,7 +3,6 @@
 //
 
 #include <include/utils/constants.h>
-#include <include/models/PosOrient.h>
 #include <include/utils/utils.h>
 #include "include/models/PointCloud.h"
 
@@ -19,7 +18,7 @@ void PointCloud::depth2cloud(cv::Mat &depthImage, cv::Mat RGB, unsigned int imgS
     for (unsigned int i = 0; i < depthImage.rows; i++) {
         for (unsigned int j = 0; j < depthImage.cols; j++) {
             double depthM = double(depthImage.at<uint16_t>(i, j)) / 5000.0f;
-            getPoint(j + imgStartX, IMAGE_HEIGHT - (i + imgStartY + 1), depthM, point);
+            getPoint(j + imgStartX, i + imgStartY, depthM, point);
             Point3D pointPCL;
             pointPCL.position(0) = point(0);
             pointPCL.position(1) = point(1);

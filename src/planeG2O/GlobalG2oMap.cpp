@@ -117,7 +117,7 @@ void GlobalG2oMap::addNextFramePlanes(vector<Plane> &planes) {
 
     //DEBUG
 
-    if(matchedPlanes.size() < 3) {
+    /*if(matchedPlanes.size() < 3) {
         cout<<"*********************************************"<<endl;
         cout<<"FRAME TAKEN FROM BELTER !!!"<<endl;
         g2o::EdgeSE3 *edgeSE3 = new g2o::EdgeSE3();
@@ -133,7 +133,7 @@ void GlobalG2oMap::addNextFramePlanes(vector<Plane> &planes) {
         currentPosOrient.print();
         cout<<"*********************************************"<<endl;
 
-    } else {
+    } else {*/
         for (auto &planePair : matchedPlanes) {
             //add edge to graph
             g2o::EdgeSE3Plane *curEdge = new g2o::EdgeSE3Plane();
@@ -172,7 +172,7 @@ void GlobalG2oMap::addNextFramePlanes(vector<Plane> &planes) {
 
 
         }
-    }
+    //}
 
     optimizerMin.setVerbose(false);
     optimizerMin.initializeOptimization();
