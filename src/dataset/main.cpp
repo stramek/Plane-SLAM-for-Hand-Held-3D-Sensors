@@ -34,7 +34,7 @@ int main(int argc, char **argv) {
     string currentDate = utils::getCurrentDate();
     GlobalG2oMap globalG2oMap;
 
-//    utils::createOctoMap("Dataset", 0.02);
+    utils::createOctoMap("Dataset", 0.02);
 
 
     int numberOfIterations = 950;
@@ -70,7 +70,7 @@ int main(int argc, char **argv) {
             if (lastPosOrient.getPosition()[0] != globalG2oMap.getLastPosOrient().getPosition()[0]
                 && lastPosOrient.getPosition()[1] != globalG2oMap.getLastPosOrient().getPosition()[1]
                 && lastPosOrient.getPosition()[2] != globalG2oMap.getLastPosOrient().getPosition()[2]) {
-                //utils::updateOctoMap("Dataset", visualizer.getGlobalDatasetPointCloud().getPoints3D());
+                utils::updateOctoMap("Dataset", visualizer.getGlobalDatasetPointCloud().getPoints3D());
                 cout<<"Not same"<<endl;
             } else {
                 cout<<"Same orient"<<endl;
