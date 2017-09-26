@@ -24,8 +24,8 @@ const static int NUMBER_OF_POINTS_TO_COUNT_DISTANCE = 50;
 
 const static float MAX_PERCENT_OF_NAN_PIXELS_INSIDE_PLAIN = 20.0f;
 
-const static float G2O_MAX_DISPLACEMENT = 0.1;
-const static float G2O_MAX_ROTATION = 5;
+const static float G2O_MAX_DISPLACEMENT = 2;
+const static float G2O_MAX_ROTATION = 45;
 
 const float D_THRESHOLD = 0.1;
 

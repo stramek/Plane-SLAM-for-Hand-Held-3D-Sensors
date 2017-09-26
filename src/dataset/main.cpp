@@ -34,14 +34,20 @@ int main(int argc, char **argv) {
     string currentDate = utils::getCurrentDate();
     GlobalG2oMap globalG2oMap;
 
-    utils::createOctoMap("Dataset", 0.02);
+//    utils::createOctoMap("Dataset", 0.02);
 
 
-    int numberOfIterations = 950;
+    int numberOfIterations = 2;
     for (int i = 0; i < numberOfIterations; ++i) {
         trajectoryFile.open("trajectories/trajectory_" + currentDate + ".txt", std::ios_base::app);
 
-        ImagePair currentFrame = imageLoader.getNextPair();
+        ImagePair currentFrame;
+        if (i == 0) {
+            currentFrame = imageLoader.getNextPair();
+        } else {
+            currentFrame = imageLoader.getNextPair(118);
+        }
+
 
         make_unique<PlaneFillerBuilder>()
                 ->withDataset(&currentFrame)
@@ -70,14 +76,14 @@ int main(int argc, char **argv) {
             if (lastPosOrient.getPosition()[0] != globalG2oMap.getLastPosOrient().getPosition()[0]
                 && lastPosOrient.getPosition()[1] != globalG2oMap.getLastPosOrient().getPosition()[1]
                 && lastPosOrient.getPosition()[2] != globalG2oMap.getLastPosOrient().getPosition()[2]) {
-                utils::updateOctoMap("Dataset", visualizer.getGlobalDatasetPointCloud().getPoints3D());
+//                utils::updateOctoMap("Dataset", visualizer.getGlobalDatasetPointCloud().getPoints3D());
                 cout<<"Not same"<<endl;
             } else {
                 cout<<"Same orient"<<endl;
             }
             lastPosOrient = globalG2oMap.getLastPosOrient();
-//            planeUtils::visualizeSimilarPlanes(globalG2oMap.getMatchedPlanes(), previousRgbImage, currentFrame.getRgb());
-//            waitKey();
+            planeUtils::visualizeSimilarPlanes(globalG2oMap.getMatchedPlanes(), previousRgbImage, currentFrame.getRgb());
+            waitKey();
         }
         previousRgbImage = currentFrame.getRgb().clone();
         trajectoryFile.close();
